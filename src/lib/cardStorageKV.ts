@@ -9,7 +9,7 @@ let redis: any = null;
 let fallbackStore: Card[] = [];
 
 // Try to initialize Upstash Redis
-async function initRedis() {
+export async function initRedis() {
   if (redis !== null) return redis; // Already initialized
   
   try {
