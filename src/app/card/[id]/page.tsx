@@ -47,7 +47,7 @@ export default function CardPage() {
         }
 
         // Card not found anywhere
-        setError('Card not found. If you created this card, make sure Vercel KV is set up for cross-device access.');
+        setError('Card not found. If you created this card, make sure Upstash Redis (KV_REST_API_URL) is configured in Vercel environment variables and redeploy.');
       } catch (err) {
         // Network error - try localStorage as fallback
         if (typeof window !== 'undefined') {

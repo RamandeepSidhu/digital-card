@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { personalCardSchema, type PersonalCardFormData } from '@/lib/validation';
 import { PersonalCardStyle } from '@/types/card';
+import ImageUpload from './ImageUpload';
 
 interface PersonalCardFormProps {
   onSubmit: (data: PersonalCardFormData) => void;

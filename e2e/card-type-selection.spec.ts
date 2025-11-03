@@ -72,8 +72,8 @@ test.describe('Card Type Selection', () => {
   test('should navigate to personal card creation page', async ({ page }) => {
     await page.goto('/');
     
-    // Click on Personal Card option
-    const personalLink = page.getByRole('link', { name: /Personal Card/i });
+    // Click on Personal Card option - use first() to handle multiple matches
+    const personalLink = page.getByRole('link', { name: /Personal Card/i }).first();
     await expect(personalLink).toBeVisible();
     await personalLink.click();
     

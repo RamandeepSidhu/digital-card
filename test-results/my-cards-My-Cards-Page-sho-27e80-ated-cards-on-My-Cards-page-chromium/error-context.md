@@ -67,63 +67,69 @@
             - generic [ref=e54]: Address
             - textbox "Address" [ref=e55]:
               - /placeholder: 123 Main St, City, State, ZIP
-        - button "Creating..." [disabled] [ref=e57]
-    - generic [ref=e59]:
-      - generic [ref=e61]:
-        - generic [ref=e62]:
-          - heading "🎉 Your Card is Ready!" [level=2] [ref=e63]
-          - paragraph [ref=e64]: Save or share this link to access your card anytime
-        - button "Close" [ref=e65]:
-          - img [ref=e66]
-      - generic [ref=e68]:
-        - generic [ref=e69]:
-          - generic [ref=e70]: 📎 Your Card Link
-          - generic [ref=e71]:
-            - textbox [ref=e72]: http://localhost:3000/card/Ugj9MqUq0-AGBJLuY0e42
-            - button "Copy Link" [ref=e73]
-          - paragraph [ref=e74]: 🔗 Bookmark this link or save it to access your card later
-        - generic [ref=e76]:
-          - generic [ref=e77]:
-            - heading "Your Card is Ready!" [level=3] [ref=e78]
-            - paragraph [ref=e79]: Scan the QR code or share the link to access your digital card
-          - img [ref=e82]
-          - generic [ref=e85]:
-            - generic [ref=e86]: Shareable Link
-            - generic [ref=e87]:
-              - textbox [ref=e88]: http://localhost:3000/card/Ugj9MqUq0-AGBJLuY0e42
-              - button "Copy" [ref=e89]
-          - generic [ref=e90]:
-            - button "Download QR" [ref=e91]:
-              - img [ref=e92]
+        - generic [ref=e57]:
+          - generic [ref=e58]: Profile Picture (Optional)
+          - generic [ref=e60] [cursor=pointer]:
+            - img [ref=e61]
+            - generic [ref=e63]: Click to upload image
+            - generic [ref=e64]: Max 2MB (JPG, PNG, GIF)
+        - button "Creating..." [disabled] [ref=e66]
+    - generic [ref=e68]:
+      - generic [ref=e70]:
+        - generic [ref=e71]:
+          - heading "🎉 Your Card is Ready!" [level=2] [ref=e72]
+          - paragraph [ref=e73]: Save or share this link to access your card anytime
+        - button "Close" [ref=e74]:
+          - img [ref=e75]
+      - generic [ref=e77]:
+        - generic [ref=e78]:
+          - generic [ref=e79]: 📎 Your Card Link
+          - generic [ref=e80]:
+            - textbox [ref=e81]: http://localhost:3000/card/4_Pcd_l2u5vXRk7gYzVYE
+            - button "Copy Link" [ref=e82]
+          - paragraph [ref=e83]: 🔗 Bookmark this link or save it to access your card later
+        - generic [ref=e85]:
+          - generic [ref=e86]:
+            - heading "Your Card is Ready!" [level=3] [ref=e87]
+            - paragraph [ref=e88]: Scan the QR code or share the link to access your digital card
+          - img [ref=e91]
+          - generic [ref=e94]:
+            - generic [ref=e95]: Shareable Link
+            - generic [ref=e96]:
+              - textbox [ref=e97]: http://localhost:3000/card/4_Pcd_l2u5vXRk7gYzVYE
+              - button "Copy" [ref=e98]
+          - generic [ref=e99]:
+            - button "Download QR" [ref=e100]:
+              - img [ref=e101]
               - text: Download QR
-            - link "View Card" [ref=e94] [cursor=pointer]:
-              - /url: http://localhost:3000/card/Ugj9MqUq0-AGBJLuY0e42
+            - link "View Card" [ref=e103] [cursor=pointer]:
+              - /url: http://localhost:3000/card/4_Pcd_l2u5vXRk7gYzVYE
               - text: View Card
-              - img [ref=e95]
-          - generic [ref=e97]:
-            - paragraph [ref=e98]: Share via
-            - generic [ref=e99]:
-              - button "📱 WhatsApp" [ref=e100]:
-                - generic [ref=e101]: 📱
+              - img [ref=e104]
+          - generic [ref=e106]:
+            - paragraph [ref=e107]: Share via
+            - generic [ref=e108]:
+              - button "📱 WhatsApp" [ref=e109]:
+                - generic [ref=e110]: 📱
                 - text: WhatsApp
-              - button "✉️ Email" [ref=e102]:
-                - generic [ref=e103]: ✉️
+              - button "✉️ Email" [ref=e111]:
+                - generic [ref=e112]: ✉️
                 - text: Email
-              - button "🐦 Twitter" [ref=e104]:
-                - generic [ref=e105]: 🐦
+              - button "🐦 Twitter" [ref=e113]:
+                - generic [ref=e114]: 🐦
                 - text: Twitter
-              - button "📘 Facebook" [ref=e106]:
-                - generic [ref=e107]: 📘
+              - button "📘 Facebook" [ref=e115]:
+                - generic [ref=e116]: 📘
                 - text: Facebook
-        - generic [ref=e108]:
-          - link "👁️ View Card Page" [ref=e109] [cursor=pointer]:
-            - /url: /card/Ugj9MqUq0-AGBJLuY0e42
-          - link "📋 My Cards" [ref=e110] [cursor=pointer]:
+        - generic [ref=e117]:
+          - link "👁️ View Card Page" [ref=e118] [cursor=pointer]:
+            - /url: /card/4_Pcd_l2u5vXRk7gYzVYE
+          - link "📋 My Cards" [ref=e119] [cursor=pointer]:
             - /url: /my-cards
-        - paragraph [ref=e112]:
-          - strong [ref=e113]: "💡 Tip:"
+        - paragraph [ref=e121]:
+          - strong [ref=e122]: "💡 Tip:"
           - text: This link will work forever! Save it to your bookmarks or share it with others. You can also access all your cards from the "My Cards" page.
-  - button "Open Next.js Dev Tools" [ref=e119] [cursor=pointer]:
-    - img [ref=e120]
-  - alert [ref=e123]
+  - button "Open Next.js Dev Tools" [ref=e128] [cursor=pointer]:
+    - img [ref=e129]
+  - alert [ref=e132]
 ```

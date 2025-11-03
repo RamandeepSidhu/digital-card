@@ -39,34 +39,34 @@
             - generic [ref=e51]:
               - paragraph [ref=e52]:
                 - text: Call Stack
-                - generic [ref=e53]: "14"
-              - button "Show 12 ignore-listed frame(s)" [ref=e54] [cursor=pointer]:
-                - text: Show 12 ignore-listed frame(s)
+                - generic [ref=e53]: "59"
+              - button "Show 57 ignore-listed frame(s)" [ref=e54] [cursor=pointer]:
+                - text: Show 57 ignore-listed frame(s)
                 - img [ref=e55]
             - generic [ref=e57]:
               - generic [ref=e58]:
                 - text: PersonalCardForm
                 - button "Sourcemapping failed. Click to log cause of error." [ref=e59] [cursor=pointer]:
                   - img [ref=e60]
-              - text: file:///D:/Others/digital-card-app/.next/dev/static/chunks/src_d66819eb._.js (614:230)
+              - text: file:/D:/Others/digital-card-app/.next/dev/static/chunks/src_d66819eb._.js (614:230)
             - generic [ref=e62]:
               - generic [ref=e63]:
                 - text: CreatePersonalCardPage
                 - button "Sourcemapping failed. Click to log cause of error." [ref=e64] [cursor=pointer]:
                   - img [ref=e65]
-              - text: file:///D:/Others/digital-card-app/.next/dev/static/chunks/src_d66819eb._.js (2047:231)
+              - text: file:/D:/Others/digital-card-app/.next/dev/static/chunks/src_d66819eb._.js (2047:231)
         - generic [ref=e67]: "1"
         - generic [ref=e68]: "2"
     - generic [ref=e73] [cursor=pointer]:
       - button "Open Next.js Dev Tools" [ref=e74]:
         - img [ref=e75]
-      - generic [ref=e78]:
-        - button "Open issues overlay" [ref=e79]:
-          - generic [ref=e80]:
-            - generic [ref=e81]: "0"
-            - generic [ref=e82]: "1"
-          - generic [ref=e83]: Issue
-        - button "Collapse issues badge" [ref=e84]:
-          - img [ref=e85]
-  - 'heading "Application error: a client-side exception has occurred while loading localhost (see the browser console for more information)." [level=2] [ref=e89]'
+      - generic [ref=e79]:
+        - button "Open issues overlay" [ref=e80]:
+          - generic [ref=e81]:
+            - generic [ref=e82]: "0"
+            - generic [ref=e83]: "1"
+          - generic [ref=e84]: Issue
+        - button "Collapse issues badge" [ref=e85]:
+          - img [ref=e86]
+  - 'heading "Application error: a client-side exception has occurred while loading localhost (see the browser console for more information)." [level=2] [ref=e90]'
 ```

@@ -14,19 +14,20 @@ test.describe('Success Modal After Card Creation', () => {
     // Submit form
     await page.getByRole('button', { name: /Create Card/i }).click();
     
-    // Wait for success modal
-    await expect(page.getByText(/Your Card is Ready!/i)).toBeVisible({ timeout: 10000 });
+    // Wait for success modal - use first() to handle multiple matches
+    const successModal = page.getByText(/Your Card is Ready!/i).first();
+    await expect(successModal).toBeVisible({ timeout: 10000 });
     
-    // Check for QR code
-    const qrCode = page.locator('svg[id^="qrcode-"]');
+    // Check for QR code - use first() to handle multiple matches
+    const qrCode = page.locator('svg[id^="qrcode-"]').first();
     await expect(qrCode).toBeVisible();
     
-    // Check for card link input
-    const linkInput = page.getByDisplayValue(/\/card\//);
+    // Check for card link input - use locator with value selector
+    const linkInput = page.locator('input[value*="/card/"]').first();
     await expect(linkInput).toBeVisible();
     
-    // Check for copy button
-    const copyButton = page.getByRole('button', { name: /Copy Link/i });
+    // Check for copy button - use first() to handle multiple matches
+    const copyButton = page.getByRole('button', { name: /Copy Link/i }).first();
     await expect(copyButton).toBeVisible();
   });
 
@@ -41,11 +42,12 @@ test.describe('Success Modal After Card Creation', () => {
     // Submit form
     await page.getByRole('button', { name: /Create Card/i }).click();
     
-    // Wait for success modal
-    await expect(page.getByText(/Your Card is Ready!/i)).toBeVisible({ timeout: 10000 });
+    // Wait for success modal - use first() to handle multiple matches
+    const successModal = page.getByText(/Your Card is Ready!/i).first();
+    await expect(successModal).toBeVisible({ timeout: 10000 });
     
-    // Check for card link
-    const linkInput = page.getByDisplayValue(/\/card\//);
+    // Check for card link - use first() to handle multiple matches
+    const linkInput = page.locator('input[value*="/card/"]').first();
     await expect(linkInput).toBeVisible();
   });
 
@@ -60,15 +62,16 @@ test.describe('Success Modal After Card Creation', () => {
     
     await page.getByRole('button', { name: /Create Card/i }).click();
     
-    // Wait for modal
-    await expect(page.getByText(/Your Card is Ready!/i)).toBeVisible({ timeout: 10000 });
+    // Wait for modal - use first() to handle multiple matches
+    const successModal = page.getByText(/Your Card is Ready!/i).first();
+    await expect(successModal).toBeVisible({ timeout: 10000 });
     
-    // Click copy button
-    const copyButton = page.getByRole('button', { name: /Copy Link/i });
+    // Click copy button - use first() to handle multiple matches
+    const copyButton = page.getByRole('button', { name: /Copy Link/i }).first();
     await copyButton.click();
     
-    // Check for success feedback
-    await expect(page.getByText(/Copied!/i)).toBeVisible();
+    // Check for success feedback - use first() to handle multiple matches
+    await expect(page.getByText(/Copied!/i).first()).toBeVisible();
   });
 });
 

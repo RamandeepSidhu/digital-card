@@ -15,8 +15,9 @@ test.describe('QR Code Generation', () => {
     // Submit form
     await page.getByRole('button', { name: /Create Card/i }).click();
     
-    // Wait for success modal to appear (not navigation)
-    await expect(page.getByText(/Your Card is Ready!/i)).toBeVisible({ timeout: 10000 });
+    // Wait for success modal to appear (not navigation) - use first() to handle multiple matches
+    const successModal = page.getByText(/Your Card is Ready!/i).first();
+    await expect(successModal).toBeVisible({ timeout: 10000 });
     
     // Check for QR code SVG element in the modal
     const qrCode = page.locator('svg[id^="qrcode-"]');
@@ -37,8 +38,8 @@ test.describe('QR Code Generation', () => {
     // Wait for success modal
     await expect(page.getByText(/Your Card is Ready!/i)).toBeVisible({ timeout: 10000 });
     
-    // Check for URL input in modal
-    const urlInput = page.getByDisplayValue(/\/card\//);
+    // Check for URL input in modal - use locator with value selector
+    const urlInput = page.locator('input[value*="/card/"]').first();
     await expect(urlInput).toBeVisible();
     
     // URL should contain /card/ path
@@ -60,13 +61,13 @@ test.describe('QR Code Generation', () => {
     // Wait for success modal
     await expect(page.getByText(/Your Card is Ready!/i)).toBeVisible({ timeout: 10000 });
     
-    // Click copy button in modal
-    const copyButton = page.getByRole('button', { name: /Copy Link/i });
+    // Click copy button in modal - use first() to handle multiple matches
+    const copyButton = page.getByRole('button', { name: /Copy Link/i }).first();
     await expect(copyButton).toBeVisible();
     await copyButton.click();
     
     // Button should show "Copied!" state
-    await expect(page.getByRole('button', { name: /Copied/i })).toBeVisible({ timeout: 2000 });
+    await expect(page.getByRole('button', { name: /Copied/i }).first()).toBeVisible({ timeout: 2000 });
   });
 
   test('should have download QR button', async ({ page }) => {
@@ -81,10 +82,11 @@ test.describe('QR Code Generation', () => {
     await page.getByRole('button', { name: /Create Card/i }).click();
     
     // Wait for success modal, then navigate to card page
-    await expect(page.getByText(/Your Card is Ready!/i)).toBeVisible({ timeout: 10000 });
+    const successModal = page.getByText(/Your Card is Ready!/i).first();
+    await expect(successModal).toBeVisible({ timeout: 10000 });
     
     // Click "View Card Page" to navigate to card view
-    await page.getByRole('link', { name: /View Card Page/i }).click();
+    await page.getByRole('link', { name: /View Card Page/i }).first().click();
     await page.waitForURL(/\/card\/[a-zA-Z0-9_-]+/, { timeout: 5000 });
     
     // Check for download button on card page

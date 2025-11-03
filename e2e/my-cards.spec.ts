@@ -25,19 +25,20 @@ test.describe('My Cards Page', () => {
     
     await page.getByRole('button', { name: /Create Card/i }).click();
     
-    // Wait for modal and close it
-    await expect(page.getByText(/Your Card is Ready!/i)).toBeVisible({ timeout: 10000 });
+    // Wait for modal - use first() to handle multiple matches
+    const successModal = page.getByText(/Your Card is Ready!/i).first();
+    await expect(successModal).toBeVisible({ timeout: 10000 });
     
     // Navigate to My Cards page
     await page.goto('/my-cards');
     
     // Check that card is displayed
-    await expect(page.getByText(/Business Card/i)).toBeVisible();
-    await expect(page.getByText(/John Doe/i)).toBeVisible();
+    await expect(page.getByText(/Business Card/i).first()).toBeVisible();
+    await expect(page.getByText(/John Doe/i).first()).toBeVisible();
     
     // Check for view and delete buttons
-    await expect(page.getByRole('link', { name: /View/i })).toBeVisible();
-    await expect(page.getByRole('button', { name: /Delete/i })).toBeVisible();
+    await expect(page.getByRole('link', { name: /View/i }).first()).toBeVisible();
+    await expect(page.getByRole('button', { name: /Delete/i }).first()).toBeVisible();
   });
 
   test('should navigate to card view page from My Cards', async ({ page }) => {
