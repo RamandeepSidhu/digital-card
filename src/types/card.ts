@@ -16,6 +16,7 @@ export interface BusinessCard {
     website?: string;
     linkedin?: string;
     address?: string;
+    image?: string; // Base64 encoded image or URL
   };
   createdAt: Date;
 }
@@ -31,6 +32,7 @@ export interface BankCard {
     ifscCode?: string;
     routingNumber?: string;
     upiId?: string;
+    logo?: string; // Base64 encoded image or URL for bank logo
   };
   createdAt: Date;
 }
@@ -46,6 +48,7 @@ export interface PersonalCard {
     address?: string;
     birthday?: string;
     website?: string;
+    image?: string; // Base64 encoded image or URL for profile picture
     socialMedia?: {
       instagram?: string;
       twitter?: string;

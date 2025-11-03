@@ -10,10 +10,21 @@ export default function StyleOne({ card }: StyleOneProps) {
   return (
     <div className="w-full max-w-md mx-auto bg-white rounded-lg shadow-lg overflow-hidden border border-zinc-200">
       <div className="bg-gradient-to-r from-purple-600 to-purple-700 p-6 text-white">
-        <h2 className="text-2xl font-bold mb-1">{data.name}</h2>
-        {data.birthday && (
-          <p className="text-purple-100 text-sm">🎂 {data.birthday}</p>
-        )}
+        <div className="flex items-center gap-4">
+          {data.image && (
+            <img 
+              src={data.image} 
+              alt={data.name}
+              className="w-16 h-16 rounded-full object-cover border-2 border-white/20"
+            />
+          )}
+          <div>
+            <h2 className="text-2xl font-bold mb-1">{data.name}</h2>
+            {data.birthday && (
+              <p className="text-purple-100 text-sm">🎂 {data.birthday}</p>
+            )}
+          </div>
+        </div>
       </div>
       <div className="p-6 space-y-4">
         <div className="grid grid-cols-1 gap-3 text-sm">

@@ -18,9 +18,17 @@ export default function StyleTwo({ card }: StyleTwoProps) {
         <div className="mb-6 pb-6 border-b border-purple-300/20">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-xl font-bold text-zinc-800">{data.bankName}</h3>
-            <div className="w-10 h-10 bg-purple-500/30 rounded-full flex items-center justify-center backdrop-blur-sm">
-              <span className="text-purple-700 text-lg">💳</span>
-            </div>
+            {data.logo ? (
+              <img 
+                src={data.logo} 
+                alt={data.bankName}
+                className="w-10 h-10 rounded-full object-cover border-2 border-purple-300/50"
+              />
+            ) : (
+              <div className="w-10 h-10 bg-purple-500/30 rounded-full flex items-center justify-center backdrop-blur-sm">
+                <span className="text-purple-700 text-lg">💳</span>
+              </div>
+            )}
           </div>
           <p className="text-zinc-700 font-semibold">{data.accountHolder}</p>
         </div>

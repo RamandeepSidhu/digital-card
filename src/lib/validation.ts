@@ -10,6 +10,7 @@ export const businessCardSchema = z.object({
   website: z.string().url('Please enter a valid URL').optional().or(z.literal('')),
   linkedin: z.string().url('Please enter a valid URL').optional().or(z.literal('')),
   address: z.string().max(200, 'Address is too long').optional(),
+  image: z.string().optional(),
   style: z.enum(['style1', 'style2', 'style3'] as const),
 });
 
@@ -20,6 +21,7 @@ export const bankCardSchema = z.object({
   ifscCode: z.string().regex(/^[A-Z]{4}0[A-Z0-9]{6}$/, 'Please enter a valid IFSC code').optional().or(z.literal('')),
   routingNumber: z.string().regex(/^\d{9}$/, 'Routing number must be 9 digits').optional().or(z.literal('')),
   upiId: z.string().regex(/^[\w.-]+@[\w]+$/, 'Please enter a valid UPI ID (e.g., name@paytm)').optional().or(z.literal('')),
+  logo: z.string().optional(),
   style: z.enum(['style1', 'style2', 'style3'] as const),
 });
 
@@ -30,6 +32,7 @@ export const personalCardSchema = z.object({
   address: z.string().max(200, 'Address is too long').optional(),
   birthday: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Please enter a valid date (YYYY-MM-DD)').optional().or(z.literal('')),
   website: z.string().url('Please enter a valid URL').optional().or(z.literal('')),
+  image: z.string().optional(),
   socialMedia: z.object({
     instagram: z.string().optional().or(z.literal('')),
     twitter: z.string().optional().or(z.literal('')),

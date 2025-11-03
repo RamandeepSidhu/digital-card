@@ -16,7 +16,7 @@ export async function GET(
       );
     }
 
-    const card = getCardByIdServer(id);
+    const card = await getCardByIdServer(id);
 
     if (!card) {
       return NextResponse.json(

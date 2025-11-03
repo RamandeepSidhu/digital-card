@@ -33,6 +33,7 @@ export default function CreatePersonalCardPage() {
           address: data.address || undefined,
           birthday: data.birthday || undefined,
           website: data.website || undefined,
+          image: data.image || undefined,
           socialMedia: {
             instagram: data.socialMedia?.instagram || undefined,
             twitter: data.socialMedia?.twitter || undefined,

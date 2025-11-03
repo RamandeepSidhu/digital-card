@@ -1,32 +1,24 @@
 import { Card } from '@/types/card';
-
-// In-memory storage for server-side (MVP)
-// In production, this would be replaced with a database
-let cardStore: Card[] = [];
+import { saveCardKV, getAllCardsKV, getCardByIdKV, deleteCardKV } from './cardStorageKV';
 
 /**
- * Server-side card storage (in-memory for MVP)
- * In production, replace with database calls
+ * Server-side card storage
+ * Uses Vercel KV (persistent) if available, falls back to in-memory
  */
-export function saveCardServer(card: Card): void {
-  cardStore.push(card);
+
+export async function saveCardServer(card: Card): Promise<void> {
+  await saveCardKV(card);
 }
 
-export function getAllCardsServer(): Card[] {
-  return cardStore.map((card) => ({
-    ...card,
-    createdAt: new Date(card.createdAt),
-  }));
+export async function getAllCardsServer(): Promise<Card[]> {
+  return await getAllCardsKV();
 }
 
-export function getCardByIdServer(id: string): Card | null {
-  return cardStore.find((card) => card.id === id) || null;
+export async function getCardByIdServer(id: string): Promise<Card | null> {
+  return await getCardByIdKV(id);
 }
 
-export function deleteCardServer(id: string): boolean {
-  const index = cardStore.findIndex((card) => card.id === id);
-  if (index === -1) return false;
-  cardStore.splice(index, 1);
-  return true;
+export async function deleteCardServer(id: string): Promise<boolean> {
+  return await deleteCardKV(id);
 }
 

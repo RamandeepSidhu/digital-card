@@ -35,6 +35,7 @@ export default function CreateBusinessCardPage() {
           website: data.website || undefined,
           linkedin: data.linkedin || undefined,
           address: data.address || undefined,
+          image: data.image || undefined,
         },
         createdAt: new Date(),
       };

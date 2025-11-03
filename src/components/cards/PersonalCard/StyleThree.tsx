@@ -11,6 +11,15 @@ export default function StyleThree({ card }: StyleThreeProps) {
     <div className="w-full max-w-md mx-auto bg-zinc-900 rounded-lg shadow-lg overflow-hidden border border-purple-500/30">
       <div className="p-6 space-y-4">
         <div className="text-center pb-4 border-b border-purple-500/30">
+          {data.image && (
+            <div className="flex justify-center mb-4">
+              <img 
+                src={data.image} 
+                alt={data.name}
+                className="w-24 h-24 rounded-full object-cover border-4 border-purple-500/50 shadow-lg"
+              />
+            </div>
+          )}
           <h2 className="text-3xl font-bold text-white mb-2">{data.name}</h2>
           {data.birthday && (
             <p className="text-purple-400 text-sm">🎂 Birthday: {data.birthday}</p>

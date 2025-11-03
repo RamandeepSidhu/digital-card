@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { businessCardSchema, type BusinessCardFormData } from '@/lib/validation';
 import { BusinessCardStyle } from '@/types/card';
+import ImageUpload from './ImageUpload';
 
 interface BusinessCardFormProps {
   onSubmit: (data: BusinessCardFormData) => void;
@@ -22,6 +23,7 @@ export default function BusinessCardForm({ onSubmit, isLoading = false }: Busine
     handleSubmit,
     formState: { errors, isSubmitting },
     watch,
+    setValue,
   } = useForm<BusinessCardFormData>({
     resolver: zodResolver(businessCardSchema),
     defaultValues: {
@@ -30,6 +32,7 @@ export default function BusinessCardForm({ onSubmit, isLoading = false }: Busine
   });
 
   const selectedStyle = watch('style');
+  const imageValue = watch('image');
 
   const onFormSubmit = async (data: BusinessCardFormData) => {
     await onSubmit(data);
@@ -212,6 +215,16 @@ export default function BusinessCardForm({ onSubmit, isLoading = false }: Busine
             <p className="mt-1 text-sm text-red-500">{errors.address.message}</p>
           )}
         </div>
+      </div>
+
+      {/* Image Upload */}
+      <div>
+        <ImageUpload
+          value={imageValue}
+          onChange={(value) => setValue('image', value, { shouldValidate: true })}
+          label="Profile Picture (Optional)"
+          maxSizeMB={2}
+        />
       </div>
 
       {/* Submit Button */}

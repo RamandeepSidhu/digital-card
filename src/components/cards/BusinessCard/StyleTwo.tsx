@@ -11,10 +11,21 @@ export default function StyleTwo({ card }: StyleTwoProps) {
     <div className="w-full max-w-md mx-auto bg-gradient-to-br from-zinc-50 to-white rounded-xl shadow-xl overflow-hidden border-l-4 border-purple-600">
       <div className="p-8">
         <div className="mb-6">
-          <h2 className="text-3xl font-bold text-zinc-900 mb-2">{data.name}</h2>
-          <div className="h-1 w-20 bg-purple-600 mb-3"></div>
-          <p className="text-lg text-zinc-600 font-semibold">{data.title}</p>
-          <p className="text-zinc-500 mt-1">{data.company}</p>
+          <div className="flex items-center gap-4 mb-4">
+            {data.image && (
+              <img 
+                src={data.image} 
+                alt={data.name}
+                className="w-20 h-20 rounded-full object-cover border-4 border-purple-200"
+              />
+            )}
+            <div>
+              <h2 className="text-3xl font-bold text-zinc-900 mb-2">{data.name}</h2>
+              <div className="h-1 w-20 bg-purple-600 mb-3"></div>
+              <p className="text-lg text-zinc-600 font-semibold">{data.title}</p>
+              <p className="text-zinc-500 mt-1">{data.company}</p>
+            </div>
+          </div>
         </div>
         
         <div className="space-y-4 pt-4 border-t border-zinc-200">

@@ -15,9 +15,17 @@ export default function StyleOne({ card }: StyleOneProps) {
             <p className="text-zinc-400 text-xs mb-1">Bank Name</p>
             <p className="text-lg font-bold">{data.bankName}</p>
           </div>
-          <div className="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center">
-            <span className="text-white text-xl">🏦</span>
-          </div>
+          {data.logo ? (
+            <img 
+              src={data.logo} 
+              alt={data.bankName}
+              className="w-12 h-12 rounded-lg object-cover border-2 border-purple-500/30"
+            />
+          ) : (
+            <div className="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center">
+              <span className="text-white text-xl">🏦</span>
+            </div>
+          )}
         </div>
       </div>
       

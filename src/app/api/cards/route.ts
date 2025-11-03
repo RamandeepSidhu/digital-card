@@ -66,9 +66,8 @@ export async function POST(request: NextRequest) {
       createdAt: new Date(),
     };
 
-    // Save card (using in-memory storage for MVP)
-    // In production, this would save to a database
-    saveCardServer(card);
+    // Save card to persistent storage (KV or fallback)
+    await saveCardServer(card);
 
     // Return card with URL
     const baseUrl = request.nextUrl.origin;
@@ -96,7 +95,7 @@ export async function POST(request: NextRequest) {
 // GET /api/cards - Get all cards (for development/testing)
 export async function GET() {
   try {
-    const cards = getAllCardsServer();
+    const cards = await getAllCardsServer();
     return NextResponse.json({ cards }, { status: 200 });
   } catch (error) {
     console.error('Error fetching cards:', error);

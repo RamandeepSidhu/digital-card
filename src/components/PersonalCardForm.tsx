@@ -22,6 +22,7 @@ export default function PersonalCardForm({ onSubmit, isLoading = false }: Person
     handleSubmit,
     formState: { errors, isSubmitting },
     watch,
+    setValue,
   } = useForm<PersonalCardFormData>({
     resolver: zodResolver(personalCardSchema),
     defaultValues: {
@@ -31,6 +32,7 @@ export default function PersonalCardForm({ onSubmit, isLoading = false }: Person
   });
 
   const selectedStyle = watch('style');
+  const imageValue = watch('image');
 
   const onFormSubmit = async (data: PersonalCardFormData) => {
     await onSubmit(data);
@@ -243,6 +245,16 @@ export default function PersonalCardForm({ onSubmit, isLoading = false }: Person
             )}
           </div>
         </div>
+      </div>
+
+      {/* Image Upload */}
+      <div>
+        <ImageUpload
+          value={imageValue}
+          onChange={(value) => setValue('image', value, { shouldValidate: true })}
+          label="Profile Picture (Optional)"
+          maxSizeMB={2}
+        />
       </div>
 
       {/* Submit Button */}

@@ -33,6 +33,7 @@ export default function CreateBankCardPage() {
           ifscCode: data.ifscCode || undefined,
           routingNumber: data.routingNumber || undefined,
           upiId: data.upiId || undefined,
+          logo: data.logo || undefined,
         },
         createdAt: new Date(),
       };

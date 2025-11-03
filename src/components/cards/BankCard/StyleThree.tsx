@@ -19,9 +19,17 @@ export default function StyleThree({ card }: StyleThreeProps) {
               <p className="text-purple-400 text-xs mb-2 uppercase tracking-widest">Bank Name</p>
               <p className="text-2xl font-bold text-white">{data.bankName}</p>
             </div>
-            <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/50">
-              <span className="text-white text-2xl">💳</span>
-            </div>
+            {data.logo ? (
+              <img 
+                src={data.logo} 
+                alt={data.bankName}
+                className="w-14 h-14 rounded-xl object-cover border-2 border-purple-500/50 shadow-lg"
+              />
+            ) : (
+              <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/50">
+                <span className="text-white text-2xl">💳</span>
+              </div>
+            )}
           </div>
           
           <div className="mb-6">

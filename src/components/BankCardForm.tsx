@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { bankCardSchema, type BankCardFormData } from '@/lib/validation';
 import { BankCardStyle } from '@/types/card';
+import ImageUpload from './ImageUpload';
 
 interface BankCardFormProps {
   onSubmit: (data: BankCardFormData) => void;
@@ -22,6 +23,7 @@ export default function BankCardForm({ onSubmit, isLoading = false }: BankCardFo
     handleSubmit,
     formState: { errors, isSubmitting },
     watch,
+    setValue,
   } = useForm<BankCardFormData>({
     resolver: zodResolver(bankCardSchema),
     defaultValues: {
@@ -30,6 +32,7 @@ export default function BankCardForm({ onSubmit, isLoading = false }: BankCardFo
   });
 
   const selectedStyle = watch('style');
+  const logoValue = watch('logo');
 
   const onFormSubmit = async (data: BankCardFormData) => {
     await onSubmit(data);
@@ -182,6 +185,16 @@ export default function BankCardForm({ onSubmit, isLoading = false }: BankCardFo
             <p className="mt-1 text-sm text-red-500">{errors.upiId.message}</p>
           )}
         </div>
+      </div>
+
+      {/* Logo Upload */}
+      <div>
+        <ImageUpload
+          value={logoValue}
+          onChange={(value) => setValue('logo', value, { shouldValidate: true })}
+          label="Bank Logo (Optional)"
+          maxSizeMB={2}
+        />
       </div>
 
       {/* Submit Button */}

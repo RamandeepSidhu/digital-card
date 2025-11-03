@@ -18,25 +18,15 @@ export default function CardPage() {
 
   useEffect(() => {
     async function fetchCard() {
-      // For Vercel deployment: Check localStorage FIRST since serverless functions lose state
-      // This ensures cards work on the device/browser where they were created
-      if (typeof window !== 'undefined') {
-        const localCard = getCardById(id);
-        if (localCard) {
-          setCard(localCard);
-          setLoading(false);
-          return;
-        }
-      }
-
-      // If not in localStorage, try API (works if server has the card in memory)
+      // Try API first (works with Vercel KV persistent storage)
+      // This allows cards to work across devices
       try {
         const response = await fetch(`/api/card/${id}`);
         if (response.ok) {
           const data = await response.json();
           setCard(data.card);
           
-          // Also save to localStorage for future access
+          // Also save to localStorage for offline access
           if (typeof window !== 'undefined' && data.card) {
             const { saveCard } = await import('@/lib/cardStorage');
             saveCard(data.card);
@@ -46,11 +36,29 @@ export default function CardPage() {
           return;
         }
 
-        // API returned 404 - card not found anywhere
-        setError('Card not found. This card may have been created on a different device or the server was restarted.');
+        // API returned 404 - try localStorage as fallback
+        if (response.status === 404 && typeof window !== 'undefined') {
+          const localCard = getCardById(id);
+          if (localCard) {
+            setCard(localCard);
+            setLoading(false);
+            return;
+          }
+        }
+
+        // Card not found anywhere
+        setError('Card not found. If you created this card, make sure Vercel KV is set up for cross-device access.');
       } catch (err) {
-        // Network error or other fetch failure
-        setError('Unable to load card. Please check your internet connection or access this card from the device where it was created.');
+        // Network error - try localStorage as fallback
+        if (typeof window !== 'undefined') {
+          const localCard = getCardById(id);
+          if (localCard) {
+            setCard(localCard);
+            setLoading(false);
+            return;
+          }
+        }
+        setError('Unable to load card. Please check your internet connection.');
       } finally {
         setLoading(false);
       }

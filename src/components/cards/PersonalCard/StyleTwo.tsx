@@ -11,14 +11,24 @@ export default function StyleTwo({ card }: StyleTwoProps) {
     <div className="w-full max-w-md mx-auto bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg shadow-lg overflow-hidden text-white">
       <div className="p-6">
         <div className="flex items-center justify-between mb-4">
-          <div>
-            <h2 className="text-2xl font-bold mb-1">{data.name}</h2>
-            {data.birthday && (
-              <p className="text-purple-100 text-sm">🎂 {data.birthday}</p>
+          <div className="flex items-center gap-3">
+            {data.image ? (
+              <img 
+                src={data.image} 
+                alt={data.name}
+                className="w-16 h-16 rounded-full object-cover border-2 border-white/30"
+              />
+            ) : (
+              <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center text-2xl">
+                👤
+              </div>
             )}
-          </div>
-          <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center text-2xl">
-            👤
+            <div>
+              <h2 className="text-2xl font-bold mb-1">{data.name}</h2>
+              {data.birthday && (
+                <p className="text-purple-100 text-sm">🎂 {data.birthday}</p>
+              )}
+            </div>
           </div>
         </div>
         
