@@ -18,41 +18,39 @@ export default function CardPage() {
 
   useEffect(() => {
     async function fetchCard() {
+      // For Vercel deployment: Check localStorage FIRST since serverless functions lose state
+      // This ensures cards work on the device/browser where they were created
+      if (typeof window !== 'undefined') {
+        const localCard = getCardById(id);
+        if (localCard) {
+          setCard(localCard);
+          setLoading(false);
+          return;
+        }
+      }
+
+      // If not in localStorage, try API (works if server has the card in memory)
       try {
-        // First, try to fetch from API (server-side storage)
         const response = await fetch(`/api/card/${id}`);
         if (response.ok) {
           const data = await response.json();
           setCard(data.card);
+          
+          // Also save to localStorage for future access
+          if (typeof window !== 'undefined' && data.card) {
+            const { saveCard } = await import('@/lib/cardStorage');
+            saveCard(data.card);
+          }
+          
           setLoading(false);
           return;
         }
 
-        // If API returns 404, check localStorage as fallback
-        if (response.status === 404) {
-          if (typeof window !== 'undefined') {
-            const localCard = getCardById(id);
-            if (localCard) {
-              setCard(localCard);
-              setLoading(false);
-              return;
-            }
-          }
-          setError('Card not found');
-        } else {
-          setError('Failed to load card');
-        }
+        // API returned 404 - card not found anywhere
+        setError('Card not found. This card may have been created on a different device or the server was restarted.');
       } catch (err) {
-        // If fetch fails entirely, check localStorage
-        if (typeof window !== 'undefined') {
-          const localCard = getCardById(id);
-          if (localCard) {
-            setCard(localCard);
-            setLoading(false);
-            return;
-          }
-        }
-        setError('Failed to load card');
+        // Network error or other fetch failure
+        setError('Unable to load card. Please check your internet connection or access this card from the device where it was created.');
       } finally {
         setLoading(false);
       }
@@ -123,7 +121,10 @@ export default function CardPage() {
 
           {/* QR Code and Actions */}
           <div className="flex items-center justify-center">
-            <QRCodeDisplay card={card} />
+            <QRCodeDisplay 
+              card={card} 
+              baseUrl={typeof window !== 'undefined' ? window.location.origin : undefined} 
+            />
           </div>
         </div>
 

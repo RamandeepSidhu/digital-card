@@ -50,14 +50,11 @@ test.describe('Form Submission', () => {
     // Submit form
     await page.getByRole('button', { name: /Create Card/i }).click();
     
-    // Wait for alert (card creation success)
-    page.on('dialog', async (dialog) => {
-      expect(dialog.message()).toContain('Card created successfully');
-      await dialog.accept();
-    });
+    // Wait for success modal to appear
+    await expect(page.getByText(/Your Card is Ready!/i)).toBeVisible({ timeout: 10000 });
     
-    // After accepting dialog, should redirect to home
-    await page.waitForURL('/', { timeout: 5000 });
+    // Verify modal contains card link
+    await expect(page.getByDisplayValue(/\/card\//)).toBeVisible();
   });
 
   test('should display bank card form with all fields', async ({ page }) => {
@@ -105,14 +102,11 @@ test.describe('Form Submission', () => {
     // Submit form
     await page.getByRole('button', { name: /Create Card/i }).click();
     
-    // Wait for alert (card creation success)
-    page.on('dialog', async (dialog) => {
-      expect(dialog.message()).toContain('Card created successfully');
-      await dialog.accept();
-    });
+    // Wait for success modal to appear
+    await expect(page.getByText(/Your Card is Ready!/i)).toBeVisible({ timeout: 10000 });
     
-    // After accepting dialog, should redirect to home
-    await page.waitForURL('/', { timeout: 5000 });
+    // Verify modal contains card link
+    await expect(page.getByDisplayValue(/\/card\//)).toBeVisible();
   });
 
   test('should show style selector options and allow selection', async ({ page }) => {

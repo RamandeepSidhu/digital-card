@@ -15,14 +15,11 @@ test.describe('QR Code Generation', () => {
     // Submit form
     await page.getByRole('button', { name: /Create Card/i }).click();
     
-    // Wait for navigation to card page
-    await page.waitForURL(/\/card\/[a-zA-Z0-9_-]+/, { timeout: 10000 });
+    // Wait for success modal to appear (not navigation)
+    await expect(page.getByText(/Your Card is Ready!/i)).toBeVisible({ timeout: 10000 });
     
-    // Verify QR code is displayed
-    await expect(page.getByText(/Your Card is Ready!/i)).toBeVisible();
-    
-    // Check for QR code SVG element
-    const qrCode = page.locator('svg[data-testid="qrcode-svg"], svg[id^="qrcode-"]');
+    // Check for QR code SVG element in the modal
+    const qrCode = page.locator('svg[id^="qrcode-"]');
     await expect(qrCode.first()).toBeVisible({ timeout: 5000 });
   });
 
@@ -37,9 +34,10 @@ test.describe('QR Code Generation', () => {
     
     await page.getByRole('button', { name: /Create Card/i }).click();
     
-    await page.waitForURL(/\/card\/[a-zA-Z0-9_-]+/, { timeout: 10000 });
+    // Wait for success modal
+    await expect(page.getByText(/Your Card is Ready!/i)).toBeVisible({ timeout: 10000 });
     
-    // Check for URL input
+    // Check for URL input in modal
     const urlInput = page.getByDisplayValue(/\/card\//);
     await expect(urlInput).toBeVisible();
     
@@ -59,15 +57,16 @@ test.describe('QR Code Generation', () => {
     
     await page.getByRole('button', { name: /Create Card/i }).click();
     
-    await page.waitForURL(/\/card\/[a-zA-Z0-9_-]+/, { timeout: 10000 });
+    // Wait for success modal
+    await expect(page.getByText(/Your Card is Ready!/i)).toBeVisible({ timeout: 10000 });
     
-    // Click copy button
-    const copyButton = page.getByRole('button', { name: /Copy/i });
+    // Click copy button in modal
+    const copyButton = page.getByRole('button', { name: /Copy Link/i });
     await expect(copyButton).toBeVisible();
     await copyButton.click();
     
-    // Button should show "Copied" state
-    await expect(page.getByText(/Copied/i)).toBeVisible({ timeout: 2000 });
+    // Button should show "Copied!" state
+    await expect(page.getByRole('button', { name: /Copied/i })).toBeVisible({ timeout: 2000 });
   });
 
   test('should have download QR button', async ({ page }) => {
@@ -81,9 +80,14 @@ test.describe('QR Code Generation', () => {
     
     await page.getByRole('button', { name: /Create Card/i }).click();
     
-    await page.waitForURL(/\/card\/[a-zA-Z0-9_-]+/, { timeout: 10000 });
+    // Wait for success modal, then navigate to card page
+    await expect(page.getByText(/Your Card is Ready!/i)).toBeVisible({ timeout: 10000 });
     
-    // Check for download button
+    // Click "View Card Page" to navigate to card view
+    await page.getByRole('link', { name: /View Card Page/i }).click();
+    await page.waitForURL(/\/card\/[a-zA-Z0-9_-]+/, { timeout: 5000 });
+    
+    // Check for download button on card page
     const downloadButton = page.getByRole('button', { name: /Download QR/i });
     await expect(downloadButton).toBeVisible();
   });
@@ -99,9 +103,12 @@ test.describe('QR Code Generation', () => {
     
     await page.getByRole('button', { name: /Create Card/i }).click();
     
-    await page.waitForURL(/\/card\/[a-zA-Z0-9_-]+/, { timeout: 10000 });
+    // Wait for success modal, then navigate to card page
+    await expect(page.getByText(/Your Card is Ready!/i)).toBeVisible({ timeout: 10000 });
+    await page.getByRole('link', { name: /View Card Page/i }).click();
+    await page.waitForURL(/\/card\/[a-zA-Z0-9_-]+/, { timeout: 5000 });
     
-    // Check for share buttons
+    // Check for share buttons on card page
     await expect(page.getByRole('button', { name: /WhatsApp/i })).toBeVisible();
     await expect(page.getByRole('button', { name: /Email/i })).toBeVisible();
     await expect(page.getByRole('button', { name: /Twitter/i })).toBeVisible();
@@ -120,7 +127,10 @@ test.describe('QR Code Generation', () => {
     
     await page.getByRole('button', { name: /Create Card/i }).click();
     
-    await page.waitForURL(/\/card\/[a-zA-Z0-9_-]+/, { timeout: 10000 });
+    // Wait for success modal, then navigate to card page
+    await expect(page.getByText(/Your Card is Ready!/i)).toBeVisible({ timeout: 10000 });
+    await page.getByRole('link', { name: /View Card Page/i }).click();
+    await page.waitForURL(/\/card\/[a-zA-Z0-9_-]+/, { timeout: 5000 });
     
     // Check that card content is displayed
     await expect(page.getByText(/Preview Test/i)).toBeVisible();
@@ -139,9 +149,12 @@ test.describe('QR Code Generation', () => {
     
     await page.getByRole('button', { name: /Create Card/i }).click();
     
-    await page.waitForURL(/\/card\/[a-zA-Z0-9_-]+/, { timeout: 10000 });
+    // Wait for success modal, then navigate to card page
+    await expect(page.getByText(/Your Card is Ready!/i)).toBeVisible({ timeout: 10000 });
+    await page.getByRole('link', { name: /View Card Page/i }).click();
+    await page.waitForURL(/\/card\/[a-zA-Z0-9_-]+/, { timeout: 5000 });
     
-    // Check for Save to Contacts button
+    // Check for Save to Contacts button on card page
     const saveButton = page.getByRole('button', { name: /Save to Contacts/i });
     await expect(saveButton).toBeVisible();
   });
