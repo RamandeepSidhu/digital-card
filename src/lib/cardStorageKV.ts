@@ -14,20 +14,27 @@ async function initRedis() {
   
   try {
     // Only try to import if we're on the server and Redis is configured
-    if (typeof window === 'undefined' && process.env.UPSTASH_REDIS_REST_URL) {
-      // Dynamic import to avoid bundling issues
-      const { Redis } = await import('@upstash/redis');
-      redis = new Redis({
-        url: process.env.UPSTASH_REDIS_REST_URL,
-        token: process.env.UPSTASH_REDIS_REST_TOKEN,
-      });
-      return redis;
-    }
-    // Fallback: Try Vercel KV (legacy)
-    else if (typeof window === 'undefined' && process.env.KV_REST_API_URL) {
-      const kvModule = await import('@vercel/kv');
-      redis = kvModule.default || kvModule.kv || kvModule;
-      return redis;
+    if (typeof window === 'undefined') {
+      // Try Upstash Redis (support multiple env var naming conventions)
+      const redisUrl = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
+      const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
+      
+      if (redisUrl && redisToken) {
+        // Dynamic import to avoid bundling issues
+        const { Redis } = await import('@upstash/redis');
+        redis = new Redis({
+          url: redisUrl,
+          token: redisToken,
+        });
+        return redis;
+      }
+      
+      // Fallback: Try Vercel KV (legacy)
+      if (process.env.KV_REST_API_URL) {
+        const kvModule = await import('@vercel/kv');
+        redis = kvModule.default || kvModule.kv || kvModule;
+        return redis;
+      }
     }
   } catch (error) {
     console.warn('Redis/KV not available, using in-memory storage:', error);
