@@ -84,12 +84,20 @@ export default function CardPage() {
           <p className="text-zinc-600 dark:text-zinc-400 mb-6">
             {error || 'The card you are looking for does not exist.'}
           </p>
-          <a
-            href="/"
-            className="inline-flex items-center px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-          >
-            Go Home
-          </a>
+          <div className="flex gap-4 justify-center">
+            <a
+              href="/"
+              className="inline-flex items-center px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+            >
+              Go Home
+            </a>
+            <a
+              href="/my-cards"
+              className="inline-flex items-center px-6 py-3 bg-zinc-200 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 rounded-lg hover:bg-zinc-300 dark:hover:bg-zinc-600 transition-colors"
+            >
+              📋 My Cards
+            </a>
+          </div>
         </div>
       </div>
     );
@@ -104,4 +112,29 @@ export default function CardPage() {
           </h1>
           <p className="text-zinc-600 dark:text-zinc-400">
             Scan the QR code or save the contact information
-          <
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Card Display */}
+          <div className="flex items-center justify-center">
+            <CardPreview card={card} />
+          </div>
+
+          {/* QR Code and Actions */}
+          <div className="flex items-center justify-center">
+            <QRCodeDisplay card={card} />
+          </div>
+        </div>
+
+        {/* Contact Download (for business cards) */}
+        {card.type === 'business' && (
+          <div className="mt-8 flex justify-center">
+            <ContactDownload card={card as BusinessCard} />
+          </div>
+        )}
+      </main>
+    </div>
+  );
+}
+
