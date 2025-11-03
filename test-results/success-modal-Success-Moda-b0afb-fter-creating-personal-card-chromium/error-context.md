@@ -1,0 +1,137 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - main [ref=e3]:
+      - generic [ref=e4]:
+        - link "Back to Home" [ref=e5] [cursor=pointer]:
+          - /url: /
+          - img [ref=e6]
+          - text: Back to Home
+        - heading "Create Personal Card" [level=1] [ref=e8]
+        - paragraph [ref=e9]: Fill in your personal information to create your digital card
+      - generic [ref=e11]:
+        - generic [ref=e12]:
+          - generic [ref=e13]: Card Style
+          - generic [ref=e14]:
+            - generic [ref=e15] [cursor=pointer]:
+              - radio "Simple & Clean Minimalist design with focus on content" [checked] [ref=e16]
+              - generic [ref=e17]: Simple & Clean
+              - generic [ref=e18]: Minimalist design with focus on content
+              - img [ref=e20]
+            - generic [ref=e22] [cursor=pointer]:
+              - radio "Modern Social Social media focused layout" [ref=e23]
+              - generic [ref=e24]: Modern Social
+              - generic [ref=e25]: Social media focused layout
+            - generic [ref=e26] [cursor=pointer]:
+              - radio "Elegant Classic Timeless design with subtle accents" [ref=e27]
+              - generic [ref=e28]: Elegant Classic
+              - generic [ref=e29]: Timeless design with subtle accents
+        - generic [ref=e30]:
+          - generic [ref=e31]:
+            - generic [ref=e32]: Full Name *
+            - textbox "Full Name *" [ref=e33]:
+              - /placeholder: John Doe
+              - text: Jane Smith
+          - generic [ref=e34]:
+            - generic [ref=e35]: Email *
+            - textbox "Email *" [ref=e36]:
+              - /placeholder: john.doe@example.com
+              - text: jane@example.com
+          - generic [ref=e37]:
+            - generic [ref=e38]: Phone *
+            - textbox "Phone *" [ref=e39]:
+              - /placeholder: +1 234 567 8900
+              - text: "9876543210"
+          - generic [ref=e40]:
+            - generic [ref=e41]: Birthday
+            - textbox "Birthday" [ref=e42]
+        - generic [ref=e43]:
+          - generic [ref=e44]:
+            - generic [ref=e45]: Website
+            - textbox "Website" [ref=e46]:
+              - /placeholder: https://www.example.com
+          - generic [ref=e47]:
+            - generic [ref=e48]: Address
+            - textbox "Address" [ref=e49]:
+              - /placeholder: 123 Main St, City, State, ZIP
+        - generic [ref=e50]:
+          - generic [ref=e51]: Social Media Links
+          - generic [ref=e52]:
+            - generic [ref=e53]:
+              - generic [ref=e54]: Instagram
+              - textbox "Instagram" [ref=e55]:
+                - /placeholder: "@username"
+            - generic [ref=e56]:
+              - generic [ref=e57]: Twitter/X
+              - textbox "Twitter/X" [ref=e58]:
+                - /placeholder: "@username"
+            - generic [ref=e59]:
+              - generic [ref=e60]: Facebook
+              - textbox "Facebook" [ref=e61]:
+                - /placeholder: Username or URL
+            - generic [ref=e62]:
+              - generic [ref=e63]: LinkedIn
+              - textbox "LinkedIn" [ref=e64]:
+                - /placeholder: https://linkedin.com/in/username
+        - button "Creating..." [disabled] [ref=e66]
+    - generic [ref=e68]:
+      - generic [ref=e70]:
+        - generic [ref=e71]:
+          - heading "🎉 Your Card is Ready!" [level=2] [ref=e72]
+          - paragraph [ref=e73]: Save or share this link to access your card anytime
+        - button "Close" [ref=e74]:
+          - img [ref=e75]
+      - generic [ref=e77]:
+        - generic [ref=e78]:
+          - generic [ref=e79]: 📎 Your Card Link
+          - generic [ref=e80]:
+            - textbox [ref=e81]: http://localhost:3000/card/5Y1e_Uk5jk6A6lm1oSZhR
+            - button "Copy Link" [ref=e82]
+          - paragraph [ref=e83]: 🔗 Bookmark this link or save it to access your card later
+        - generic [ref=e85]:
+          - generic [ref=e86]:
+            - heading "Your Card is Ready!" [level=3] [ref=e87]
+            - paragraph [ref=e88]: Scan the QR code or share the link to access your digital card
+          - img [ref=e91]
+          - generic [ref=e94]:
+            - generic [ref=e95]: Shareable Link
+            - generic [ref=e96]:
+              - textbox [ref=e97]: http://localhost:3000/card/5Y1e_Uk5jk6A6lm1oSZhR
+              - button "Copy" [ref=e98]
+          - generic [ref=e99]:
+            - button "Download QR" [ref=e100]:
+              - img [ref=e101]
+              - text: Download QR
+            - link "View Card" [ref=e103] [cursor=pointer]:
+              - /url: http://localhost:3000/card/5Y1e_Uk5jk6A6lm1oSZhR
+              - text: View Card
+              - img [ref=e104]
+          - generic [ref=e106]:
+            - paragraph [ref=e107]: Share via
+            - generic [ref=e108]:
+              - button "📱 WhatsApp" [ref=e109]:
+                - generic [ref=e110]: 📱
+                - text: WhatsApp
+              - button "✉️ Email" [ref=e111]:
+                - generic [ref=e112]: ✉️
+                - text: Email
+              - button "🐦 Twitter" [ref=e113]:
+                - generic [ref=e114]: 🐦
+                - text: Twitter
+              - button "📘 Facebook" [ref=e115]:
+                - generic [ref=e116]: 📘
+                - text: Facebook
+        - generic [ref=e117]:
+          - link "👁️ View Card Page" [ref=e118] [cursor=pointer]:
+            - /url: /card/5Y1e_Uk5jk6A6lm1oSZhR
+          - link "📋 My Cards" [ref=e119] [cursor=pointer]:
+            - /url: /my-cards
+        - paragraph [ref=e121]:
+          - strong [ref=e122]: "💡 Tip:"
+          - text: This link will work forever! Save it to your bookmarks or share it with others. You can also access all your cards from the "My Cards" page.
+  - button "Open Next.js Dev Tools" [ref=e128] [cursor=pointer]:
+    - img [ref=e129]
+  - alert [ref=e132]
+```

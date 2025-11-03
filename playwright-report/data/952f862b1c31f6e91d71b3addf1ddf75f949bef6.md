@@ -1,0 +1,129 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - main [ref=e3]:
+      - generic [ref=e4]:
+        - link "Back to Home" [ref=e5] [cursor=pointer]:
+          - /url: /
+          - img [ref=e6]
+          - text: Back to Home
+        - heading "Create Business Card" [level=1] [ref=e8]
+        - paragraph [ref=e9]: Fill in your business information to create your digital card
+      - generic [ref=e11]:
+        - generic [ref=e12]:
+          - generic [ref=e13]: Card Style
+          - generic [ref=e14]:
+            - generic [ref=e15] [cursor=pointer]:
+              - radio "Modern Minimalist Clean white/black design" [checked] [ref=e16]
+              - generic [ref=e17]: Modern Minimalist
+              - generic [ref=e18]: Clean white/black design
+              - img [ref=e20]
+            - generic [ref=e22] [cursor=pointer]:
+              - radio "Professional Corporate Blue accent, structured layout" [ref=e23]
+              - generic [ref=e24]: Professional Corporate
+              - generic [ref=e25]: Blue accent, structured layout
+            - generic [ref=e26] [cursor=pointer]:
+              - radio "Creative Gradient Colorful gradients, bold typography" [ref=e27]
+              - generic [ref=e28]: Creative Gradient
+              - generic [ref=e29]: Colorful gradients, bold typography
+        - generic [ref=e30]:
+          - generic [ref=e31]:
+            - generic [ref=e32]: Full Name *
+            - textbox "Full Name *" [ref=e33]:
+              - /placeholder: John Doe
+              - text: Contact Test
+          - generic [ref=e34]:
+            - generic [ref=e35]: Job Title *
+            - textbox "Job Title *" [ref=e36]:
+              - /placeholder: Software Engineer
+              - text: Developer
+          - generic [ref=e37]:
+            - generic [ref=e38]: Company *
+            - textbox "Company *" [ref=e39]:
+              - /placeholder: Acme Inc.
+              - text: Company
+          - generic [ref=e40]:
+            - generic [ref=e41]: Email *
+            - textbox "Email *" [ref=e42]:
+              - /placeholder: john.doe@example.com
+              - text: contact@example.com
+          - generic [ref=e43]:
+            - generic [ref=e44]: Phone *
+            - textbox "Phone *" [ref=e45]:
+              - /placeholder: +1 234 567 8900
+              - text: "1234567890"
+        - generic [ref=e46]:
+          - generic [ref=e47]:
+            - generic [ref=e48]: Website
+            - textbox "Website" [ref=e49]:
+              - /placeholder: https://www.example.com
+          - generic [ref=e50]:
+            - generic [ref=e51]: LinkedIn
+            - textbox "LinkedIn" [ref=e52]:
+              - /placeholder: https://linkedin.com/in/johndoe
+          - generic [ref=e53]:
+            - generic [ref=e54]: Address
+            - textbox "Address" [ref=e55]:
+              - /placeholder: 123 Main St, City, State, ZIP
+        - button "Creating..." [disabled] [ref=e57]
+    - generic [ref=e59]:
+      - generic [ref=e61]:
+        - generic [ref=e62]:
+          - heading "🎉 Your Card is Ready!" [level=2] [ref=e63]
+          - paragraph [ref=e64]: Save or share this link to access your card anytime
+        - button "Close" [ref=e65]:
+          - img [ref=e66]
+      - generic [ref=e68]:
+        - generic [ref=e69]:
+          - generic [ref=e70]: 📎 Your Card Link
+          - generic [ref=e71]:
+            - textbox [ref=e72]: http://localhost:3000/card/Nc-EE_LQyjXK3IPxw8bGx
+            - button "Copy Link" [ref=e73]
+          - paragraph [ref=e74]: 🔗 Bookmark this link or save it to access your card later
+        - generic [ref=e76]:
+          - generic [ref=e77]:
+            - heading "Your Card is Ready!" [level=3] [ref=e78]
+            - paragraph [ref=e79]: Scan the QR code or share the link to access your digital card
+          - img [ref=e82]
+          - generic [ref=e85]:
+            - generic [ref=e86]: Shareable Link
+            - generic [ref=e87]:
+              - textbox [ref=e88]: http://localhost:3000/card/Nc-EE_LQyjXK3IPxw8bGx
+              - button "Copy" [ref=e89]
+          - generic [ref=e90]:
+            - button "Download QR" [ref=e91]:
+              - img
+              - text: Download QR
+            - link "View Card" [ref=e93] [cursor=pointer]:
+              - /url: http://localhost:3000/card/Nc-EE_LQyjXK3IPxw8bGx
+              - text: View Card
+              - img [ref=e94]
+          - generic [ref=e96]:
+            - paragraph [ref=e97]: Share via
+            - generic [ref=e98]:
+              - button "📱 WhatsApp" [ref=e99]:
+                - generic [ref=e100]: 📱
+                - text: WhatsApp
+              - button "✉️ Email" [ref=e101]:
+                - generic [ref=e102]: ✉️
+                - text: Email
+              - button "🐦 Twitter" [ref=e103]:
+                - generic [ref=e104]: 🐦
+                - text: Twitter
+              - button "📘 Facebook" [ref=e105]:
+                - generic [ref=e106]: 📘
+                - text: Facebook
+        - generic [ref=e107]:
+          - link "👁️ View Card Page" [ref=e108] [cursor=pointer]:
+            - /url: /card/Nc-EE_LQyjXK3IPxw8bGx
+          - link "📋 My Cards" [ref=e109] [cursor=pointer]:
+            - /url: /my-cards
+        - paragraph [ref=e111]:
+          - strong [ref=e112]: "💡 Tip:"
+          - text: This link will work forever! Save it to your bookmarks or share it with others. You can also access all your cards from the "My Cards" page.
+  - button "Open Next.js Dev Tools" [ref=e118] [cursor=pointer]:
+    - img [ref=e119]
+  - alert [ref=e122]
+```
