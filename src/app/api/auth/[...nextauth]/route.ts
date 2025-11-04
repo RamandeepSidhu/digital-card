@@ -7,10 +7,13 @@ import { nanoid } from 'nanoid';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
-    Google({
-      clientId: process.env.GOOGLE_CLIENT_ID || process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '',
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || '', // NEVER use NEXT_PUBLIC_ for secrets
-    }),
+    // Only enable Google OAuth if both client ID and secret are provided
+    ...((process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID) && process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET ? [
+      Google({
+        clientId: process.env.GOOGLE_CLIENT_ID || process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '',
+        clientSecret: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET, // NEVER use NEXT_PUBLIC_ for secrets
+      })
+    ] : []),
     Credentials({
       credentials: {
         email: { label: 'Email', type: 'email' },
