@@ -120,8 +120,9 @@ export default function CardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4">
-      <main className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+      <main className="max-w-6xl mx-auto py-12 px-4">
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* Card Display */}

@@ -6,6 +6,7 @@ import { getAllCards, deleteCard } from '@/lib/cardStorage';
 import { generateCardUrl } from '@/lib/qrGenerator';
 import CardPreview from '@/components/CardPreview';
 import Link from 'next/link';
+import Header from '@/components/Header';
 
 export default function MyCardsPage() {
   const [cards, setCards] = useState<Card[]>([]);
@@ -156,8 +157,9 @@ export default function MyCardsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-zinc-50 to-white dark:from-zinc-900 dark:to-black py-12 px-4">
-      <main className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-linear-to-br from-zinc-50 to-white dark:from-zinc-900 dark:to-black">
+      <Header />
+      <main className="max-w-6xl mx-auto py-12 px-4">
         {/* Header */}
         <div className="mb-8">
           <Link

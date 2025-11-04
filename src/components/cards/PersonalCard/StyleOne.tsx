@@ -10,7 +10,7 @@ export default function StyleOne({ card }: StyleOneProps) {
   return (
     <div className="w-full max-w-md mx-auto bg-white rounded-2xl shadow-lg overflow-hidden">
       {/* Blue-Purple Gradient Header */}
-      <div className="relative h-48 bg-linear-to-br from-blue-500 via-purple-500 to-pgradient600 flex flex-col items-center justify-center pt-8 pb-6">
+      <div className="relative h-48 bg-linear-to-br from-blue-500 via-purple-500 to-purple-600 flex flex-col items-center justify-center pt-8 pb-6">
         {/* Avatar Circle */}
         <div className="w-24 h-24 bg-blue-200 rounded-full flex items-center justify-center mb-4 shadow-lg">
           {data.image ? (

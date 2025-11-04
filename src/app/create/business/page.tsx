@@ -11,6 +11,7 @@ import CardPreview from '@/components/CardPreview';
 import QRCodeDisplay from '@/components/QRCodeDisplay';
 import ContactDownload from '@/components/ContactDownload';
 import { generateCardUrl } from '@/lib/qrGenerator';
+import Header from '@/components/Header';
 
 type Step = 'style' | 'form' | 'preview' | 'success';
 
@@ -118,33 +119,33 @@ export default function CreateBusinessCardPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-zinc-50 via-purple-50/30 to-white dark:from-zinc-900 dark:via-purple-900/10 dark:to-black py-12 px-4">
-      <main className="w-full max-w-6xl mx-auto">
+    <div className="min-h-screen bg-linear-to-br from-zinc-50 via-purple-50/30 to-white dark:from-zinc-900 dark:via-purple-900/10 dark:to-black">
+      <Header />
+      <main className="w-full max-w-6xl mx-auto py-12 px-4">
         <div className="mb-8">
-          <button
-            onClick={() => {
-              if (currentStep === 'style') {
-                router.push('/dashboard');
-              } else if (currentStep === 'form') {
-                setCurrentStep('style');
-              } else if (currentStep === 'preview') {
-                setCurrentStep('form');
-              }
-            }}
-            className="cursor-pointer inline-flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors mb-6 group"
-          >
-            <svg
-              className="w-5 h-5 transform group-hover:-translate-x-1 transition-transform"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+          {currentStep !== 'style' && (
+            <button
+              onClick={() => {
+                if (currentStep === 'form') {
+                  setCurrentStep('style');
+                } else if (currentStep === 'preview') {
+                  setCurrentStep('form');
+                }
+              }}
+              className="cursor-pointer inline-flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors mb-6 group"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            {currentStep === 'style' && 'Back to Dashboard'}
-            {currentStep === 'form' && 'Back to Style Selection'}
-            {currentStep === 'preview' && 'Back to Form'}
-          </button>
+              <svg
+                className="w-5 h-5 transform group-hover:-translate-x-1 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              {currentStep === 'form' && 'Back to Style Selection'}
+              {currentStep === 'preview' && 'Back to Form'}
+            </button>
+          )}
           <div className="text-center mb-8">
             <h1 className="text-4xl sm:text-5xl font-bold text-zinc-900 dark:text-zinc-50 mb-2">
               Create Card
@@ -200,7 +201,7 @@ export default function CreateBusinessCardPage() {
                     }`}
                   >
                     {selectedStyle === option.value && (
-                      <div className="absolute top-4 right-4 w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center flex-shrink-0 z-10 shadow-lg">
+                      <div className="absolute top-4 right-4 w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center shrink-0 z-10 shadow-lg">
                         <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                           <path
                             fillRule="evenodd"

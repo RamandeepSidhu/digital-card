@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { bankCardSchema, type BankCardFormData } from '@/lib/validation';
@@ -9,15 +10,11 @@ import ImageUpload from './ImageUpload';
 interface BankCardFormProps {
   onSubmit: (data: BankCardFormData) => void;
   isLoading?: boolean;
+  defaultStyle?: BankCardStyle;
+  onFormChange?: (data: BankCardFormData) => void;
 }
 
-const styleOptions: { value: BankCardStyle; label: string; description: string }[] = [
-  { value: 'style1', label: 'Classic Bank', description: 'Traditional card-like appearance' },
-  { value: 'style2', label: 'Glass Morphism', description: 'Frosted glass effect, modern' },
-  { value: 'style3', label: 'Dark Mode', description: 'Sleek dark theme, neon accents' },
-];
-
-export default function BankCardForm({ onSubmit, isLoading = false }: BankCardFormProps) {
+export default function BankCardForm({ onSubmit, isLoading = false, defaultStyle = 'style1', onFormChange }: BankCardFormProps) {
   const {
     register,
     handleSubmit,
@@ -27,12 +24,23 @@ export default function BankCardForm({ onSubmit, isLoading = false }: BankCardFo
   } = useForm<BankCardFormData>({
     resolver: zodResolver(bankCardSchema),
     defaultValues: {
-      style: 'style1',
+      style: defaultStyle,
     },
   });
 
-  const selectedStyle = watch('style');
   const logoValue = watch('logo');
+  const watchedValues = watch();
+
+  // Update live preview when form values change
+  useEffect(() => {
+    if (onFormChange) {
+      const formData: BankCardFormData = {
+        ...watchedValues,
+        style: defaultStyle,
+      };
+      onFormChange(formData);
+    }
+  }, [watchedValues, defaultStyle, onFormChange]);
 
   const onFormSubmit = async (data: BankCardFormData) => {
     await onSubmit(data);
@@ -40,49 +48,6 @@ export default function BankCardForm({ onSubmit, isLoading = false }: BankCardFo
 
   return (
     <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6">
-      {/* Style Selector */}
-      <div>
-        <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-3">
-          Card Style
-        </label>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {styleOptions.map((option) => (
-            <label
-              key={option.value}
-              className={`relative flex flex-col p-4 border-2 rounded-lg cursor-pointer transition-all ${
-                selectedStyle === option.value
-                  ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20'
-                  : 'border-zinc-200 dark:border-zinc-700 hover:border-zinc-300 dark:hover:border-zinc-600'
-              }`}
-            >
-              <input
-                type="radio"
-                value={option.value}
-                {...register('style')}
-                className="sr-only"
-              />
-              <span className="font-semibold text-zinc-900 dark:text-zinc-100 mb-1">
-                {option.label}
-              </span>
-              <span className="text-sm text-zinc-600 dark:text-zinc-400">
-                {option.description}
-              </span>
-              {selectedStyle === option.value && (
-                <div className="absolute top-2 right-2">
-                  <svg className="w-5 h-5 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
-                    <path
-                      fillRule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </div>
-              )}
-            </label>
-          ))}
-        </div>
-      </div>
-
       {/* Required Fields */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
@@ -204,7 +169,7 @@ export default function BankCardForm({ onSubmit, isLoading = false }: BankCardFo
           disabled={isSubmitting || isLoading}
           className="cursor-pointer px-6 py-3 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
-          {isSubmitting || isLoading ? 'Creating...' : 'Create Card'}
+          {isSubmitting || isLoading ? 'Processing...' : 'Continue to Preview'}
         </button>
       </div>
     </form>
