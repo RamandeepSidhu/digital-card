@@ -11,7 +11,7 @@ export const businessCardSchema = z.object({
   linkedin: z.string().url('Please enter a valid URL').optional().or(z.literal('')),
   address: z.string().max(200, 'Address is too long').optional(),
   image: z.string().optional(),
-  style: z.enum(['style1', 'style2', 'style3'] as const),
+  style: z.enum(['style1', 'style2', 'style3', 'style4', 'style5', 'style6'] as const),
 });
 
 export const bankCardSchema = z.object({
@@ -39,7 +39,7 @@ export const personalCardSchema = z.object({
     facebook: z.string().optional().or(z.literal('')),
     linkedin: z.string().url('Please enter a valid URL').optional().or(z.literal('')),
   }).optional(),
-  style: z.enum(['style1', 'style2', 'style3'] as const),
+  style: z.enum(['style1', 'style2', 'style3', 'style4', 'style5', 'style6'] as const),
 });
 
 export type BusinessCardFormData = z.infer<typeof businessCardSchema>;
