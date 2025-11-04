@@ -6,7 +6,6 @@ import CardPreview from '@/components/CardPreview';
 import QRCodeDisplay from '@/components/QRCodeDisplay';
 import { Card } from '@/types/card';
 import ContactDownload from '@/components/ContactDownload';
-import { BusinessCard } from '@/types/card';
 import { getCardById } from '@/lib/cardStorage';
 
 export default function CardPage() {
@@ -132,6 +131,13 @@ export default function CardPage() {
           </p>
         </div>
 
+        {/* Prominent Add to Contacts Button */}
+        {(card.type === 'business' || card.type === 'personal') && (
+          <div className="mb-8 flex justify-center">
+            <ContactDownload card={card} variant="prominent" />
+          </div>
+        )}
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Card Display */}
           <div className="flex items-center justify-center">
@@ -146,13 +152,6 @@ export default function CardPage() {
             />
           </div>
         </div>
-
-        {/* Contact Download (for business cards) */}
-        {card.type === 'business' && (
-          <div className="mt-8 flex justify-center">
-            <ContactDownload card={card as BusinessCard} />
-          </div>
-        )}
       </main>
     </div>
   );

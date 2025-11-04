@@ -48,6 +48,60 @@ export function generateVCard(businessCard: {
 }
 
 /**
+ * Generate vCard content for personal cards
+ */
+export function generatePersonalVCard(personalCard: {
+  name: string;
+  email: string;
+  phone: string;
+  address?: string;
+  birthday?: string;
+  website?: string;
+  socialMedia?: {
+    instagram?: string;
+    twitter?: string;
+    facebook?: string;
+    linkedin?: string;
+  };
+}): string {
+  let vcard = 'BEGIN:VCARD\n';
+  vcard += 'VERSION:3.0\n';
+  vcard += `FN:${personalCard.name}\n`;
+  vcard += `EMAIL:${personalCard.email}\n`;
+  vcard += `TEL:${personalCard.phone}\n`;
+  
+  if (personalCard.address) {
+    vcard += `ADR:;;${personalCard.address};;;;\n`;
+  }
+  
+  if (personalCard.birthday) {
+    vcard += `BDAY:${personalCard.birthday}\n`;
+  }
+  
+  if (personalCard.website) {
+    vcard += `URL:${personalCard.website}\n`;
+  }
+  
+  if (personalCard.socialMedia) {
+    if (personalCard.socialMedia.linkedin) {
+      vcard += `URL:${personalCard.socialMedia.linkedin}\n`;
+    }
+    if (personalCard.socialMedia.twitter) {
+      vcard += `URL:${personalCard.socialMedia.twitter}\n`;
+    }
+    if (personalCard.socialMedia.facebook) {
+      vcard += `URL:${personalCard.socialMedia.facebook}\n`;
+    }
+    if (personalCard.socialMedia.instagram) {
+      vcard += `URL:${personalCard.socialMedia.instagram}\n`;
+    }
+  }
+  
+  vcard += 'END:VCARD';
+  return vcard;
+}
+
+/**
  * Download vCard file
  */
 export function downloadVCard(vcardContent: string, filename: string = 'contact.vcf'): void {
