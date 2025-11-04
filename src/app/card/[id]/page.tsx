@@ -7,6 +7,7 @@ import QRCodeDisplay from '@/components/QRCodeDisplay';
 import { Card } from '@/types/card';
 import ContactDownload from '@/components/ContactDownload';
 import { getCardById } from '@/lib/cardStorage';
+import Header from '@/components/Header';
 
 export default function CardPage() {
   const params = useParams();
