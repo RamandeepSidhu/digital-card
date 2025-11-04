@@ -41,6 +41,7 @@ export default function CreateBusinessCardPage() {
       };
 
       // Save using API endpoint
+      console.log('📤 Calling API to save card...', businessCard.id);
       const response = await fetch('/api/cards', {
         method: 'POST',
         headers: {
@@ -49,12 +50,16 @@ export default function CreateBusinessCardPage() {
         body: JSON.stringify(businessCard),
       });
 
+      console.log('📥 API Response status:', response.status);
+
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        console.error('❌ API Error:', errorData);
         throw new Error(errorData.error || 'Failed to create card');
       }
 
       const result = await response.json();
+      console.log('✅ Card saved successfully:', result);
       
       // Save to localStorage for "My Cards" page
       saveCard(businessCard);
@@ -62,6 +67,7 @@ export default function CreateBusinessCardPage() {
       // Show success modal with card details
       setCreatedCard(businessCard);
       setShowSuccessModal(true);
+      setIsLoading(false);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create card');
       setIsLoading(false);

@@ -51,7 +51,10 @@ test.describe('Success Modal After Card Creation', () => {
     await expect(linkInput).toBeVisible();
   });
 
-  test('should copy link to clipboard when copy button is clicked', async ({ page }) => {
+  test('should copy link to clipboard when copy button is clicked', async ({ page, context }) => {
+    // Grant clipboard permissions
+    await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+    
     await page.goto('/create/business');
     
     await page.getByLabel(/Full Name/i).fill('Test User');
@@ -68,10 +71,25 @@ test.describe('Success Modal After Card Creation', () => {
     
     // Click copy button - use first() to handle multiple matches
     const copyButton = page.getByRole('button', { name: /Copy Link/i }).first();
+    await expect(copyButton).toBeVisible();
+    
+    // Get the expected URL from the input
+    const urlInput = page.locator('input[value*="/card/"]').first();
+    const expectedUrl = await urlInput.inputValue();
+    
+    // Click and wait for the button text to change
     await copyButton.click();
     
-    // Check for success feedback - use first() to handle multiple matches
-    await expect(page.getByText(/Copied!/i).first()).toBeVisible();
+    // Wait for button to show "Copied!" state or verify clipboard
+    try {
+      await expect(copyButton).toHaveText(/Copied/i, { timeout: 3000 });
+    } catch {
+      // If text doesn't change, verify clipboard was written
+      const clipboardText = await page.evaluate(async () => {
+        return await navigator.clipboard.readText();
+      });
+      expect(clipboardText).toBe(expectedUrl);
+    }
   });
 });
 

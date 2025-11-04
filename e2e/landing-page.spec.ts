@@ -22,7 +22,7 @@ test.describe('Landing Page', () => {
     const metaDescription = page.locator('meta[name="description"]');
     await expect(metaDescription).toHaveAttribute(
       'content',
-      /Create beautiful shareable digital cards/i
+      /Create beautiful digital business cards and bank cards with unique QR codes/i
     );
   });
 

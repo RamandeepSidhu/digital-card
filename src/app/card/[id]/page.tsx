@@ -47,7 +47,18 @@ export default function CardPage() {
         }
 
         // Card not found anywhere
-        setError('Card not found. If you created this card, make sure Upstash Redis (KV_REST_API_URL) is configured in Vercel environment variables and redeploy.');
+        if (response.status === 404) {
+          const errorData = await response.json().catch(() => ({}));
+          const hasRedis = errorData?.debug?.redisConnected;
+          
+          if (!hasRedis) {
+            setError('Card not found. Redis is not connected. Please ensure KV_REST_API_URL and KV_REST_API_TOKEN are set in Vercel environment variables and redeploy the app. Note: Cards created before Redis setup will not be accessible.');
+          } else {
+            setError('Card not found. This card may have been created before Redis was set up, or it was created on a different device. Please create a new card after Redis is configured.');
+          }
+        } else {
+          setError('Card not found. Please check if the card ID is correct.');
+        }
       } catch (err) {
         // Network error - try localStorage as fallback
         if (typeof window !== 'undefined') {

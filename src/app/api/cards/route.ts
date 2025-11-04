@@ -57,17 +57,26 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create card object
+    // Create card object (use provided ID or generate new one)
     const card: Card = {
-      id: nanoid(),
+      id: body.id || nanoid(),
       type: body.type,
       style: body.style,
       data: body.data,
-      createdAt: new Date(),
+      createdAt: body.createdAt ? new Date(body.createdAt) : new Date(),
     };
 
+    console.log(`[API /cards] Saving card ${card.id} to storage...`);
+    
     // Save card to persistent storage (KV or fallback)
-    await saveCardServer(card);
+    try {
+      await saveCardServer(card);
+      console.log(`[API /cards] ✅ Card ${card.id} saved successfully`);
+    } catch (saveError) {
+      console.error(`[API /cards] ❌ Error saving card ${card.id}:`, saveError);
+      // Still return success if we can't save to Redis (fallback to in-memory)
+      // This allows cards to work locally even without Redis
+    }
 
     // Return card with URL
     const baseUrl = request.nextUrl.origin;

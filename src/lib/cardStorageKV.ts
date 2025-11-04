@@ -1,49 +1,116 @@
 import { Card } from '@/types/card';
 
 /**
- * Persistent storage using Upstash Redis (via Vercel Marketplace)
+ * Persistent storage using Redis (supports Upstash REST API and Redis Cloud connection string)
  * Falls back to in-memory storage if Redis is not available
  */
 
 let redis: any = null;
 let fallbackStore: Card[] = [];
 
-// Try to initialize Upstash Redis
+// Try to initialize Redis (supports both Upstash REST API and Redis Cloud connection string)
 export async function initRedis() {
   if (redis !== null) return redis; // Already initialized
   
   try {
     // Only try to import if we're on the server and Redis is configured
     if (typeof window === 'undefined') {
-      // Try Upstash Redis (support multiple env var naming conventions)
+      // Check for Redis Cloud connection string (redis:// format)
+      const redisConnectionString = process.env.REDIS_URL || process.env.DIGITAL_CARD_REDIS_URL;
+      
+      if (redisConnectionString && redisConnectionString.startsWith('redis://')) {
+        try {
+          console.log('🔗 Connecting to Redis Cloud (connection string)...');
+          const { createClient } = await import('redis');
+          const client = createClient({
+            url: redisConnectionString.trim(),
+          });
+          
+          await client.connect();
+          console.log('✅ Redis Cloud connection initialized');
+          
+          // Wrap Redis client to match Upstash Redis API
+          redis = {
+            get: async (key: string) => {
+              const value = await client.get(key);
+              return value;
+            },
+            set: async (key: string, value: string) => {
+              return await client.set(key, value);
+            },
+            del: async (key: string) => {
+              return await client.del(key);
+            },
+            ping: async () => {
+              return await client.ping();
+            },
+            client, // Store original client for cleanup if needed
+          };
+          
+          await redis.ping();
+          console.log('✅ Redis Cloud connection tested');
+          return redis;
+        } catch (error: any) {
+          console.error('❌ Redis Cloud connection failed:', error.message || error);
+          return null;
+        }
+      }
+      
+      // Try Upstash Redis (REST API - support multiple env var naming conventions)
       // Priority: Check KV_REST_API_* first (Vercel's naming), then UPSTASH_*
       const redisUrl = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
       const redisToken = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
       
-      if (redisUrl && redisToken) {
-        console.log('🔗 Connecting to Upstash Redis...', { url: redisUrl, hasToken: !!redisToken });
+      // Validate that both URL and token are present and not empty
+      if (!redisUrl || redisUrl.trim() === '') {
+        console.warn('⚠️ Redis URL is missing or empty');
+        return null;
+      }
+      
+      if (!redisToken || redisToken.trim() === '') {
+        console.warn('⚠️ Redis token is missing or empty');
+        console.warn('💡 Make sure KV_REST_API_TOKEN is set in .env.local file');
+        return null;
+      }
+      
+      // Validate URL format (Upstash uses https://)
+      if (!redisUrl.startsWith('https://')) {
+        console.warn('⚠️ Redis URL must start with https:// for Upstash');
+        return null;
+      }
+      
+      // Validate token is not just whitespace
+      const trimmedToken = redisToken.trim();
+      if (trimmedToken.length < 10) {
+        console.warn('⚠️ Redis token appears to be invalid (too short)');
+        return null;
+      }
+      
+      try {
+        console.log('🔗 Connecting to Upstash Redis (REST API)...', { 
+          url: redisUrl, 
+          hasToken: !!trimmedToken,
+          tokenLength: trimmedToken.length 
+        });
+        
         // Dynamic import to avoid bundling issues
         const { Redis } = await import('@upstash/redis');
         redis = new Redis({
-          url: redisUrl,
-          token: redisToken,
+          url: redisUrl.trim(),
+          token: trimmedToken,
         });
-        console.log('✅ Redis connection initialized');
+        
+        // Test connection with a ping
+        await redis.ping();
+        console.log('✅ Upstash Redis connection initialized and tested');
         return redis;
-      } else {
-        console.warn('⚠️ Redis env vars not found:', { 
-          hasUrl: !!redisUrl, 
-          hasToken: !!redisToken,
-          envKeys: Object.keys(process.env).filter(k => k.includes('KV') || k.includes('REDIS') || k.includes('UPSTASH'))
-        });
-      }
-      
-      // Fallback: Try Vercel KV (legacy)
-      if (process.env.KV_REST_API_URL && !redis) {
-        console.log('🔄 Trying legacy Vercel KV...');
-        const kvModule = await import('@vercel/kv');
-        redis = kvModule.default || kvModule.kv || kvModule;
-        return redis;
+      } catch (error: any) {
+        console.error('❌ Upstash Redis connection failed:', error.message || error);
+        if (error.message?.includes('token') || error.message?.includes('auth')) {
+          console.error('💡 Authentication error - check your KV_REST_API_TOKEN in .env.local');
+          console.error('💡 Make sure the token is correct and not expired');
+        }
+        return null;
       }
     }
   } catch (error) {
@@ -66,16 +133,38 @@ export async function saveCardKV(card: Card): Promise<void> {
   if (redisClient) {
     try {
       console.log(`💾 Saving card ${card.id} to Redis...`);
-      // Save to Redis with individual key for fast lookup
+      
+      // Strategy 1: Save to individual key for fast lookup
       await redisClient.set(`${CARD_PREFIX}${card.id}`, JSON.stringify(card));
-      // Also add to list for getAllCards
-      const allCards = await getAllCardsKV();
-      const exists = allCards.find(c => c.id === card.id);
-      if (!exists) {
-        allCards.push(card);
-        await redisClient.set(CARDS_KEY, JSON.stringify(allCards));
+      console.log(`✅ Card ${card.id} saved to individual key`);
+      
+      // Strategy 2: Also save to list for getAllCards
+      try {
+        const allCardsData = await redisClient.get(CARDS_KEY);
+        let allCards: Card[] = [];
+        
+        if (allCardsData) {
+          allCards = typeof allCardsData === 'string' ? JSON.parse(allCardsData) : allCardsData;
+          if (!Array.isArray(allCards)) {
+            allCards = [];
+          }
+        }
+        
+        // Check if card already exists in list
+        const exists = allCards.find(c => c?.id === card.id);
+        if (!exists) {
+          allCards.push(card);
+          await redisClient.set(CARDS_KEY, JSON.stringify(allCards));
+          console.log(`✅ Card ${card.id} added to list`);
+        } else {
+          console.log(`ℹ️ Card ${card.id} already in list, skipping`);
+        }
+      } catch (listError) {
+        console.warn(`⚠️ Error updating list for card ${card.id}:`, listError);
+        // Individual key save succeeded, so continue
       }
-      console.log(`✅ Card ${card.id} saved to Redis`);
+      
+      console.log(`✅ Card ${card.id} fully saved to Redis`);
     } catch (error) {
       console.error('❌ Error saving card to Redis:', error);
       // Fallback to in-memory on error
@@ -136,33 +225,59 @@ export async function getCardByIdKV(id: string): Promise<Card | null> {
   if (redisClient) {
     try {
       console.log(`🔍 Fetching card ${id} from Redis...`);
-      const data = await redisClient.get(`${CARD_PREFIX}${id}`);
-      if (!data) {
-        // If not found by key, check list (for backwards compatibility)
-        console.log(`⚠️ Card ${id} not found by key, checking list...`);
-        const allCards = await getAllCardsKV();
-        const card = allCards.find(c => c.id === id);
+      
+      // Strategy 1: Try individual key first (fastest)
+      let data = await redisClient.get(`${CARD_PREFIX}${id}`);
+      
+      if (data) {
+        const card = typeof data === 'string' ? JSON.parse(data) : data;
+        console.log(`✅ Card ${id} found by individual key`);
+        return {
+          ...card,
+          createdAt: card.createdAt ? new Date(card.createdAt) : new Date(),
+        };
+      }
+      
+      // Strategy 2: Fallback to searching the list (for cards saved before individual keys were implemented)
+      console.log(`⚠️ Card ${id} not found by key, searching list...`);
+      const allCardsData = await redisClient.get(CARDS_KEY);
+      
+      if (allCardsData) {
+        const allCards = typeof allCardsData === 'string' ? JSON.parse(allCardsData) : allCardsData;
+        const card = Array.isArray(allCards) ? allCards.find((c: any) => c?.id === id) : null;
+        
         if (card) {
           console.log(`✅ Card ${id} found in list`);
-        } else {
-          console.log(`❌ Card ${id} not found in Redis`);
+          // Save to individual key for faster future lookups
+          try {
+            await redisClient.set(`${CARD_PREFIX}${id}`, JSON.stringify(card));
+            console.log(`💾 Card ${id} cached to individual key`);
+          } catch (cacheError) {
+            console.warn(`⚠️ Failed to cache card ${id} to individual key:`, cacheError);
+          }
+          
+          return {
+            ...card,
+            createdAt: card.createdAt ? new Date(card.createdAt) : new Date(),
+          };
         }
-        return card || null;
       }
-      const card = typeof data === 'string' ? JSON.parse(data) : data;
-      console.log(`✅ Card ${id} found in Redis`);
-      return {
-        ...card,
-        createdAt: new Date(card.createdAt),
-      };
+      
+      console.log(`❌ Card ${id} not found in Redis (checked both key and list)`);
+      return null;
+      
     } catch (error) {
       console.error(`❌ Error fetching card ${id} from Redis:`, error);
       // Fallback to in-memory
       const card = fallbackStore.find((card) => card.id === id);
-      return card ? {
-        ...card,
-        createdAt: new Date(card.createdAt),
-      } : null;
+      if (card) {
+        console.log(`📝 Card ${id} found in in-memory fallback`);
+        return {
+          ...card,
+          createdAt: new Date(card.createdAt),
+        };
+      }
+      return null;
     }
   } else {
     console.warn(`📝 Redis not available, checking in-memory for card ${id}`);
@@ -175,33 +290,5 @@ export async function getCardByIdKV(id: string): Promise<Card | null> {
   }
 }
 
-/**
- * Delete a card by ID
- */
-export async function deleteCardKV(id: string): Promise<boolean> {
-  const redisClient = await initRedis();
-  
-  if (redisClient) {
-    try {
-      await redisClient.del(`${CARD_PREFIX}${id}`);
-      // Also remove from list
-      const allCards = await getAllCardsKV();
-      const filtered = allCards.filter(c => c.id !== id);
-      await redisClient.set(CARDS_KEY, JSON.stringify(filtered));
-      return true;
-    } catch (error) {
-      console.error('❌ Error deleting card from Redis:', error);
-      // Fallback to in-memory
-      const index = fallbackStore.findIndex((card) => card.id === id);
-      if (index === -1) return false;
-      fallbackStore.splice(index, 1);
-      return true;
-    }
-  } else {
-    // Fallback to in-memory
-    const index = fallbackStore.findIndex((card) => card.id === id);
-    if (index === -1) return false;
-    fallbackStore.splice(index, 1);
-    return true;
-  }
-}
+// Note: deleteCardKV is not currently used (deletion only works via localStorage)
+// Can be added later if server-side deletion API is needed

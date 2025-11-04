@@ -50,17 +50,20 @@ test.describe('My Cards Page', () => {
     await page.getByLabel(/Email/i).fill('test@example.com');
     await page.getByLabel(/Phone/i).fill('1234567890');
     await page.getByRole('button', { name: /Create Card/i }).click();
-    await expect(page.getByText(/Your Card is Ready!/i)).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText(/Your Card is Ready!/i).first()).toBeVisible({ timeout: 10000 });
     
     // Go to My Cards
     await page.goto('/my-cards');
     
-    // Click view button
-    const viewButton = page.getByRole('link', { name: /View/i }).first();
-    await viewButton.click();
+    // Click view button - it opens in a new tab
+    const [newPage] = await Promise.all([
+      page.context().waitForEvent('page', { timeout: 5000 }),
+      page.getByRole('link', { name: /View/i }).first().click(),
+    ]);
     
-    // Should navigate to card page
-    await expect(page).toHaveURL(/\/card\/[a-zA-Z0-9_-]+/);
+    // Should navigate to card page in the new tab
+    await expect(newPage).toHaveURL(/\/card\/[a-zA-Z0-9_-]+/);
+    await newPage.close();
   });
 
   test('should have My Cards link on homepage', async ({ page }) => {
