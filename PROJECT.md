@@ -177,7 +177,7 @@ digital-card-app/
 - [x] Design 3 business card styles
   - Style 1: Modern minimalist (white background, purple header)
   - Style 2: Professional corporate (structured layout with icons)
-  - Style 3: Creative gradient (purple gradient with glass effect)
+  - Style 3: Creative linear (purple linear with glass effect)
 - [x] Design 3 bank card styles
   - Style 1: Classic bank card (dark theme, card-like)
   - Style 2: Modern glass morphism (frosted glass effect)

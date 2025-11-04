@@ -9,12 +9,69 @@ import Link from 'next/link';
 
 export default function MyCardsPage() {
   const [cards, setCards] = useState<Card[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   useEffect(() => {
-    // Load cards from localStorage
-    const savedCards = getAllCards();
-    setCards(savedCards);
+    async function fetchCards() {
+      try {
+        setLoading(true);
+        setError(null);
+
+        // Fetch cards from database (Redis) via API
+        const response = await fetch('/api/cards');
+        
+        if (response.ok) {
+          const data = await response.json();
+          const dbCards: Card[] = data.cards || [];
+          
+          // Convert createdAt strings to Date objects
+          const formattedCards = dbCards.map((card: any) => ({
+            ...card,
+            createdAt: new Date(card.createdAt),
+          }));
+
+          // Merge with localStorage cards (in case some are only local)
+          const localCards = getAllCards();
+          
+          // Combine and deduplicate by ID (prefer database cards)
+          const cardMap = new Map<string, Card>();
+          
+          // Add local cards first
+          localCards.forEach(card => {
+            cardMap.set(card.id, card);
+          });
+          
+          // Overwrite with database cards (they take priority)
+          formattedCards.forEach(card => {
+            cardMap.set(card.id, card);
+          });
+
+          const allCards = Array.from(cardMap.values());
+          
+          // Sort by creation date (newest first)
+          allCards.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+          
+          setCards(allCards);
+        } else {
+          // If API fails, fall back to localStorage
+          console.warn('Failed to fetch cards from database, using localStorage');
+          const localCards = getAllCards();
+          setCards(localCards);
+        }
+      } catch (err) {
+        console.error('Error fetching cards:', err);
+        // Fall back to localStorage on error
+        const localCards = getAllCards();
+        setCards(localCards);
+        setError('Unable to load cards from database. Showing local cards only.');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchCards();
   }, []);
 
   const handleCopyLink = async (cardId: string) => {
@@ -64,8 +121,23 @@ export default function MyCardsPage() {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-linear-to-br from-zinc-50 to-white dark:from-zinc-900 dark:to-black py-12 px-4">
+        <main className="max-w-6xl mx-auto">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mb-4"></div>
+              <p className="text-zinc-600 dark:text-zinc-400">Loading your cards from database...</p>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-zinc-50 to-white dark:from-zinc-900 dark:to-black py-12 px-4">
+    <div className="min-h-screen bg-linear-to-br from-zinc-50 to-white dark:from-zinc-900 dark:to-black py-12 px-4">
       <main className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -84,6 +156,11 @@ export default function MyCardsPage() {
           <p className="text-zinc-600 dark:text-zinc-400">
             Manage and access all your created digital cards
           </p>
+          {error && (
+            <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+              <p className="text-sm text-yellow-800 dark:text-yellow-200">{error}</p>
+            </div>
+          )}
         </div>
 
         {cards.length === 0 ? (
@@ -128,7 +205,9 @@ export default function MyCardsPage() {
                             {getCardTypeLabel(card.type)} Card
                           </p>
                           <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                            Created {new Date(card.createdAt).toLocaleDateString()}
+                            Created {card.createdAt instanceof Date 
+                              ? card.createdAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                              : new Date(card.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                           </p>
                         </div>
                       </div>

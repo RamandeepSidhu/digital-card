@@ -8,7 +8,7 @@ export default function StyleOne({ card }: StyleOneProps) {
   const { data } = card;
   
   return (
-    <div className="w-full max-w-md mx-auto bg-gradient-to-br from-zinc-800 to-zinc-900 rounded-xl shadow-2xl overflow-hidden border border-zinc-700">
+    <div className="w-full max-w-md mx-auto bg-linear-to-br from-zinc-800 to-zinc-900 rounded-xl shadow-2xl overflow-hidden border border-zinc-700">
       <div className="p-6 bg-zinc-900/50 border-b border-zinc-700">
         <div className="flex items-center justify-between mb-4">
           <div className="text-white">

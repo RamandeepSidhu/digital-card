@@ -10,7 +10,7 @@ export default function StyleTwo({ card }: StyleTwoProps) {
   return (
     <div className="w-full max-w-md mx-auto rounded-2xl overflow-hidden shadow-2xl" 
          style={{
-           background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%)',
+           background: 'linear-linear(135deg, rgba(168, 85, 247, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%)',
            backdropFilter: 'blur(20px)',
            border: '1px solid rgba(168, 85, 247, 0.2)',
          }}>

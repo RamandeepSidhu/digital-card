@@ -36,7 +36,8 @@ export async function initRedis() {
               return value;
             },
             set: async (key: string, value: string) => {
-              return await client.set(key, value);
+              const result = await client.set(key, value);
+              return result === 'OK' ? result : 'OK'; // Normalize return value
             },
             del: async (key: string) => {
               return await client.del(key);

@@ -74,7 +74,7 @@ export default function CreateBankCardPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-zinc-50 to-white dark:from-zinc-900 dark:to-black">
+    <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-zinc-50 to-white dark:from-zinc-900 dark:to-black">
       <main className="w-full max-w-4xl px-4 sm:px-6 lg:px-8 py-12">
         <div className="mb-8">
           <a

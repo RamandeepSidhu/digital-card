@@ -81,7 +81,7 @@ export default function CardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-zinc-50 to-white dark:from-zinc-900 dark:to-black flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-zinc-50 to-white dark:from-zinc-900 dark:to-black flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mb-4"></div>
           <p className="text-zinc-600 dark:text-zinc-400">Loading card...</p>
@@ -92,7 +92,7 @@ export default function CardPage() {
 
   if (error || !card) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-zinc-50 to-white dark:from-zinc-900 dark:to-black flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-zinc-50 to-white dark:from-zinc-900 dark:to-black flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-4xl font-bold text-zinc-900 dark:text-zinc-100 mb-4">
             Card Not Found
@@ -120,13 +120,14 @@ export default function CardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-zinc-50 to-white dark:from-zinc-900 dark:to-black py-12 px-4">
+    <div className="min-h-screen bg-linear-to-br from-zinc-50 via-purple-50/30 to-white dark:from-zinc-900 dark:via-purple-900/10 dark:to-black py-12 px-4">
       <main className="max-w-6xl mx-auto">
+        {/* Header Section */}
         <div className="mb-8 text-center">
-          <h1 className="text-4xl font-bold text-zinc-900 dark:text-zinc-100 mb-2">
+          <h1 className="text-4xl sm:text-5xl font-bold text-zinc-900 dark:text-zinc-100 mb-2">
             Digital Card
           </h1>
-          <p className="text-zinc-600 dark:text-zinc-400">
+          <p className="text-lg text-zinc-600 dark:text-zinc-400">
             Scan the QR code or save the contact information
           </p>
         </div>
@@ -138,10 +139,15 @@ export default function CardPage() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* Card Display */}
           <div className="flex items-center justify-center">
-            <CardPreview card={card} />
+            <div className="w-full max-w-md">
+              <div className="bg-white dark:bg-zinc-800 rounded-2xl shadow-xl p-6">
+                <CardPreview card={card} />
+              </div>
+            </div>
           </div>
 
           {/* QR Code and Actions */}
@@ -151,6 +157,28 @@ export default function CardPage() {
               baseUrl={typeof window !== 'undefined' ? window.location.origin : undefined} 
             />
           </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex flex-wrap justify-center gap-4">
+          <a
+            href="/my-cards"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors font-medium shadow-md"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+            My Cards
+          </a>
+          <a
+            href="/"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors font-medium shadow-md"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+            Create New Card
+          </a>
         </div>
       </main>
     </div>
