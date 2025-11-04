@@ -1,0 +1,43 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - link "DC Digital Cards" [ref=e5]:
+      - /url: /
+      - generic [ref=e6]: DC
+      - generic [ref=e7]: Digital Cards
+    - generic [ref=e9]:
+      - heading "Create your account" [level=1] [ref=e10]
+      - paragraph [ref=e11]: Start building professional digital cards today
+      - generic [ref=e12]:
+        - generic [ref=e13]:
+          - generic [ref=e14]: Full Name
+          - textbox "Full Name" [active] [ref=e15]:
+            - /placeholder: John Doe
+        - generic [ref=e16]:
+          - generic [ref=e17]: Email
+          - textbox "Email" [ref=e18]:
+            - /placeholder: you@example.com
+            - text: test@example.com
+        - generic [ref=e19]:
+          - generic [ref=e20]: Password
+          - textbox "Password" [ref=e21]:
+            - /placeholder: At least 6 characters
+            - text: password123
+        - generic [ref=e22]:
+          - generic [ref=e23]: Confirm Password
+          - textbox "Confirm Password" [ref=e24]:
+            - /placeholder: Confirm your password
+            - text: differentpassword
+        - button "Sign Up" [ref=e25]
+      - generic [ref=e26]:
+        - text: Already have an account?
+        - link "Sign in" [ref=e27]:
+          - /url: /auth/signin
+      - link "← Back to Home" [ref=e29]:
+        - /url: /
+  - button "Open Next.js Dev Tools" [ref=e35] [cursor=pointer]:
+    - img [ref=e36]
+  - alert [ref=e41]
+```

@@ -1,0 +1,211 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e6] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e7]:
+      - img [ref=e8]
+    - generic [ref=e13]:
+      - button "Open issues overlay" [ref=e14]:
+        - generic [ref=e15]:
+          - generic [ref=e16]: "1"
+          - generic [ref=e17]: "2"
+        - generic [ref=e18]:
+          - text: Issue
+          - generic [ref=e19]: s
+      - button "Collapse issues badge" [ref=e20]:
+        - img [ref=e21]
+  - alert [ref=e23]
+  - generic [ref=e24]:
+    - banner [ref=e25]:
+      - generic [ref=e27]:
+        - generic [ref=e28]:
+          - generic [ref=e29]: DC
+          - heading "My Cards" [level=1] [ref=e30]
+        - generic [ref=e31]:
+          - generic [ref=e32]:
+            - generic [ref=e33]: T
+            - generic [ref=e34]: Test User
+          - button "Sign Out" [ref=e35]
+    - main [ref=e36]:
+      - generic [ref=e37]:
+        - heading "Your Cards" [level=2] [ref=e38]
+        - generic [ref=e39]:
+          - link "👤 Jane Smith ✉ Email jane@example.com 📱 Phone 9876543210 👤 Personal Nov 4" [ref=e40]:
+            - /url: /card/wFXm0Am966vCHXd7hiW4P
+            - generic [ref=e41]:
+              - generic [ref=e43]:
+                - generic [ref=e45]:
+                  - generic [ref=e47]: 👤
+                  - heading "Jane Smith" [level=2] [ref=e48]
+                - generic [ref=e50]:
+                  - generic [ref=e51]:
+                    - generic [ref=e52]: ✉
+                    - paragraph [ref=e53]: Email
+                    - link "jane@example.com" [ref=e54]:
+                      - /url: mailto:jane@example.com
+                  - generic [ref=e55]:
+                    - generic [ref=e56]: 📱
+                    - paragraph [ref=e57]: Phone
+                    - link "9876543210" [ref=e58]:
+                      - /url: tel:9876543210
+              - generic [ref=e60]:
+                - generic [ref=e61]: 👤 Personal
+                - generic [ref=e62]:
+                  - img [ref=e63]
+                  - text: Nov 4
+          - link "Bank Name First National Bank 🏦 Account Holder Jane Smith Account Number 1234567890 UPI ID jane@paytm 🏦 Bank Nov 4" [ref=e65]:
+            - /url: /card/dCe-lONSBiF93lG1XUfgl
+            - generic [ref=e66]:
+              - generic [ref=e68]:
+                - generic [ref=e70]:
+                  - generic [ref=e71]:
+                    - paragraph [ref=e72]: Bank Name
+                    - paragraph [ref=e73]: First National Bank
+                  - generic [ref=e75]: 🏦
+                - generic [ref=e76]:
+                  - generic [ref=e77]:
+                    - paragraph [ref=e78]: Account Holder
+                    - paragraph [ref=e79]: Jane Smith
+                  - generic [ref=e80]:
+                    - paragraph [ref=e81]: Account Number
+                    - paragraph [ref=e82]: "1234567890"
+                  - generic [ref=e83]:
+                    - paragraph [ref=e84]: UPI ID
+                    - paragraph [ref=e85]: jane@paytm
+              - generic [ref=e87]:
+                - generic [ref=e88]: 🏦 Bank
+                - generic [ref=e89]:
+                  - img [ref=e90]
+                  - text: Nov 4
+          - link "👤 Jane Smith ✉ Email jane@example.com 📱 Phone 9876543210 👤 Personal Nov 4" [ref=e92]:
+            - /url: /card/Atyea7GzwL0wq0NfXAZpW
+            - generic [ref=e93]:
+              - generic [ref=e95]:
+                - generic [ref=e97]:
+                  - generic [ref=e99]: 👤
+                  - heading "Jane Smith" [level=2] [ref=e100]
+                - generic [ref=e102]:
+                  - generic [ref=e103]:
+                    - generic [ref=e104]: ✉
+                    - paragraph [ref=e105]: Email
+                    - link "jane@example.com" [ref=e106]:
+                      - /url: mailto:jane@example.com
+                  - generic [ref=e107]:
+                    - generic [ref=e108]: 📱
+                    - paragraph [ref=e109]: Phone
+                    - link "9876543210" [ref=e110]:
+                      - /url: tel:9876543210
+              - generic [ref=e112]:
+                - generic [ref=e113]: 👤 Personal
+                - generic [ref=e114]:
+                  - img [ref=e115]
+                  - text: Nov 4
+          - link "Bank Name First National Bank 🏦 Account Holder Jane Smith Account Number 1234567890 UPI ID jane@paytm 🏦 Bank Nov 4" [ref=e117]:
+            - /url: /card/uRKZUEnJT0rjULfXArYy0
+            - generic [ref=e118]:
+              - generic [ref=e120]:
+                - generic [ref=e122]:
+                  - generic [ref=e123]:
+                    - paragraph [ref=e124]: Bank Name
+                    - paragraph [ref=e125]: First National Bank
+                  - generic [ref=e127]: 🏦
+                - generic [ref=e128]:
+                  - generic [ref=e129]:
+                    - paragraph [ref=e130]: Account Holder
+                    - paragraph [ref=e131]: Jane Smith
+                  - generic [ref=e132]:
+                    - paragraph [ref=e133]: Account Number
+                    - paragraph [ref=e134]: "1234567890"
+                  - generic [ref=e135]:
+                    - paragraph [ref=e136]: UPI ID
+                    - paragraph [ref=e137]: jane@paytm
+              - generic [ref=e139]:
+                - generic [ref=e140]: 🏦 Bank
+                - generic [ref=e141]:
+                  - img [ref=e142]
+                  - text: Nov 4
+          - link "Bank Name First National Bank 🏦 Account Holder Jane Smith Account Number 1234567890 UPI ID jane@paytm 🏦 Bank Nov 4" [ref=e144]:
+            - /url: /card/VK5RIEHk42u1oib60Djh0
+            - generic [ref=e145]:
+              - generic [ref=e147]:
+                - generic [ref=e149]:
+                  - generic [ref=e150]:
+                    - paragraph [ref=e151]: Bank Name
+                    - paragraph [ref=e152]: First National Bank
+                  - generic [ref=e154]: 🏦
+                - generic [ref=e155]:
+                  - generic [ref=e156]:
+                    - paragraph [ref=e157]: Account Holder
+                    - paragraph [ref=e158]: Jane Smith
+                  - generic [ref=e159]:
+                    - paragraph [ref=e160]: Account Number
+                    - paragraph [ref=e161]: "1234567890"
+                  - generic [ref=e162]:
+                    - paragraph [ref=e163]: UPI ID
+                    - paragraph [ref=e164]: jane@paytm
+              - generic [ref=e166]:
+                - generic [ref=e167]: 🏦 Bank
+                - generic [ref=e168]:
+                  - img [ref=e169]
+                  - text: Nov 4
+          - link "👤 Jane Smith ✉ Email jane@example.com 📱 Phone 9876543210 👤 Personal Nov 4" [ref=e171]:
+            - /url: /card/B06pZkssXDCUZu1bnMxNX
+            - generic [ref=e172]:
+              - generic [ref=e174]:
+                - generic [ref=e176]:
+                  - generic [ref=e178]: 👤
+                  - heading "Jane Smith" [level=2] [ref=e179]
+                - generic [ref=e181]:
+                  - generic [ref=e182]:
+                    - generic [ref=e183]: ✉
+                    - paragraph [ref=e184]: Email
+                    - link "jane@example.com" [ref=e185]:
+                      - /url: mailto:jane@example.com
+                  - generic [ref=e186]:
+                    - generic [ref=e187]: 📱
+                    - paragraph [ref=e188]: Phone
+                    - link "9876543210" [ref=e189]:
+                      - /url: tel:9876543210
+              - generic [ref=e191]:
+                - generic [ref=e192]: 👤 Personal
+                - generic [ref=e193]:
+                  - img [ref=e194]
+                  - text: Nov 4
+        - link "View All 13 Cards" [ref=e197]:
+          - /url: /my-cards
+          - generic [ref=e198]: View All 13 Cards
+          - img [ref=e199]
+      - generic [ref=e201]:
+        - generic [ref=e202]:
+          - heading "Create New Card" [level=2] [ref=e203]
+          - paragraph [ref=e204]: Choose a card type to get started
+        - generic [ref=e206]:
+          - link "💼 Business Card Professional contact card with company details, social links, and more Create Now" [ref=e207]:
+            - /url: /create/business
+            - generic [ref=e211]:
+              - generic [ref=e212]: 💼
+              - heading "Business Card" [level=3] [ref=e213]
+              - paragraph [ref=e214]: Professional contact card with company details, social links, and more
+              - generic [ref=e215]:
+                - generic [ref=e216]: Create Now
+                - img [ref=e217]
+          - link "👤 Personal Card Personal contact card with social media links and profile information Create Now" [ref=e219]:
+            - /url: /create/personal
+            - generic [ref=e223]:
+              - generic [ref=e224]: 👤
+              - heading "Personal Card" [level=3] [ref=e225]
+              - paragraph [ref=e226]: Personal contact card with social media links and profile information
+              - generic [ref=e227]:
+                - generic [ref=e228]: Create Now
+                - img [ref=e229]
+          - link "🏦 Bank Card Secure payment information card with account details and UPI ID Create Now" [ref=e231]:
+            - /url: /create/bank
+            - generic [ref=e235]:
+              - generic [ref=e236]: 🏦
+              - heading "Bank Card" [level=3] [ref=e237]
+              - paragraph [ref=e238]: Secure payment information card with account details and UPI ID
+              - generic [ref=e239]:
+                - generic [ref=e240]: Create Now
+                - img [ref=e241]
+```
