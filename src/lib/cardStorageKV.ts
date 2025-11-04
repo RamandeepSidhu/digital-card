@@ -16,7 +16,7 @@ export async function initRedis() {
     // Only try to import if we're on the server and Redis is configured
     if (typeof window === 'undefined') {
       // Check for Redis Cloud connection string (redis:// format)
-      const redisConnectionString = process.env.REDIS_URL || process.env.DIGITAL_CARD_REDIS_URL;
+      const redisConnectionString = process.env.REDIS_URL;
       
       if (redisConnectionString && redisConnectionString.startsWith('redis://')) {
         try {
@@ -56,10 +56,9 @@ export async function initRedis() {
         }
       }
       
-      // Try Upstash Redis (REST API - support multiple env var naming conventions)
-      // Priority: Check KV_REST_API_* first (Vercel's naming), then UPSTASH_*
-      const redisUrl = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
-      const redisToken = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+      // Try Upstash Redis (REST API)
+      const redisUrl = process.env.KV_REST_API_URL;
+      const redisToken = process.env.KV_REST_API_TOKEN;
       
       // Validate that both URL and token are present and not empty
       if (!redisUrl || redisUrl.trim() === '') {

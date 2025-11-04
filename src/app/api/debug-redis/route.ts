@@ -10,11 +10,9 @@ export async function GET() {
     timestamp: new Date().toISOString(),
     serverSide: typeof window === 'undefined',
     envVars: {
-      REDIS_URL: process.env.REDIS_URL || process.env.DIGITAL_CARD_REDIS_URL ? '✅ Set' : '❌ Missing',
+      REDIS_URL: process.env.REDIS_URL ? '✅ Set' : '❌ Missing',
       KV_REST_API_URL: process.env.KV_REST_API_URL ? '✅ Set' : '❌ Missing',
       KV_REST_API_TOKEN: process.env.KV_REST_API_TOKEN ? '✅ Set' : '❌ Missing',
-      UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL ? '✅ Set' : '❌ Missing',
-      UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN ? '✅ Set' : '❌ Missing',
     },
   };
 
@@ -22,7 +20,7 @@ export async function GET() {
     // Try to initialize Redis
     if (typeof window === 'undefined') {
       // Check for Redis Cloud connection string first
-      const redisConnectionString = process.env.REDIS_URL || process.env.DIGITAL_CARD_REDIS_URL;
+      const redisConnectionString = process.env.REDIS_URL;
       
       if (redisConnectionString && redisConnectionString.startsWith('redis://')) {
         debug.redisStatus = 'Attempting Redis Cloud connection...';
@@ -53,8 +51,8 @@ export async function GET() {
         }
       } else {
         // Try Upstash Redis (REST API)
-        const redisUrl = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
-        const redisToken = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+        const redisUrl = process.env.KV_REST_API_URL;
+        const redisToken = process.env.KV_REST_API_TOKEN;
 
         if (redisUrl && redisToken) {
           debug.redisStatus = 'Attempting Upstash Redis connection...';

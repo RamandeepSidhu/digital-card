@@ -30,7 +30,7 @@
 
 If you have a Redis Cloud connection string:
 1. Get your connection string (format: `redis://default:password@host:port`)
-2. Use environment variable: `REDIS_URL` or `DIGITAL_CARD_REDIS_URL`
+2. Use environment variable: `REDIS_URL`
 
 #### Step 2: Create `.env.local` File
 
