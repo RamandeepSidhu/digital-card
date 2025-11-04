@@ -8,134 +8,57 @@ export default function StyleOne({ card }: StyleOneProps) {
   const { data } = card;
   
   return (
-    <div className="w-full max-w-md mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-zinc-200">
-      {/* Large Banner Image Section */}
-      {data.image ? (
-        <div className="relative h-56 bg-linear-to-br from-blue-400 to-cyan-400 overflow-hidden">
-          <img 
-            src={data.image} 
-            alt={data.name}
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/30 to-transparent"></div>
-          <div className="absolute bottom-6 left-6 right-6 text-white">
-            <h2 className="text-3xl font-bold mb-2 drop-shadow-lg">{data.name}</h2>
-            {data.birthday && (
-              <div className="flex items-center gap-2 text-white/90">
-                <span className="text-xl">🎂</span>
-                <span>{data.birthday}</span>
-              </div>
-            )}
-          </div>
+    <div className="w-full max-w-md mx-auto bg-white rounded-2xl shadow-lg overflow-hidden">
+      {/* Blue-Purple Gradient Header */}
+      <div className="relative h-48 bg-linear-to-br from-blue-500 via-purple-500 to-pgradient600 flex flex-col items-center justify-center pt-8 pb-6">
+        {/* Avatar Circle */}
+        <div className="w-24 h-24 bg-blue-200 rounded-full flex items-center justify-center mb-4 shadow-lg">
+          {data.image ? (
+            <img              src={data.image} 
+              alt={data.name}
+              className="gradient w-full h-full rounded-full object-cover"
+            />
+          ) : (
+            <svg className="w-16 h-16 text-purple-600" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            </svg>
+          )}
         </div>
-      ) : (
-        <div className="h-56 bg-linear-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
-          <div className="text-center text-white">
-            <div className="w-32 h-32 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-6xl">👤</span>
-            </div>
-            <h2 className="text-3xl font-bold mb-2">{data.name}</h2>
-            {data.birthday && (
-              <div className="flex items-center justify-center gap-2">
-                <span className="text-xl">🎂</span>
-                <span>{data.birthday}</span>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+        
+        {/* Name */}
+        <h2 className="text-2xl font-bold text-white">{data.name}</h2>
+      </div>
       
-      {/* Contact Details */}
-      <div className="p-6 space-y-4 bg-linear-to-b from-white to-blue-50">
+      {/* Contact Information Boxes */}
+      <div className="p-4 bg-white">
         <div className="grid grid-cols-2 gap-3">
           {data.email && (
-            <div className="p-4 bg-blue-50 rounded-xl hover:bg-blue-100 transition-colors">
-              <div className="text-blue-600 text-2xl mb-2">✉</div>
-              <p className="text-xs text-zinc-500 mb-1">Email</p>
-              <a href={`mailto:${data.email}`} className="text-zinc-700 hover:text-blue-600 font-semibold text-sm truncate block">
+            <div className="bg-white border border-gray-200 rounded-lg p-3 hover:shadow-md transition-shadow">
+              <div className="flex items-center gap-2 mb-2">
+                <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                <span className="text-xs font-mgradienttext-gray-600">Email</span>
+              </div>
+              <a href={`mailto:${data.email}`} className="text-sm text-gray-800 hover:text-blue-600 wrap-break-word">
                 {data.email}
               </a>
             </div>
           )}
           {data.phone && (
-            <div className="p-4 bg-cyan-50 rounded-xl hover:bg-cyan-100 transition-colors">
-              <div className="text-cyan-600 text-2xl mb-2">📱</div>
-              <p className="text-xs text-zinc-500 mb-1">Phone</p>
-              <a href={`tel:${data.phone}`} className="text-zinc-700 hover:text-cyan-600 font-semibold text-sm">
+            <div className="bg-white border border-gray-200 rounded-lg p-3 hover:shadow-md transition-shadow">
+              <div className="flex items-center gap-2 mb-2">
+                <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg>
+                <span className="text-xs font-medium text-gray-600">Phone</span>
+              </div>
+              <a href={`tel:${data.phone}`} className="text-sm text-gray-800 hover:text-blue-600">
                 {data.phone}
               </a>
             </div>
           )}
-          {data.website && (
-            <div className="p-4 bg-green-50 rounded-xl hover:bg-green-100 transition-colors">
-              <div className="text-green-600 text-2xl mb-2">🌐</div>
-              <p className="text-xs text-zinc-500 mb-1">Website</p>
-              <a href={data.website} target="_blank" rel="noopener noreferrer" className="text-zinc-700 hover:text-green-600 font-semibold text-sm truncate block">
-                {data.website.replace(/^https?:\/\//, '')}
-              </a>
-            </div>
-          )}
-          {data.address && (
-            <div className="p-4 bg-orange-50 rounded-xl">
-              <div className="text-orange-600 text-2xl mb-2">📍</div>
-              <p className="text-xs text-zinc-500 mb-1">Address</p>
-              <p className="text-zinc-700 font-semibold text-sm line-clamp-2">{data.address}</p>
-            </div>
-          )}
         </div>
-        
-        {/* Social Media Section */}
-        {data.socialMedia && (data.socialMedia.instagram || data.socialMedia.twitter || data.socialMedia.facebook || data.socialMedia.linkedin) && (
-          <div className="pt-4 border-t border-zinc-200">
-            <p className="text-sm font-bold text-zinc-700 mb-3">Connect With Me</p>
-            <div className="flex flex-wrap gap-2">
-              {data.socialMedia.instagram && (
-                <a
-                  href={`https://instagram.com/${data.socialMedia.instagram.replace('@', '')}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-4 py-2 bg-linear-to-r from-pink-500 to-purple-500 text-white rounded-full hover:shadow-lg transition-all text-sm font-semibold flex items-center gap-2"
-                >
-                  <span>📷</span>
-                  <span>Instagram</span>
-                </a>
-              )}
-              {data.socialMedia.twitter && (
-                <a
-                  href={`https://twitter.com/${data.socialMedia.twitter.replace('@', '')}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-4 py-2 bg-linear-to-r from-blue-400 to-blue-500 text-white rounded-full hover:shadow-lg transition-all text-sm font-semibold flex items-center gap-2"
-                >
-                  <span>🐦</span>
-                  <span>Twitter</span>
-                </a>
-              )}
-              {data.socialMedia.facebook && (
-                <a
-                  href={`https://facebook.com/${data.socialMedia.facebook}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-4 py-2 bg-linear-to-r from-blue-600 to-blue-700 text-white rounded-full hover:shadow-lg transition-all text-sm font-semibold flex items-center gap-2"
-                >
-                  <span>👥</span>
-                  <span>Facebook</span>
-                </a>
-              )}
-              {data.socialMedia.linkedin && (
-                <a
-                  href={data.socialMedia.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-4 py-2 bg-linear-to-r from-indigo-600 to-indigo-700 text-white rounded-full hover:shadow-lg transition-all text-sm font-semibold flex items-center gap-2"
-                >
-                  <span>💼</span>
-                  <span>LinkedIn</span>
-                </a>
-              )}
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

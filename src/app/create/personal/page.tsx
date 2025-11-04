@@ -84,7 +84,7 @@ export default function CreatePersonalCardPage() {
       <main className="w-full max-w-4xl px-4 sm:px-6 lg:px-8 py-12">
         <div className="mb-8">
           <a
-            href="/"
+            href="/dashboard"
             className="inline-flex items-center text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors mb-6"
           >
             <svg

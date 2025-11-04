@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -13,16 +13,34 @@ export default function SignInPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  // Check if user was just registered
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('registered') === 'true') {
+      setError('');
+    }
+  }, []);
+
   const handleEmailSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
     try {
-      const result = await signIn('credentials', { email, password, redirect: false });
-      if (result?.error) setError('Invalid email or password');
-      else router.push('/dashboard');
-    } catch {
+      // Normalize email to lowercase
+      const normalizedEmail = email.toLowerCase().trim();
+      const result = await signIn('credentials', { 
+        email: normalizedEmail, 
+        password, 
+        redirect: false 
+      });
+      
+      if (result?.error) {
+        setError('Invalid email or password. Please check your credentials.');
+      } else {
+        router.push('/dashboard');
+      }
+    } catch (err) {
       setError('Something went wrong, please try again.');
     } finally {
       setLoading(false);
@@ -72,7 +90,7 @@ export default function SignInPage() {
 
           <button
             onClick={handleGoogleSignIn}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-zinc-200 rounded-lg hover:bg-zinc-50 transition-all"
+            className="cursor-pointer w-full flex items-center justify-center gap-3 px-4 py-3 border border-zinc-200 rounded-lg hover:bg-zinc-50 transition-all"
           >
             <svg viewBox="0 0 24 24" className="w-5 h-5">
               <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
@@ -122,7 +140,7 @@ export default function SignInPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full px-4 py-3 bg-linear-to-r from-purple-600 to-indigo-600 text-white rounded-lg font-semibold shadow hover:opacity-90 transition-opacity"
+              className="cursor-pointer w-full px-4 py-3 bg-linear-to-r from-purple-600 to-indigo-600 text-white rounded-lg font-semibold shadow hover:opacity-90 transition-opacity disabled:cursor-not-allowed"
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
@@ -136,7 +154,7 @@ export default function SignInPage() {
           </div>
 
           <div className="text-center mt-4">
-            <Link href="/" className="text-sm text-zinc-500 hover:text-zinc-700">
+            <Link href="/dashboard" className="text-sm text-zinc-500 hover:text-zinc-700">
               ← Back to Home
             </Link>
           </div>

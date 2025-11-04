@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { initRedis } from '@/lib/cardStorageKV';
 import bcrypt from 'bcryptjs';
 import { nanoid } from 'nanoid';
+import { getUserByEmail, saveUser } from '@/lib/userStorage';
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,9 +14,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Normalize email to lowercase
+    const normalizedEmail = email.toLowerCase().trim();
+
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    if (!emailRegex.test(normalizedEmail)) {
       return NextResponse.json(
         { error: 'Invalid email format' },
         { status: 400 }
@@ -31,17 +34,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const redis = await initRedis();
-    if (!redis) {
-      return NextResponse.json(
-        { error: 'Database connection failed' },
-        { status: 500 }
-      );
-    }
-
     // Check if user already exists
-    const userKey = `user:email:${email}`;
-    const existingUser = await redis.get(userKey);
+    const existingUser = await getUserByEmail(normalizedEmail);
 
     if (existingUser) {
       return NextResponse.json(
@@ -57,23 +51,14 @@ export async function POST(request: NextRequest) {
     const userId = nanoid();
     const user = {
       id: userId,
-      email,
+      email: normalizedEmail, // Use normalized email
       name,
       password: hashedPassword,
       createdAt: new Date().toISOString(),
     };
 
-    // Save user to Redis
-    try {
-      await redis.set(userKey, JSON.stringify(user));
-      await redis.set(`user:id:${userId}`, JSON.stringify(user));
-    } catch (redisError: any) {
-      console.error('Redis save error:', redisError);
-      return NextResponse.json(
-        { error: 'Failed to save user to database' },
-        { status: 500 }
-      );
-    }
+    // Save user (to Redis if available, otherwise in-memory)
+    await saveUser(user);
 
     return NextResponse.json(
       {

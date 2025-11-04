@@ -1,5 +1,5 @@
 export type CardType = 'business' | 'bank' | 'personal';
-export type BusinessCardStyle = 'style1' | 'style2' | 'style3';
+export type BusinessCardStyle = 'style1' | 'style2' | 'style3' | 'style4' | 'style5' | 'style6';
 export type BankCardStyle = 'style1' | 'style2' | 'style3';
 export type PersonalCardStyle = 'style1' | 'style2' | 'style3';
 
@@ -9,6 +9,7 @@ export interface BusinessCard {
   style: BusinessCardStyle;
   data: {
     name: string;
+    date: any;
     title: string;
     company: string;
     email: string;
@@ -16,7 +17,7 @@ export interface BusinessCard {
     website?: string;
     linkedin?: string;
     address?: string;
-    image?: string; // Base64 encoded image or URL
+    image?: any; // Base64 encoded image or URL
   };
   createdAt: Date;
 }

@@ -50,9 +50,9 @@ export default function StyleTwo({ card }: StyleTwoProps) {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs text-zinc-500 mb-1">Email</p>
-                <a href={`mailto:${data.email}`} className="text-zinc-900 font-semibold hover:text-purple-600 transition-colors truncate block">
+                <span className="text-zinc-900 font-semibold truncate block">
                   {data.email}
-                </a>
+                </span>
               </div>
             </div>
           )}
@@ -63,9 +63,9 @@ export default function StyleTwo({ card }: StyleTwoProps) {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs text-zinc-500 mb-1">Phone</p>
-                <a href={`tel:${data.phone}`} className="text-zinc-900 font-semibold hover:text-blue-600 transition-colors">
+                <span className="text-zinc-900 font-semibold">
                   {data.phone}
-                </a>
+                </span>
               </div>
             </div>
           )}

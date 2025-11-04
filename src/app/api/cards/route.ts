@@ -101,11 +101,18 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// GET /api/cards - Get all cards (for development/testing)
+// GET /api/cards - Get all cards (only real cards with data, no static/example cards)
 export async function GET() {
   try {
     const cards = await getAllCardsServer();
-    return NextResponse.json({ cards }, { status: 200 });
+    // Filter out example/dummy/test/static cards - only return real cards with data
+    const realCards = cards.filter(
+      (card) => 
+        !card.id.startsWith('example-') && 
+        !card.id.startsWith('test-') && 
+        card.data
+    );
+    return NextResponse.json({ cards: realCards }, { status: 200 });
   } catch (error) {
     console.error('Error fetching cards:', error);
     return NextResponse.json(

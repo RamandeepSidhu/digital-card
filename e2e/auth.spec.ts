@@ -10,7 +10,7 @@ test.describe('Authentication', () => {
     await signInLink.click();
     
     await expect(page).toHaveURL(/.*\/auth\/signin/);
-    await expect(page.getByRole('heading', { name: /proceed with an option below/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /welcome back/i })).toBeVisible();
   });
 
   test('should navigate to sign up page', async ({ page }) => {
@@ -18,7 +18,7 @@ test.describe('Authentication', () => {
     await signUpLink.click();
     
     await expect(page).toHaveURL(/.*\/auth\/signup/);
-    await expect(page.getByRole('heading', { name: /create an account/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /create your/i })).toBeVisible();
   });
 
   test('should show sign up form fields', async ({ page }) => {
@@ -85,6 +85,91 @@ test.describe('Authentication', () => {
     
     // Should show error message
     await expect(page.getByText(/passwords do not match/i)).toBeVisible();
+  });
+
+  test('should successfully sign up and login', async ({ page }) => {
+    // Generate unique email for this test
+    const timestamp = Date.now();
+    const testEmail = `test${timestamp}@example.com`;
+    const testPassword = 'testpassword123';
+    const testName = 'Test User';
+
+    // Sign up
+    await page.goto('/auth/signup');
+    
+    await page.getByLabel(/full name/i).fill(testName);
+    await page.getByLabel(/email/i).fill(testEmail);
+    await page.getByLabel(/^password$/i).fill(testPassword);
+    await page.getByLabel(/confirm password/i).fill(testPassword);
+    
+    await page.getByRole('button', { name: /sign up/i }).click();
+    
+    // Should redirect to sign in page
+    await expect(page).toHaveURL(/.*\/auth\/signin/);
+    
+    // Wait a bit for user to be saved
+    await page.waitForTimeout(1000);
+    
+    // Now try to sign in
+    await page.getByLabel(/email/i).fill(testEmail);
+    await page.getByLabel(/password/i).fill(testPassword);
+    
+    await page.getByRole('button', { name: /sign in/i }).click();
+    
+    // Should redirect to dashboard
+    await expect(page).toHaveURL(/.*\/dashboard/);
+    
+    // Should see welcome message
+    await expect(page.getByText(/welcome/i)).toBeVisible();
+  });
+
+  test('should show error for invalid credentials', async ({ page }) => {
+    await page.goto('/auth/signin');
+    
+    await page.getByLabel(/email/i).fill('nonexistent@example.com');
+    await page.getByLabel(/password/i).fill('wrongpassword');
+    
+    await page.getByRole('button', { name: /sign in/i }).click();
+    
+    // Should show error message
+    await expect(page.getByText(/invalid email or password/i)).toBeVisible();
+  });
+
+  test('should prevent duplicate signups', async ({ page }) => {
+    // Generate unique email for this test
+    const timestamp = Date.now();
+    const testEmail = `duplicate${timestamp}@example.com`;
+    const testPassword = 'testpassword123';
+    const testName = 'Test User';
+
+    // First signup
+    await page.goto('/auth/signup');
+    
+    await page.getByLabel(/full name/i).fill(testName);
+    await page.getByLabel(/email/i).fill(testEmail);
+    await page.getByLabel(/^password$/i).fill(testPassword);
+    await page.getByLabel(/confirm password/i).fill(testPassword);
+    
+    await page.getByRole('button', { name: /sign up/i }).click();
+    
+    // Should redirect to sign in
+    await expect(page).toHaveURL(/.*\/auth\/signin/);
+    
+    // Wait for user to be saved
+    await page.waitForTimeout(1000);
+    
+    // Try to sign up again with same email
+    await page.goto('/auth/signup');
+    
+    await page.getByLabel(/full name/i).fill(testName);
+    await page.getByLabel(/email/i).fill(testEmail);
+    await page.getByLabel(/^password$/i).fill(testPassword);
+    await page.getByLabel(/confirm password/i).fill(testPassword);
+    
+    await page.getByRole('button', { name: /sign up/i }).click();
+    
+    // Should show error about existing user
+    await expect(page.getByText(/user with this email already exists/i)).toBeVisible();
   });
 });
 

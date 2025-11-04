@@ -21,33 +21,47 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
+          console.log('❌ Missing email or password');
           return null;
         }
 
-        const redis = await initRedis();
-        if (!redis) {
-          throw new Error('Database connection failed');
-        }
+        try {
+          const { getUserByEmail } = await import('@/lib/userStorage');
+          const email = (credentials.email as string).toLowerCase().trim();
+          console.log(`🔍 Attempting to authenticate user: ${email}`);
+          
+          const user = await getUserByEmail(email);
 
-        const userKey = `user:email:${credentials.email}`;
-        const userData = await redis.get(userKey);
+          if (!user) {
+            console.log(`❌ User not found: ${email}`);
+            return null;
+          }
 
-        if (!userData) {
+          console.log(`✅ User found, checking password...`);
+          
+          // Check if user has a password (OAuth users might not have one)
+          if (!user.password) {
+            console.log(`❌ User has no password (OAuth user?): ${email}`);
+            return null;
+          }
+
+          const isValid = await bcrypt.compare(credentials.password as string, user.password);
+          
+          if (!isValid) {
+            console.log(`❌ Invalid password for: ${email}`);
+            return null;
+          }
+
+          console.log(`✅ Authentication successful for: ${email}`);
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+          };
+        } catch (error) {
+          console.error('❌ Authorization error:', error);
           return null;
         }
-
-        const user = JSON.parse(userData);
-        const isValid = await bcrypt.compare(credentials.password as string, user.password);
-        
-        if (!isValid) {
-          return null;
-        }
-
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-        };
       },
     }),
   ],
@@ -59,15 +73,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       // Handle Google OAuth sign-in
       if (account?.provider === 'google' && user.email) {
         try {
-          const redis = await initRedis();
-          if (!redis) {
-            console.error('Redis connection failed during Google sign-in');
-            return false;
-          }
-
+          const { getUserByEmail, saveUser } = await import('@/lib/userStorage');
+          
           // Check if user exists
-          const userKey = `user:email:${user.email}`;
-          const existingUser = await redis.get(userKey);
+          const existingUser = await getUserByEmail(user.email);
 
           if (!existingUser) {
             // Create new user for Google OAuth
@@ -76,20 +85,19 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               id: userId,
               email: user.email,
               name: user.name || profile?.name || 'User',
+              password: '', // No password for OAuth users
               provider: 'google',
               createdAt: new Date().toISOString(),
             };
 
-            // Save user to Redis
-            await redis.set(userKey, JSON.stringify(newUser));
-            await redis.set(`user:id:${userId}`, JSON.stringify(newUser));
+            // Save user (to Redis if available, otherwise in-memory)
+            await saveUser(newUser);
             
             // Update user object with ID
             user.id = userId;
           } else {
-            // User exists, parse and use their ID
-            const userData = JSON.parse(existingUser);
-            user.id = userData.id;
+            // User exists, use their ID
+            user.id = existingUser.id;
           }
         } catch (error) {
           console.error('Error during Google sign-in:', error);

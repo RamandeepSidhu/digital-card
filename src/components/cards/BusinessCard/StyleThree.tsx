@@ -54,9 +54,9 @@ export default function StyleThree({ card }: StyleThreeProps) {
               <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0">
                 <span className="text-lg">✉</span>
               </div>
-              <a href={`mailto:${data.email}`} className="text-white font-semibold hover:underline flex-1 truncate">
+              <span className="text-white font-semibold flex-1 truncate">
                 {data.email}
-              </a>
+              </span>
             </div>
           )}
           {data.phone && (
@@ -64,9 +64,9 @@ export default function StyleThree({ card }: StyleThreeProps) {
               <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0">
                 <span className="text-lg">📞</span>
               </div>
-              <a href={`tel:${data.phone}`} className="text-white font-semibold hover:underline flex-1">
+              <span className="text-white font-semibold flex-1">
                 {data.phone}
-              </a>
+              </span>
             </div>
           )}
           {data.website && (

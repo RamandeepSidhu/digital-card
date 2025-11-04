@@ -23,6 +23,7 @@ const exampleCards: Card[] = [
       website: 'www.techinnovations.com',
       linkedin: 'linkedin.com/in/sarahjohnson',
       address: '123 Business Ave, San Francisco, CA',
+      date: new Date().toISOString(),
     },
     createdAt: new Date(),
   },

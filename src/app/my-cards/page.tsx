@@ -50,21 +50,40 @@ export default function MyCardsPage() {
 
           const allCards = Array.from(cardMap.values());
           
-          // Sort by creation date (newest first)
-          allCards.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+          // Filter out example/dummy/test cards - only show cards with real data from API
+          const realCards = allCards.filter(
+            (card) => 
+              !card.id.startsWith('example-') && 
+              !card.id.startsWith('test-') && 
+              card.data
+          );
           
-          setCards(allCards);
+          // Sort by creation date (newest first)
+          realCards.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+          
+          setCards(realCards);
         } else {
           // If API fails, fall back to localStorage
           console.warn('Failed to fetch cards from database, using localStorage');
           const localCards = getAllCards();
-          setCards(localCards);
+          // Filter out example/dummy/test cards - only show cards with real data
+          const realCards = localCards.filter(
+            (card) => 
+              !card.id.startsWith('example-') && 
+              !card.id.startsWith('test-') && 
+              card.data
+          );
+          setCards(realCards);
         }
       } catch (err) {
         console.error('Error fetching cards:', err);
         // Fall back to localStorage on error
         const localCards = getAllCards();
-        setCards(localCards);
+        // Filter out example/dummy cards
+        const realCards = localCards.filter(
+          (card) => !card.id.startsWith('example-')
+        );
+        setCards(realCards);
         setError('Unable to load cards from database. Showing local cards only.');
       } finally {
         setLoading(false);
@@ -142,7 +161,7 @@ export default function MyCardsPage() {
         {/* Header */}
         <div className="mb-8">
           <Link
-            href="/"
+            href="/dashboard"
             className="inline-flex items-center text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors mb-6"
           >
             <svg className="mr-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -181,14 +200,21 @@ export default function MyCardsPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {cards.map((card) => {
+            {cards.slice(0, 6).map((card) => {
               const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
               const cardUrl = generateCardUrl(card.id, baseUrl);
+              
+              // Get card name based on type
+              const cardName = card.type === 'business' 
+                ? card.data.name 
+                : card.type === 'personal' 
+                ? card.data.name 
+                : card.data.accountHolder;
               
               return (
                 <div
                   key={card.id}
-                  className="bg-white dark:bg-zinc-800 rounded-lg shadow-lg overflow-hidden border border-zinc-200 dark:border-zinc-700"
+                  className="bg-white dark:bg-zinc-800 rounded-lg shadow-lg overflow-hidden border border-zinc-200 dark:border-zinc-700 hover:shadow-xl transition-shadow"
                 >
                   {/* Card Preview */}
                   <div className="p-4 bg-zinc-50 dark:bg-zinc-900">
@@ -197,17 +223,33 @@ export default function MyCardsPage() {
 
                   {/* Card Info */}
                   <div className="p-4 space-y-3">
+                    {/* Card Name - Prominently Displayed */}
+                    <div className="pb-3 border-b border-zinc-200 dark:border-zinc-700">
+                      <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 mb-1">
+                        {cardName}
+                      </h3>
+                      {card.type === 'business' && (
+                        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                          {card.data.title} at {card.data.company}
+                        </p>
+                      )}
+                    </div>
+                    
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <span className="text-2xl">{getCardTypeIcon(card.type)}</span>
                         <div>
-                          <p className="font-semibold text-zinc-900 dark:text-zinc-100">
+                          <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
                             {getCardTypeLabel(card.type)} Card
                           </p>
                           <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                            Created {card.createdAt instanceof Date 
-                              ? card.createdAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-                              : new Date(card.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                            {(() => {
+                              const date = card.createdAt instanceof Date ? card.createdAt : new Date(card.createdAt);
+                              const day = String(date.getDate()).padStart(2, '0');
+                              const year = String(date.getFullYear()).slice(-2);
+                              const month = String(date.getMonth() + 1).padStart(2, '0');
+                              return `${day} ${year} ${month}`;
+                            })()}
                           </p>
                         </div>
                       </div>
@@ -227,7 +269,7 @@ export default function MyCardsPage() {
                         />
                         <button
                           onClick={() => handleCopyLink(card.id)}
-                          className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
+                          className={`cursor-pointer px-3 py-1 rounded text-xs font-medium transition-colors ${
                             copiedId === card.id
                               ? 'bg-green-500 text-white'
                               : 'bg-purple-600 text-white hover:bg-purple-700'
@@ -249,7 +291,7 @@ export default function MyCardsPage() {
                       </Link>
                       <button
                         onClick={() => handleDelete(card.id)}
-                        className="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm font-medium"
+                        className="cursor-pointer px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm font-medium"
                       >
                         🗑️ Delete
                       </button>
@@ -258,6 +300,17 @@ export default function MyCardsPage() {
                 </div>
               );
             })}
+          </div>
+        )}
+        
+        {cards.length > 6 && (
+          <div className="mt-8 text-center">
+            <p className="text-zinc-600 dark:text-zinc-400 mb-4">
+              Showing 6 of {cards.length} cards
+            </p>
+            <p className="text-sm text-zinc-500 dark:text-zinc-500">
+              More cards available in your dashboard
+            </p>
           </div>
         )}
       </main>

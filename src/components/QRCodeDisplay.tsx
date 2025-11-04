@@ -123,7 +123,7 @@ export default function QRCodeDisplay({ card, baseUrl }: QRCodeDisplayProps) {
           />
           <button
             onClick={handleCopyUrl}
-            className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors font-medium"
+            className="cursor-pointer px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors font-medium"
           >
             {copied ? '✓ Copied' : 'Copy'}
           </button>
@@ -134,7 +134,7 @@ export default function QRCodeDisplay({ card, baseUrl }: QRCodeDisplayProps) {
       <div className="grid grid-cols-2 gap-3">
         <button
           onClick={handleDownloadQR}
-          className="flex items-center justify-center gap-2 px-4 py-3 bg-zinc-100 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-600 transition-colors font-medium"
+          className="cursor-pointer flex items-center justify-center gap-2 px-4 py-3 bg-zinc-100 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-600 transition-colors font-medium"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -162,28 +162,28 @@ export default function QRCodeDisplay({ card, baseUrl }: QRCodeDisplayProps) {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
           <button
             onClick={() => handleShare('whatsapp')}
-            className="flex items-center justify-center gap-2 px-3 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors text-sm font-medium"
+            className="cursor-pointer flex items-center justify-center gap-2 px-3 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors text-sm font-medium"
           >
             <span>📱</span>
             WhatsApp
           </button>
           <button
             onClick={() => handleShare('email')}
-            className="flex items-center justify-center gap-2 px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm font-medium"
+            className="cursor-pointer flex items-center justify-center gap-2 px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm font-medium"
           >
             <span>✉️</span>
             Email
           </button>
           <button
             onClick={() => handleShare('twitter')}
-            className="flex items-center justify-center gap-2 px-3 py-2 bg-sky-500 text-white rounded-lg hover:bg-sky-600 transition-colors text-sm font-medium"
+            className="cursor-pointer flex items-center justify-center gap-2 px-3 py-2 bg-sky-500 text-white rounded-lg hover:bg-sky-600 transition-colors text-sm font-medium"
           >
             <span>🐦</span>
             Twitter
           </button>
           <button
             onClick={() => handleShare('facebook')}
-            className="flex items-center justify-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+            className="cursor-pointer flex items-center justify-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
           >
             <span>📘</span>
             Facebook

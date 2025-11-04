@@ -78,7 +78,7 @@ export default function ImageUpload({
           <button
             type="button"
             onClick={handleRemove}
-            className="mt-2 text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
+            className="cursor-pointer mt-2 text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
           >
             Remove Image
           </button>

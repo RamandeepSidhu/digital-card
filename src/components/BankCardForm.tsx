@@ -202,7 +202,7 @@ export default function BankCardForm({ onSubmit, isLoading = false }: BankCardFo
         <button
           type="submit"
           disabled={isSubmitting || isLoading}
-          className="px-6 py-3 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="cursor-pointer px-6 py-3 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           {isSubmitting || isLoading ? 'Creating...' : 'Create Card'}
         </button>

@@ -147,7 +147,7 @@ export default function SignUpPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full px-4 py-3 bg-linear-to-r from-purple-600 to-indigo-600 text-white rounded-lg font-semibold shadow hover:opacity-90 transition-opacity"
+              className="cursor-pointer w-full px-4 py-3 bg-linear-to-r from-purple-600 to-indigo-600 text-white rounded-lg font-semibold shadow hover:opacity-90 transition-opacity disabled:cursor-not-allowed"
             >
               {loading ? 'Creating account...' : 'Sign Up'}
             </button>
@@ -161,7 +161,7 @@ export default function SignUpPage() {
           </div>
 
           <div className="text-center mt-4">
-            <Link href="/" className="text-sm text-zinc-500 hover:text-zinc-700">
+            <Link href="/dashboard" className="text-sm text-zinc-500 hover:text-zinc-700">
               ← Back to Home
             </Link>
           </div>

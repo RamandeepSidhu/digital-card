@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { businessCardSchema, type BusinessCardFormData } from '@/lib/validation';
@@ -9,6 +10,8 @@ import ImageUpload from './ImageUpload';
 interface BusinessCardFormProps {
   onSubmit: (data: BusinessCardFormData) => void;
   isLoading?: boolean;
+  defaultStyle?: BusinessCardStyle;
+  onFormChange?: (data: BusinessCardFormData) => void;
 }
 
 const styleOptions: { value: BusinessCardStyle; label: string; description: string }[] = [
@@ -17,7 +20,7 @@ const styleOptions: { value: BusinessCardStyle; label: string; description: stri
   { value: 'style3', label: 'Creative Gradient', description: 'Colorful gradients, bold typography' },
 ];
 
-export default function BusinessCardForm({ onSubmit, isLoading = false }: BusinessCardFormProps) {
+export default function BusinessCardForm({ onSubmit, isLoading = false, defaultStyle = 'style1', onFormChange }: BusinessCardFormProps) {
   const {
     register,
     handleSubmit,
@@ -27,12 +30,24 @@ export default function BusinessCardForm({ onSubmit, isLoading = false }: Busine
   } = useForm<BusinessCardFormData>({
     resolver: zodResolver(businessCardSchema),
     defaultValues: {
-      style: 'style1',
+      style: defaultStyle,
     },
   });
 
   const selectedStyle = watch('style');
   const imageValue = watch('image');
+  const watchedValues = watch();
+
+  // Update live preview when form values change
+  useEffect(() => {
+    if (onFormChange) {
+      const formData: BusinessCardFormData = {
+        ...watchedValues,
+        style: selectedStyle,
+      };
+      onFormChange(formData);
+    }
+  }, [watchedValues, selectedStyle, onFormChange]);
 
   const onFormSubmit = async (data: BusinessCardFormData) => {
     await onSubmit(data);
@@ -189,9 +204,9 @@ export default function BusinessCardForm({ onSubmit, isLoading = false }: Busine
         <button
           type="submit"
           disabled={isSubmitting || isLoading}
-          className="px-6 py-3 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="cursor-pointer px-6 py-3 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
-          {isSubmitting || isLoading ? 'Creating...' : 'Create Card'}
+          {isSubmitting || isLoading ? 'Processing...' : 'Continue to Preview'}
         </button>
       </div>
     </form>

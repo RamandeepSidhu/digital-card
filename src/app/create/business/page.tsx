@@ -12,25 +12,33 @@ import QRCodeDisplay from '@/components/QRCodeDisplay';
 import ContactDownload from '@/components/ContactDownload';
 import { generateCardUrl } from '@/lib/qrGenerator';
 
-type Step = 'form' | 'preview' | 'success';
+type Step = 'style' | 'form' | 'preview' | 'success';
 
 export default function CreateBusinessCardPage() {
   const router = useRouter();
-  const [currentStep, setCurrentStep] = useState<Step>('form');
+  const [currentStep, setCurrentStep] = useState<Step>('style');
   const [formData, setFormData] = useState<BusinessCardFormData | null>(null);
   const [selectedStyle, setSelectedStyle] = useState<BusinessCardStyle>('style1');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [createdCard, setCreatedCard] = useState<BusinessCard | null>(null);
 
+  const handleStyleSelect = (style: BusinessCardStyle) => {
+    setSelectedStyle(style);
+    setCurrentStep('form');
+  };
+
   const handleFormSubmit = async (data: BusinessCardFormData) => {
+    // Override style with selected style
+    data.style = selectedStyle;
     setFormData(data);
-    setSelectedStyle(data.style || 'style1');
     setCurrentStep('preview');
   };
 
-  const handleStyleSelect = (style: BusinessCardStyle) => {
-    setSelectedStyle(style);
+  const handleFormChange = (data: BusinessCardFormData) => {
+    // Update form data for live preview
+    data.style = selectedStyle;
+    setFormData(data);
   };
 
   const handleCreateCard = async () => {
@@ -49,6 +57,7 @@ export default function CreateBusinessCardPage() {
           title: formData.title,
           company: formData.company,
           email: formData.email,
+          date: new Date().toISOString(),
           phone: formData.phone,
           website: formData.website || undefined,
           linkedin: formData.linkedin || undefined,
@@ -89,6 +98,7 @@ export default function CreateBusinessCardPage() {
       title: formData.title,
       company: formData.company,
       email: formData.email,
+      date: new Date().toISOString(),
       phone: formData.phone,
       website: formData.website || undefined,
       linkedin: formData.linkedin || undefined,
@@ -102,6 +112,9 @@ export default function CreateBusinessCardPage() {
     { value: 'style1', label: 'Modern Minimalist', description: 'Clean white/black design' },
     { value: 'style2', label: 'Professional Corporate', description: 'Blue accent, structured layout' },
     { value: 'style3', label: 'Creative Gradient', description: 'Colorful gradients, bold typography' },
+    { value: 'style4', label: 'Premium Dark', description: 'Elegant dark theme with glass effects' },
+    { value: 'style5', label: 'Executive Elite', description: 'Sophisticated geometric design' },
+    { value: 'style6', label: 'Luxury Rose', description: 'Premium rose gradient with premium badge' },
   ];
 
   return (
@@ -109,8 +122,16 @@ export default function CreateBusinessCardPage() {
       <main className="w-full max-w-6xl mx-auto">
         <div className="mb-8">
           <button
-            onClick={() => currentStep === 'form' ? router.push('/dashboard') : setCurrentStep('form')}
-            className="inline-flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors mb-6 group"
+            onClick={() => {
+              if (currentStep === 'style') {
+                router.push('/dashboard');
+              } else if (currentStep === 'form') {
+                setCurrentStep('style');
+              } else if (currentStep === 'preview') {
+                setCurrentStep('form');
+              }
+            }}
+            className="cursor-pointer inline-flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors mb-6 group"
           >
             <svg
               className="w-5 h-5 transform group-hover:-translate-x-1 transition-transform"
@@ -120,89 +141,210 @@ export default function CreateBusinessCardPage() {
             >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
-            {currentStep === 'form' ? 'Back to Dashboard' : 'Back to Form'}
+            {currentStep === 'style' && 'Back to Dashboard'}
+            {currentStep === 'form' && 'Back to Style Selection'}
+            {currentStep === 'preview' && 'Back to Form'}
           </button>
           <div className="text-center mb-8">
             <h1 className="text-4xl sm:text-5xl font-bold text-zinc-900 dark:text-zinc-50 mb-2">
-              Create Business Card
+              Create Card
             </h1>
             <p className="text-lg text-zinc-600 dark:text-zinc-400">
-              {currentStep === 'form' && 'Fill in your business information to create your digital card'}
-              {currentStep === 'preview' && 'Preview your card and select a design'}
+              {currentStep === 'style' && 'Choose your card design style'}
+              {currentStep === 'form' && 'Fill in your business information'}
+              {currentStep === 'preview' && 'Preview your card before creating'}
               {currentStep === 'success' && 'Your card is ready!'}
             </p>
           </div>
         </div>
 
-        {/* Step 1: Form */}
-        {currentStep === 'form' && (
+        {/* Step 1: Style Selection */}
+        {currentStep === 'style' && (
           <div className="bg-white dark:bg-zinc-800 rounded-2xl p-6 sm:p-8 shadow-xl border border-zinc-200 dark:border-zinc-700">
-            {error && (
-              <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-                <p className="text-red-600 dark:text-red-400">{error}</p>
-              </div>
-            )}
-            <BusinessCardForm onSubmit={handleFormSubmit} isLoading={false} />
+            <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-8 text-center">
+              Choose Your Card Style
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {styleOptions.map((option) => {
+                // Create a preview card for each style
+                const previewCard: BusinessCard = {
+                  id: 'preview',
+                  type: 'business',
+                  style: option.value,
+                  data: {
+                    name: 'John Doe',
+                    date: (() => {
+                      const date = new Date();
+                      const day = String(date.getDate()).padStart(2, '0');
+                      const month = String(date.getMonth() + 1).padStart(2, '0');
+                      const year = String(date.getFullYear()).slice(-2);
+                      return `${day}/${month}/${year}`;
+                    })(),
+                    title: 'Software Engineer',
+                    company: 'Tech Company',
+                    email: 'john@example.com',
+                    phone: '+1 (555) 123-4567',
+                  },
+                  createdAt: new Date(),
+                };
+
+                return (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => handleStyleSelect(option.value)}
+                    className={`cursor-pointer relative p-6 border-2 rounded-2xl transition-all text-left hover:shadow-xl group overflow-hidden ${
+                      selectedStyle === option.value
+                        ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20 shadow-lg scale-105'
+                        : 'border-zinc-200 dark:border-zinc-700 hover:border-purple-300 dark:hover:border-purple-600 hover:scale-102'
+                    }`}
+                  >
+                    {selectedStyle === option.value && (
+                      <div className="absolute top-4 right-4 w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center flex-shrink-0 z-10 shadow-lg">
+                        <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path
+                            fillRule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </div>
+                    )}
+                    
+                    {/* Card Preview */}
+                    <div className={`mb-4 transition-transform ${selectedStyle === option.value ? 'scale-100' : 'scale-95 group-hover:scale-100'}`}>
+                      <div className="bg-zinc-50 dark:bg-zinc-900 rounded-xl p-3 transform rotate-3 shadow-md" style={{ height: '425px', maxHeight: '425px', overflow: 'hidden' }}>
+                        <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <CardPreview card={previewCard} />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Style Info */}
+                    <div className="text-center">
+                      <h3 className="font-bold text-lg text-zinc-900 dark:text-zinc-100 mb-1">
+                        {option.label}
+                      </h3>
+                      <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-3">
+                        {option.description}
+                      </p>
+                      <div className={`inline-flex items-center gap-2 text-sm font-medium transition-all ${
+                        selectedStyle === option.value
+                          ? 'text-purple-600 dark:text-purple-400 opacity-100'
+                          : 'text-purple-600 dark:text-purple-400 opacity-0 group-hover:opacity-100'
+                      }`}>
+                        <span>{selectedStyle === option.value ? 'Selected' : 'Select Style'}</span>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         )}
 
-        {/* Step 2: Preview with Design Selection */}
+        {/* Step 2: Form with Live Preview */}
+        {currentStep === 'form' && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Left Side - Form */}
+            <div className="bg-white dark:bg-zinc-800 rounded-2xl p-6 sm:p-8 shadow-xl border border-zinc-200 dark:border-zinc-700">
+              {error && (
+                <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                  <p className="text-red-600 dark:text-red-400">{error}</p>
+                </div>
+              )}
+              <BusinessCardForm 
+                onSubmit={handleFormSubmit} 
+                isLoading={false} 
+                defaultStyle={selectedStyle}
+                onFormChange={handleFormChange}
+              />
+            </div>
+
+            {/* Right Side - Live Preview */}
+            <div className="bg-white dark:bg-zinc-800 rounded-2xl p-6 sm:p-8 shadow-xl border border-zinc-200 dark:border-zinc-700 sticky top-4 h-fit">
+              <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-100 mb-6 text-center">
+                Live Preview
+              </h3>
+              <div className="bg-zinc-50 dark:bg-zinc-900 p-6 rounded-xl flex items-center justify-center min-h-[500px]">
+                <CardPreview card={{
+                  id: 'live-preview',
+                  type: 'business',
+                  style: selectedStyle,
+                  data: {
+                    name: formData?.name || 'Your Name',
+                    date: (() => {
+                      const date = new Date();
+                      const day = String(date.getDate()).padStart(2, '0');
+                      const month = String(date.getMonth() + 1).padStart(2, '0');
+                      const year = String(date.getFullYear()).slice(-2);
+                      return `${day}/${month}/${year}`;
+                    })(),
+                    title: formData?.title || 'Your Title',
+                    company: formData?.company || 'Your Company',
+                    email: formData?.email || 'your.email@example.com',
+                    phone: formData?.phone || '+1 (555) 123-4567',
+                    website: formData?.website || undefined,
+                    linkedin: formData?.linkedin || undefined,
+                    address: formData?.address || undefined,
+                    image: formData?.image || undefined,
+                  },
+                  createdAt: new Date(),
+                }} />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Step 3: Preview */}
         {currentStep === 'preview' && previewCard && (
           <div className="space-y-8">
             {/* Card Preview */}
             <div className="bg-white dark:bg-zinc-800 rounded-2xl p-6 sm:p-8 shadow-xl border border-zinc-200 dark:border-zinc-700">
-              <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-6">
-                Your Card Preview
-              </h2>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
+                  Your Card Preview
+                </h2>
+                <button
+                  onClick={() => setCurrentStep('style')}
+                  className="cursor-pointer text-sm text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 flex items-center gap-1"
+                >
+                  Change Style
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
+              
               <div className="bg-zinc-50 dark:bg-zinc-900 p-6 rounded-xl mb-6">
                 <CardPreview card={previewCard} />
               </div>
 
-              {/* Design Selection */}
-              <div>
-                <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-4">
-                  Select Card Design
-                </label>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {styleOptions.map((option) => (
-                    <button
-                      key={option.value}
-                      type="button"
-                      onClick={() => handleStyleSelect(option.value)}
-                      className={`relative p-4 border-2 rounded-lg transition-all text-left ${
-                        selectedStyle === option.value
-                          ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20'
-                          : 'border-zinc-200 dark:border-zinc-700 hover:border-zinc-300 dark:hover:border-zinc-600'
-                      }`}
-                    >
-                      <span className="font-semibold text-zinc-900 dark:text-zinc-100 mb-1 block">
-                        {option.label}
-                      </span>
-                      <span className="text-sm text-zinc-600 dark:text-zinc-400">
-                        {option.description}
-                      </span>
-                      {selectedStyle === option.value && (
-                        <div className="absolute top-2 right-2">
-                          <svg className="w-5 h-5 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
-                            <path
-                              fillRule="evenodd"
-                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                        </div>
-                      )}
-                    </button>
-                  ))}
-                </div>
+              {/* Current Style Display */}
+              <div className="mb-6 p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-200 dark:border-purple-800">
+                <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+                  Selected Style:
+                </p>
+                <p className="text-lg font-semibold text-purple-700 dark:text-purple-300">
+                  {styleOptions.find(opt => opt.value === selectedStyle)?.label}
+                </p>
               </div>
 
-              {/* Create Card Button */}
-              <div className="mt-6 flex justify-end">
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-between">
+                <button
+                  onClick={() => setCurrentStep('form')}
+                  className="cursor-pointer px-6 py-3 bg-zinc-200 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 rounded-lg font-medium hover:bg-zinc-300 dark:hover:bg-zinc-600 transition-colors"
+                >
+                  Edit Details
+                </button>
                 <button
                   onClick={handleCreateCard}
                   disabled={isLoading}
-                  className="px-8 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="cursor-pointer px-8 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   {isLoading ? 'Creating...' : 'Create Card'}
                 </button>
