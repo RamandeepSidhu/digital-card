@@ -30,16 +30,16 @@ export default function CreateBusinessCardPage() {
   };
 
   const handleFormSubmit = async (data: BusinessCardFormData) => {
-    // Override style with selected style
-    data.style = selectedStyle;
-    setFormData(data);
+    // Create a shallow copy to avoid mutating the argument directly
+    const updatedData = { ...data, style: selectedStyle as typeof data.style };
+    setFormData(updatedData);
     setCurrentStep('preview');
   };
 
   const handleFormChange = (data: BusinessCardFormData) => {
     // Update form data for live preview
-    data.style = selectedStyle;
-    setFormData(data);
+    const updatedData = { ...data, style: selectedStyle as typeof data.style };
+    setFormData(updatedData);
   };
 
   const handleCreateCard = async () => {
