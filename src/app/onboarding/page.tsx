@@ -163,7 +163,7 @@ export default function OnboardingPage() {
           >
             <div className="w-64 h-64 bg-white/20 backdrop-blur-sm rounded-3xl flex items-center justify-center mx-auto mb-6">
               {previewCard && (
-                <div className="w-auto mb-20">
+                <div className="w-auto mb-100">
                   <CardPreview card={previewCard} />
                 </div>
               )}
@@ -265,7 +265,7 @@ export default function OnboardingPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="text-center"
               >
-                <div className="w-20 h-20 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <div className="w-20 h-20 bg-linear-to-br from-purple-600 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
                   <span className="text-4xl font-bold text-white">DC</span>
                 </div>
                 <h1 className="text-4xl font-bold text-gray-900 mb-4">Welcome to Digital Cards</h1>
@@ -378,7 +378,7 @@ export default function OnboardingPage() {
                 <h2 className="text-3xl font-bold text-gray-900 mb-2">Make your card stand out 📸</h2>
                 <p className="text-gray-600 mb-6">Add a photo of yourself</p>
                 <div className="mb-6">
-                  <label className="block w-full h-48 border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-purple-600 transition-colors">
+                  <label className="block w-full h-48 border-2 border-dashed border-gray-300 rounded-xl flex-col items-center justify-center cursor-pointer hover:border-purple-600 transition-colors">
                     {photo ? (
                       <img src={photo} alt="Preview" className="w-full h-full object-cover rounded-xl" />
                     ) : (

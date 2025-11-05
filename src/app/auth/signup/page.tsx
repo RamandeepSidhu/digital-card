@@ -38,9 +38,13 @@ export default function SignUpPage() {
       });
 
       const data = await response.json();
-      if (!response.ok) setError(data.error || 'Failed to create account');
-      else router.push('/auth/signin?registered=true');
-    } catch {
+      if (!response.ok) {
+        setError(data.error || 'Failed to create account');
+      } else {
+        router.push('/auth/signin?registered=true');
+      }
+    } catch (err) {
+      console.error('Signup exception:', err);
       setError('An error occurred. Please try again.');
     } finally {
       setLoading(false);

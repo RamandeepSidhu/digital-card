@@ -59,7 +59,15 @@ export async function POST(request: NextRequest) {
 
     // Save user (to Redis if available, otherwise in-memory)
     await saveUser(user);
-
+    
+    // Verify user was saved
+    const verifyUser = await getUserByEmail(normalizedEmail);
+    if (!verifyUser) {
+      return NextResponse.json(
+        { error: 'Failed to save user account. Please try again.' },
+        { status: 500 }
+      );
+    }
     return NextResponse.json(
       {
         success: true,
