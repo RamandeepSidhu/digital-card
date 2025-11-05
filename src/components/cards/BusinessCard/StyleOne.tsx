@@ -1,4 +1,6 @@
+'use client';
 import { BusinessCard } from '@/types/card';
+import { useState } from 'react';
 
 interface StyleOneProps {
   card: BusinessCard;
@@ -6,17 +8,28 @@ interface StyleOneProps {
 
 export default function StyleOne({ card }: StyleOneProps) {
   const { data } = card;
+  const [imageError, setImageError] = useState(false);
+  
+  // Check if image exists and is valid
+  const hasImage = data.image && data.image.trim() !== '' && !imageError;
   
   return (
     <div className="max-w-sm mx-auto bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-100">
       {/* Top Image */}
       <div className="relative">
-        {data.image ? (
+        {hasImage ? (
           <div className="h-48 overflow-hidden">
             <img
               src={data.image}
               alt={data.name}
               className="w-full h-full object-cover"
+              onError={() => {
+                console.error('Image failed to load for card:', card.id);
+                setImageError(true);
+              }}
+              onLoad={() => {
+                setImageError(false);
+              }}
             />
           </div>
         ) : (

@@ -7,6 +7,7 @@ export interface BusinessCard {
   id: string;
   type: 'business';
   style: BusinessCardStyle;
+  userId: string; // User who owns this card
   data: {
     name: string;
     date: any;
@@ -26,6 +27,7 @@ export interface BankCard {
   id: string;
   type: 'bank';
   style: BankCardStyle;
+  userId: string; // User who owns this card
   data: {
     accountHolder: string;
     bankName: string;
@@ -42,6 +44,7 @@ export interface PersonalCard {
   id: string;
   type: 'personal';
   style: PersonalCardStyle;
+  userId: string; // User who owns this card
   data: {
     name: string;
     email: string;

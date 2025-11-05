@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { deleteCardServer } from '@/lib/cardStorageServer';
+import { deleteCardServer, getCardByIdServer } from '@/lib/cardStorageServer';
+import { auth } from '@/app/api/auth/[...nextauth]/route';
 
 // DELETE /api/cards/[id] - Delete a card by ID
 export async function DELETE(
@@ -7,6 +8,16 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    // Check authentication
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { error: 'Unauthorized. Please sign in.' },
+        { status: 401 }
+      );
+    }
+
+    const userId = session.user.id;
     const { id } = await params;
     
     if (!id) {
@@ -16,7 +27,23 @@ export async function DELETE(
       );
     }
 
-    console.log(`[API /cards/${id}] Deleting card...`);
+    // Verify card belongs to user before deleting
+    const card = await getCardByIdServer(id);
+    if (!card) {
+      return NextResponse.json(
+        { error: 'Card not found' },
+        { status: 404 }
+      );
+    }
+
+    if (card.userId !== userId) {
+      return NextResponse.json(
+        { error: 'Unauthorized. You can only delete your own cards.' },
+        { status: 403 }
+      );
+    }
+
+    console.log(`[API /cards/${id}] Deleting card for user ${userId}...`);
     
     // Delete card from persistent storage (KV or fallback)
     try {
@@ -33,8 +60,6 @@ export async function DELETE(
     } catch (deleteError) {
       console.error(`[API /cards/${id}] ❌ Error deleting card:`, deleteError);
       
-      // If card doesn't exist, that's okay - return success anyway
-      // This allows deletion to work even if card was already deleted
       return NextResponse.json(
         {
           success: true,

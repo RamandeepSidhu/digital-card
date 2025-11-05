@@ -123,6 +123,7 @@ export async function initRedis() {
 
 const CARDS_KEY = 'digital-cards';
 const CARD_PREFIX = 'card:';
+const USER_CARDS_PREFIX = 'user-cards:'; // Format: user-cards:userId
 
 /**
  * Save a card to persistent storage

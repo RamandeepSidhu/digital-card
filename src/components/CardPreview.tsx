@@ -9,7 +9,7 @@ interface CardPreviewProps {
   card: Card;
 }
 
-export default function CardPreview({ card }: CardPreviewProps) {
+export default function CardPreview({ card }: CardPreviewProps | any) {
   if (card.type === 'business') {
     return <BusinessCardDisplay card={card as BusinessCard} />;
   } else if (card.type === 'bank') {

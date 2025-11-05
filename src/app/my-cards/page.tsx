@@ -288,29 +288,36 @@ export default function MyCardsPage() {
                         <CardPreview card={card} />
                       </Link>   
                     </div>
-                    {/* Delete Button - Shows on hover, hidden when modal is open */}
+                    {/* Action Buttons - Edit and Remove */}
                     {!deleteConfirmId && (
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          handleDeleteClick(card.id);
-                        }}
-                        className="absolute top-6 right-6 p-2.5 text-white bg-red-500 rounded-lg hover:bg-red-600 shadow-2xl flex items-center justify-center cursor-pointer opacity-0 group-hover:opacity-100 transition-all duration-300"
-                        title="Delete Card"
-                        style={{ 
-                          position: 'absolute',
-                          top: '24px',
-                          right: '24px',
-                          zIndex: 0,
-                          pointerEvents: 'auto'
-                        }}
-                        onMouseEnter={(e) => e.stopPropagation()}
-                      >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                      </button>
+                      <div className="absolute top-4 right-4 flex gap-2 z-10">
+                        {/* Edit Button */}
+                        <Link
+                          href={`/edit/${card.type}/${card.id}`}
+                          onClick={(e) => e.stopPropagation()}
+                          className="p-2.5 text-white bg-purple-600 rounded-lg hover:bg-purple-700 shadow-lg flex items-center justify-center transition-all duration-200"
+                          title="Edit Card"
+                        >
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          </svg>
+                        </Link>
+                        {/* Delete Button */}
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleDeleteClick(card.id);
+                          }}
+                          className="p-2.5 text-white bg-red-600 rounded-lg hover:bg-red-700 shadow-lg flex items-center justify-center transition-all duration-200"
+                          title="Remove Card"
+                          onMouseEnter={(e) => e.stopPropagation()}
+                        >
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </div>
                     )}
                   </div>
 

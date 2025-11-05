@@ -24,6 +24,7 @@ export default function EditBankCardPage() {
   const [error, setError] = useState<string | null>(null);
   const [updatedCard, setUpdatedCard] = useState<BankCard | null>(null);
   const [loadingCard, setLoadingCard] = useState(true);
+  const [userId, setUserId] = useState<string>('');
 
   useEffect(() => {
     async function loadCard() {
@@ -33,6 +34,7 @@ export default function EditBankCardPage() {
           const data = await response.json();
           const card = data.card as BankCard;
           setSelectedStyle(card.style);
+          setUserId(card.userId || '');
           
           const formData: BankCardFormData = {
             accountHolder: card.data.accountHolder,
@@ -53,6 +55,7 @@ export default function EditBankCardPage() {
         if (localCard && localCard.type === 'bank') {
           const card = localCard as BankCard;
           setSelectedStyle(card.style);
+          setUserId(card.userId || '');
           
           const formData: BankCardFormData = {
             accountHolder: card.data.accountHolder,
@@ -99,7 +102,7 @@ export default function EditBankCardPage() {
     setError(null);
 
     try {
-      const bankCard: BankCard = {
+      const bankCard: BankCard | any = {
         id: cardId,
         type: 'bank',
         style: selectedStyle,
@@ -136,7 +139,7 @@ export default function EditBankCardPage() {
     }
   };
 
-  const previewCard: BankCard | null = formData ? {
+  const previewCard: BankCard | any = formData ? {
     id: cardId || 'preview',
     type: 'bank',
     style: selectedStyle,
@@ -262,6 +265,7 @@ export default function EditBankCardPage() {
                   id: 'live-preview',
                   type: 'bank',
                   style: selectedStyle,
+                  userId: userId || 'preview-user',
                   data: {
                     accountHolder: formData?.accountHolder || 'Account Holder',
                     bankName: formData?.bankName || 'Bank Name',

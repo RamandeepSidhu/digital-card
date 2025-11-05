@@ -2,10 +2,21 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Card } from '@/types/card';
 import { nanoid } from 'nanoid';
 import { saveCardServer, getAllCardsServer } from '@/lib/cardStorageServer';
+import { auth } from '@/app/api/auth/[...nextauth]/route';
 
 // POST /api/cards - Create a new card
 export async function POST(request: NextRequest) {
   try {
+    // Check authentication
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { error: 'Unauthorized. Please sign in.' },
+        { status: 401 }
+      );
+    }
+
+    const userId = session.user.id;
     const body = await request.json();
     
     // Validate card type
@@ -62,6 +73,7 @@ export async function POST(request: NextRequest) {
       id: body.id || nanoid(),
       type: body.type,
       style: body.style,
+      userId: userId, // Associate card with current user
       data: body.data,
       createdAt: body.createdAt ? new Date(body.createdAt) : new Date(),
     };
@@ -101,18 +113,31 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// GET /api/cards - Get all cards (only real cards with data, no static/example cards)
+// GET /api/cards - Get all cards for the current user
 export async function GET() {
   try {
+    // Check authentication
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { error: 'Unauthorized. Please sign in.' },
+        { status: 401 }
+      );
+    }
+
+    const userId = session.user.id;
     const cards = await getAllCardsServer();
-    // Filter out example/dummy/test/static cards - only return real cards with data
-    const realCards = cards.filter(
+    
+    // Filter cards by userId and exclude example/test cards
+    const userCards = cards.filter(
       (card) => 
+        card.userId === userId && // Only show cards belonging to current user
         !card.id.startsWith('example-') && 
         !card.id.startsWith('test-') && 
         card.data
     );
-    return NextResponse.json({ cards: realCards }, { status: 200 });
+    
+    return NextResponse.json({ cards: userCards }, { status: 200 });
   } catch (error) {
     console.error('Error fetching cards:', error);
     return NextResponse.json(

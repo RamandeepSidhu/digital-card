@@ -16,6 +16,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Digital Card Generator - Create Shareable Business & Bank Cards",
   description: "Create beautiful digital business cards and bank cards with unique QR codes. Share your contact details or payment information instantly.",
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/favicon.ico',
+  },
+  themeColor: '#ffffff',
 };
 
 export default function RootLayout({
@@ -24,9 +29,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="light" style={{ colorScheme: 'light' }}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-gray-900`}
       >
         <SessionProvider>{children}</SessionProvider>
       </body>
