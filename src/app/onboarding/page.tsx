@@ -39,29 +39,44 @@ export default function OnboardingPage() {
         try {
           setCheckingCards(true);
           const response = await fetch('/api/cards');
-          if (response.ok) {
-            const data = await response.json();
-            const cards: any[] = data.cards || [];
-            
-            // Filter to only count real cards (not example/test cards)
-            const realCards = cards.filter(
-              (card) => 
-                card.userId === userId &&
-                !card.id.startsWith('example-') && 
-                !card.id.startsWith('test-') && 
-                card.data
-            );
-            
-            // If user already has cards (length >= 1), redirect to dashboard
-            if (realCards.length >= 1) {
-              router.push('/dashboard');
+          
+          // Check response status
+          if (!response.ok) {
+            // If unauthorized, redirect to signin
+            if (response.status === 401) {
+              router.push('/auth/signin');
               return;
             }
+            // For other errors, show onboarding (better UX than blocking)
+            console.warn('Failed to fetch cards, showing onboarding:', response.status);
+            setCheckingCards(false);
+            return;
           }
+          
+          // Parse response data
+          const data = await response.json();
+          const cards: any[] = data.cards || [];
+          
+          // Filter to only count real cards (not example/test cards)
+          const realCards = cards.filter(
+            (card) => 
+              card.userId === userId &&
+              !card.id.startsWith('example-') && 
+              !card.id.startsWith('test-') && 
+              card.data
+          );
+          
+          // If user already has cards (length >= 1), redirect to dashboard
+          if (realCards.length >= 1) {
+            router.push('/dashboard');
+            return;
+          }
+          
+          // User has no cards, show onboarding
+          setCheckingCards(false);
         } catch (error) {
           console.error('Error checking existing cards:', error);
           // If check fails, still show onboarding (better UX)
-        } finally {
           setCheckingCards(false);
         }
       }
@@ -120,12 +135,25 @@ export default function OnboardingPage() {
         body: JSON.stringify(businessCard),
       });
 
-      if (response.ok) {
+      // Check response status
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Failed to create card:', response.status, errorData);
+        setIsCreating(false);
+        setCurrentStep('contact');
+        // Could show error message to user here
+        return;
+      }
+
+      // Card created successfully
+      const data = await response.json();
+      if (data.success && data.card) {
         // Wait a moment to show the creating animation
         setTimeout(() => {
           router.push('/dashboard');
         }, 2000);
       } else {
+        console.error('Card creation response missing success/card:', data);
         setIsCreating(false);
         setCurrentStep('contact');
       }
