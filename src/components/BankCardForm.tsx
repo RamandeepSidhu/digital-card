@@ -12,6 +12,7 @@ interface BankCardFormProps {
   isLoading?: boolean;
   defaultStyle?: BankCardStyle;
   onFormChange?: (data: BankCardFormData) => void;
+  defaultValues?: Partial<BankCardFormData>;
 }
 
 export default function BankCardForm({ onSubmit, isLoading = false, defaultStyle = 'style1', onFormChange, defaultValues }: BankCardFormProps) {
