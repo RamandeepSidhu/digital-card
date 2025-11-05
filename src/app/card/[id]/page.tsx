@@ -134,30 +134,33 @@ export default function CardPage() {
         {/* Breadcrumb Navigation with Action Button */}
         <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
           <nav aria-label="Breadcrumb">
-            <ol className="flex items-center space-x-2 text-sm">
+            <ol className="flex items-center space-x-2 text-sm text-zinc-600 dark:text-zinc-400">
               <li>
                 <Link
                   href="/dashboard"
-                  className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
+                  className="flex items-center gap-1.5 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
                 >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                  </svg>
                   Dashboard
                 </Link>
               </li>
-              <li>
-                <svg className="w-4 h-4 text-zinc-400 dark:text-zinc-600" fill="currentColor" viewBox="0 0 20 20">
+              <li className="flex items-center">
+                <svg className="w-4 h-4 text-zinc-400 dark:text-zinc-600 mx-1" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
                 </svg>
               </li>
               <li>
                 <Link
                   href="/my-cards"
-                  className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
+                  className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
                 >
                   My Cards
                 </Link>
               </li>
-              <li>
-                <svg className="w-4 h-4 text-zinc-400 dark:text-zinc-600" fill="currentColor" viewBox="0 0 20 20">
+              <li className="flex items-center">
+                <svg className="w-4 h-4 text-zinc-400 dark:text-zinc-600 mx-1" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
                 </svg>
               </li>
@@ -167,17 +170,15 @@ export default function CardPage() {
             </ol>
           </nav>
           
-          <Link
-            href={`/card/${card.id}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium shadow-sm text-sm whitespace-nowrap"
+          <div
+            className="inline-flex items-center text-sm "
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-            </svg>
-            View Card Page
-          </Link>
+            {(card.type === 'business' || card.type === 'personal') && (
+              <div className="w-full max-w-sm">
+                <ContactDownload card={card} />
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Main Content Grid */}
@@ -197,11 +198,7 @@ export default function CardPage() {
             />
             
             {/* Prominent Add to Contacts Button */}
-            {(card.type === 'business' || card.type === 'personal') && (
-              <div className="w-full max-w-sm">
-                <ContactDownload card={card} variant="prominent" />
-              </div>
-            )}
+           
           </div>
         </div>
       </main>

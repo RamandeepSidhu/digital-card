@@ -127,26 +127,29 @@ export default function CreateBusinessCardPage() {
           {/* Breadcrumb Navigation with Action Buttons */}
           <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
             <nav aria-label="Breadcrumb">
-              <ol className="flex items-center space-x-2 text-sm">
+              <ol className="flex items-center space-x-2 text-sm text-zinc-600 dark:text-zinc-400">
                 <li>
                   <Link
                     href="/dashboard"
-                    className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
+                    className="flex items-center gap-1.5 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
                   >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
                     Dashboard
                   </Link>
                 </li>
                 {currentStep !== 'style' && (
                   <>
-                    <li>
-                      <svg className="w-4 h-4 text-zinc-400 dark:text-zinc-600" fill="currentColor" viewBox="0 0 20 20">
+                    <li className="flex items-center">
+                      <svg className="w-4 h-4 text-zinc-400 dark:text-zinc-600 mx-1" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
                       </svg>
                     </li>
                     <li>
                       <button
                         onClick={() => setCurrentStep('style')}
-                        className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors cursor-pointer"
+                        className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors cursor-pointer"
                       >
                         Style Selection
                       </button>
@@ -155,58 +158,64 @@ export default function CreateBusinessCardPage() {
                 )}
                 {currentStep === 'form' && (
                   <>
-                    <li>
-                      <svg className="w-4 h-4 text-zinc-400 dark:text-zinc-600" fill="currentColor" viewBox="0 0 20 20">
+                    <li className="flex items-center">
+                      <svg className="w-4 h-4 text-zinc-400 dark:text-zinc-600 mx-1" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
                       </svg>
                     </li>
-                    <li className="text-zinc-900 dark:text-zinc-100 font-medium">Form</li>
+                    <li>
+                      <span className="text-zinc-900 dark:text-zinc-100 font-medium">Form</span>
+                    </li>
                   </>
                 )}
                 {currentStep === 'preview' && (
                   <>
-                    <li>
-                      <svg className="w-4 h-4 text-zinc-400 dark:text-zinc-600" fill="currentColor" viewBox="0 0 20 20">
+                    <li className="flex items-center">
+                      <svg className="w-4 h-4 text-zinc-400 dark:text-zinc-600 mx-1" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
                       </svg>
                     </li>
                     <li>
                       <button
                         onClick={() => setCurrentStep('style')}
-                        className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors cursor-pointer"
+                        className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors cursor-pointer"
                       >
                         Style Selection
                       </button>
                     </li>
-                    <li>
-                      <svg className="w-4 h-4 text-zinc-400 dark:text-zinc-600" fill="currentColor" viewBox="0 0 20 20">
+                    <li className="flex items-center">
+                      <svg className="w-4 h-4 text-zinc-400 dark:text-zinc-600 mx-1" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
                       </svg>
                     </li>
                     <li>
                       <button
                         onClick={() => setCurrentStep('form')}
-                        className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors cursor-pointer"
+                        className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors cursor-pointer"
                       >
                         Form
                       </button>
                     </li>
-                    <li>
-                      <svg className="w-4 h-4 text-zinc-400 dark:text-zinc-600" fill="currentColor" viewBox="0 0 20 20">
+                    <li className="flex items-center">
+                      <svg className="w-4 h-4 text-zinc-400 dark:text-zinc-600 mx-1" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
                       </svg>
                     </li>
-                    <li className="text-zinc-900 dark:text-zinc-100 font-medium">Preview</li>
+                    <li>
+                      <span className="text-zinc-900 dark:text-zinc-100 font-medium">Preview</span>
+                    </li>
                   </>
                 )}
                 {currentStep === 'success' && (
                   <>
-                    <li>
-                      <svg className="w-4 h-4 text-zinc-400 dark:text-zinc-600" fill="currentColor" viewBox="0 0 20 20">
+                    <li className="flex items-center">
+                      <svg className="w-4 h-4 text-zinc-400 dark:text-zinc-600 mx-1" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
                       </svg>
                     </li>
-                    <li className="text-zinc-900 dark:text-zinc-100 font-medium">Success</li>
+                    <li>
+                      <span className="text-zinc-900 dark:text-zinc-100 font-medium">Success</span>
+                    </li>
                   </>
                 )}
               </ol>
