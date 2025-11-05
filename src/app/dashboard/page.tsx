@@ -194,7 +194,7 @@ export default function DashboardPage() {
                     }}
                   >
                     <div className="relative" style={{ overflow: 'visible' }}>
-                      <Link href={`/edit/${card.type}/${card.id}`} className="block cursor-pointer group/card">
+                      <Link href={`/card/${card.id}`} className="block">
                         <CardPreview card={card} />
                       </Link>
                       {/* Delete Button - Shows on hover, hidden when modal is open */}
