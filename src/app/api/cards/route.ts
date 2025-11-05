@@ -128,14 +128,30 @@ export async function GET() {
     const userId = session.user.id;
     const cards = await getAllCardsServer();
     
-    // Filter cards by userId and exclude example/test cards
+    // Strictly filter cards by userId - only show cards that:
+    // 1. Have a userId field set
+    // 2. userId exactly matches the current user's ID
+    // 3. Are not example/test cards
+    // 4. Have valid data
     const userCards = cards.filter(
-      (card) => 
-        card.userId === userId && // Only show cards belonging to current user
-        !card.id.startsWith('example-') && 
-        !card.id.startsWith('test-') && 
-        card.data
+      (card) => {
+        // Ensure card has userId and it matches exactly
+        if (!card.userId || card.userId !== userId) {
+          return false;
+        }
+        // Exclude example/test cards
+        if (card.id.startsWith('example-') || card.id.startsWith('test-')) {
+          return false;
+        }
+        // Must have valid data
+        if (!card.data) {
+          return false;
+        }
+        return true;
+      }
     );
+    
+    console.log(`[API /cards] User ${userId} requested cards. Found ${userCards.length} cards out of ${cards.length} total.`);
     
     return NextResponse.json({ cards: userCards }, { status: 200 });
   } catch (error) {

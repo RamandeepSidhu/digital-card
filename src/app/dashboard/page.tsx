@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Card } from "@/types/card";
-import { getAllCards } from "@/lib/cardStorage";
 import CardPreview from "@/components/CardPreview";
 import Link from "next/link";
 import Header from "@/components/Header";
@@ -23,6 +22,10 @@ export default function DashboardPage() {
 
   useEffect(() => {
     async function fetchCards() {
+      if (!session?.user?.id) return;
+      
+      const userId = session.user.id;
+      
       try {
         setLoading(true);
         const response = await fetch("/api/cards");
@@ -35,19 +38,26 @@ export default function DashboardPage() {
             createdAt: new Date(card.createdAt),
           }));
 
-          const localCards = getAllCards();
-          const cardMap = new Map<string, Card>();
-          localCards.forEach((card) => cardMap.set(card.id, card));
-          formattedCards.forEach((card) => cardMap.set(card.id, card));
-
-          const allCards = Array.from(cardMap.values());
-          // Filter out example/dummy/test cards - only show cards with real data from API
-          const realCards = allCards.filter(
-            (card) => 
-              !card.id.startsWith('example-') && 
-              !card.id.startsWith('test-') && 
-              card.data
+          // Strictly filter: Only use API cards that belong to this user
+          // Double-check userId match to ensure no other users' cards slip through
+          const realCards = formattedCards.filter(
+            (card) => {
+              // Must have userId and it must match exactly
+              if (!card.userId || card.userId !== userId) {
+                return false;
+              }
+              // Exclude example/test cards
+              if (card.id.startsWith('example-') || card.id.startsWith('test-')) {
+                return false;
+              }
+              // Must have valid data
+              if (!card.data) {
+                return false;
+              }
+              return true;
+            }
           );
+          
           realCards.sort(
             (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
           );
@@ -59,47 +69,26 @@ export default function DashboardPage() {
             return;
           }
         } else {
-          const localCards = getAllCards();
-          // Filter out example/dummy/test cards - only show cards with real data
-          const realCards = localCards.filter(
-            (card) => 
-              !card.id.startsWith('example-') && 
-              !card.id.startsWith('test-') && 
-              card.data
-          );
-          setCards(realCards);
-
-          // If user has no cards, redirect to onboarding
-          if (realCards.length === 0) {
-            router.push('/onboarding');
+          // If API fails, don't show any cards (don't use localStorage)
+          setCards([]);
+          if (response.status === 401) {
+            router.push('/auth/signin');
             return;
           }
         }
       } catch (err) {
-        const localCards = getAllCards();
-        // Filter out example/dummy/test cards - only show cards with real data
-        const realCards = localCards.filter(
-          (card) => 
-            !card.id.startsWith('example-') && 
-            !card.id.startsWith('test-') && 
-            card.data
-        );
-        setCards(realCards);
-
-        // If user has no cards, redirect to onboarding
-        if (realCards.length === 0) {
-          router.push('/onboarding');
-          return;
-        }
+        console.error('Error fetching cards:', err);
+        // Don't show localStorage cards - only show API cards
+        setCards([]);
       } finally {
         setLoading(false);
       }
     }
 
-    if (status === "authenticated") {
+    if (status === "authenticated" && session?.user?.id) {
       fetchCards();
     }
-  }, [status, router]);
+  }, [status, session, router]);
 
 
   if (status === "loading" || loading) {

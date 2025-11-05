@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { Card } from '@/types/card';
-import { getAllCards, deleteCard } from '@/lib/cardStorage';
 import { generateCardUrl } from '@/lib/qrGenerator';
 import CardPreview from '@/components/CardPreview';
 import Link from 'next/link';
@@ -21,7 +20,7 @@ export default function MyCardsPage() {
         setLoading(true);
         setError(null);
 
-        // Fetch cards from database (Redis) via API
+        // Fetch cards from database (Redis) via API - already filtered by userId
         const response = await fetch('/api/cards');
         
         if (response.ok) {
@@ -34,26 +33,9 @@ export default function MyCardsPage() {
             createdAt: new Date(card.createdAt),
           }));
 
-          // Merge with localStorage cards (in case some are only local)
-          const localCards = getAllCards();
-          
-          // Combine and deduplicate by ID (prefer database cards)
-          const cardMap = new Map<string, Card>();
-          
-          // Add local cards first
-          localCards.forEach(card => {
-            cardMap.set(card.id, card);
-          });
-          
-          // Overwrite with database cards (they take priority)
-          formattedCards.forEach(card => {
-            cardMap.set(card.id, card);
-          });
-
-          const allCards = Array.from(cardMap.values());
-          
-          // Filter out example/dummy/test cards - only show cards with real data from API
-          const realCards = allCards.filter(
+          // Don't merge with localStorage - only use API cards (already filtered by userId)
+          // Filter out example/dummy/test cards
+          const realCards = formattedCards.filter(
             (card) => 
               !card.id.startsWith('example-') && 
               !card.id.startsWith('test-') && 
@@ -65,28 +47,18 @@ export default function MyCardsPage() {
           
           setCards(realCards);
         } else {
-          // If API fails, fall back to localStorage
-          console.warn('Failed to fetch cards from database, using localStorage');
-          const localCards = getAllCards();
-          // Filter out example/dummy/test cards - only show cards with real data
-          const realCards = localCards.filter(
-            (card) => 
-              !card.id.startsWith('example-') && 
-              !card.id.startsWith('test-') && 
-              card.data
-          );
-          setCards(realCards);
+          // If API fails, don't show localStorage cards (they might be from other users)
+          if (response.status === 401) {
+            setError('Please sign in to view your cards.');
+          } else {
+            setError('Unable to load cards from database.');
+          }
+          setCards([]);
         }
       } catch (err) {
         console.error('Error fetching cards:', err);
-        // Fall back to localStorage on error
-        const localCards = getAllCards();
-        // Filter out example/dummy cards
-        const realCards = localCards.filter(
-          (card) => !card.id.startsWith('example-')
-        );
-        setCards(realCards);
-        setError('Unable to load cards from database. Showing local cards only.');
+        setError('Unable to load cards. Please check your internet connection.');
+        setCards([]);
       } finally {
         setLoading(false);
       }
@@ -119,46 +91,26 @@ export default function MyCardsPage() {
     
     try {
       // Delete from API (Redis)
-      await fetch(`/api/cards/${cardId}`, {
+      const response = await fetch(`/api/cards/${cardId}`, {
         method: 'DELETE',
       });
       
-      // Delete from localStorage
-      const success = deleteCard(cardId);
-      
-      if (success) {
-        // Refresh cards list
+      if (response.ok) {
+        // Refresh cards list by removing the deleted card
         const updatedCards = cards.filter(card => card.id !== cardId);
         setCards(updatedCards);
-        alert('Card deleted successfully!');
       } else {
-        alert('Failed to delete card. Please try again.');
+        const errorData = await response.json().catch(() => ({}));
+        setError(errorData.error || 'Failed to delete card. Please try again.');
       }
     } catch (err) {
       console.error('Error deleting card:', err);
-      // Still try to delete from localStorage
-      const success = deleteCard(cardId);
-      if (success) {
-        const updatedCards = cards.filter(card => card.id !== cardId);
-        setCards(updatedCards);
-        alert('Card deleted successfully!');
-      } else {
-        alert('Failed to delete card. Please try again.');
-      }
+      setError('Unable to delete card. Please check your internet connection and try again.');
     }
   };
 
   const handleDeleteCancel = () => {
     setDeleteConfirmId(null);
-  };
-
-  const handleDelete = (cardId: string) => {
-    if (confirm('Are you sure you want to delete this card?')) {
-      const success = deleteCard(cardId);
-      if (success) {
-        setCards(getAllCards());
-      }
-    }
   };
 
   const getCardTypeLabel = (type: string) => {

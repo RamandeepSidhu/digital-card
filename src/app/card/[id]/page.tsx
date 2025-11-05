@@ -1,8 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { useParams } from 'next/navigation';
 import CardPreview from '@/components/CardPreview';
 import QRCodeDisplay from '@/components/QRCodeDisplay';
 import { Card } from '@/types/card';
@@ -12,28 +11,15 @@ import Link from 'next/link';
 
 export default function CardPage() {
   const params = useParams();
-  const router = useRouter();
-  const { data: session } = useSession();
   const id = params.id as string;
   const [card, setCard] = useState<Card | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
-  
-  // Check if current user owns this card
-  const isOwner = session?.user?.id && card?.userId === session.user.id;
 
   useEffect(() => {
     async function fetchCard() {
-      // Fetch card from API only (no localStorage fallback)
-      console.log(`[Card Detail Page] Fetching card with ID: ${id}`);
       try {
-        const apiUrl = `/api/card/${id}`;
-        console.log(`[Card Detail Page] Calling API: ${apiUrl}`);
-        
-        const response = await fetch(apiUrl);
-        
-        console.log(`[Card Detail Page] API response status: ${response.status}, ok: ${response.ok}`);
+        const response = await fetch(`/api/card/${id}`);
         
         if (!response.ok) {
           if (response.status === 404) {
@@ -59,33 +45,15 @@ export default function CardPage() {
           setLoading(false);
           return;
         }
-
-        // Debug: Log image data
-        if (data.card && data.card.type === 'business' && data.card.data) {
-          const hasImage = data.card.data.image && typeof data.card.data.image === 'string' && data.card.data.image.trim() !== '';
-          console.log(`[Card Detail Page] Image data: ${hasImage ? 'Present' : 'Missing'}, type: ${typeof data.card.data.image}, length: ${data.card.data.image?.length || 0}`);
-          console.log(`[Card Detail Page] Full card data structure:`, {
-            hasData: !!data.card.data,
-            hasImage: !!data.card.data.image,
-            imageType: typeof data.card.data.image,
-            imagePreview: typeof data.card.data.image === 'string' ? data.card.data.image.substring(0, 50) + '...' : 'N/A'
-          });
-        }
         
         // Ensure card data structure is preserved
         const cardToSet = {
           ...data.card,
           data: {
             ...data.card.data,
-            // Explicitly preserve image if it exists
             image: data.card.data?.image || undefined,
           },
         };
-        
-        console.log(`[Card Detail Page] Setting card with image:`, {
-          hasImage: !!cardToSet.data?.image,
-          imageType: typeof cardToSet.data?.image,
-        });
         
         setCard(cardToSet);
         setLoading(false);
@@ -146,39 +114,6 @@ export default function CardPage() {
     : card.type === 'personal' 
     ? card.data.name 
     : card.data.accountHolder;
-
-  const handleDeleteClick = () => {
-    setDeleteConfirmId(id);
-  };
-
-  const handleDeleteConfirm = async () => {
-    if (!deleteConfirmId) return;
-    
-    const cardId = deleteConfirmId;
-    setDeleteConfirmId(null);
-    
-    try {
-      // Delete from API (Redis) only
-      const response = await fetch(`/api/cards/${cardId}`, {
-        method: 'DELETE',
-      });
-      
-      if (response.ok) {
-        // Redirect to dashboard after successful deletion
-        router.push('/dashboard');
-      } else {
-        const errorData = await response.json().catch(() => ({}));
-        setError(errorData.error || 'Failed to delete card. Please try again.');
-      }
-    } catch (err) {
-      console.error('Error deleting card:', err);
-      setError('Unable to delete card. Please check your internet connection and try again.');
-    }
-  };
-
-  const handleDeleteCancel = () => {
-    setDeleteConfirmId(null);
-  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -252,52 +187,12 @@ export default function CardPage() {
               baseUrl={typeof window !== 'undefined' ? window.location.origin : undefined} 
             />
             
-            {/* Prominent Add to Contacts Button */}
-           
           </div>
         </div>
-
-        {/* Delete Confirmation Dialog */}
-        {deleteConfirmId && (
-          <div className="fixed inset-0 bg-linear-to-br from-white/80 via-purple-50/80 to-white/80 dark:from-zinc-900/80 dark:via-purple-900/20 dark:to-zinc-900/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white dark:bg-zinc-800 rounded-lg shadow-xl max-w-md w-full p-6 border border-zinc-200 dark:border-zinc-700">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
-                  <svg className="w-6 h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-                    Delete Card
-                  </h3>
-                  <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                    Are you sure you want to delete this card?
-                  </p>
-                </div>
-              </div>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-6">
-                This action cannot be undone. The card will be permanently deleted.
-              </p>
-              <div className="flex gap-3 justify-end">
-                <button
-                  onClick={handleDeleteCancel}
-                  className="px-4 py-2 bg-zinc-100 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-600 transition-colors font-medium"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleDeleteConfirm}
-                  className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-medium"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
       </main>
     </div>
   );
 }
+
+
 
