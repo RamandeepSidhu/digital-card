@@ -1,7 +1,11 @@
 import { test, expect } from '@playwright/test';
+import { authenticateUser } from './test-helpers';
 
 test.describe('QR Code Generation', () => {
   test('should display QR code after card creation', async ({ page }) => {
+    // Authenticate first (required for card creation)
+    await authenticateUser(page);
+    
     // Create a business card first
     await page.goto('/create/business');
     
@@ -25,6 +29,9 @@ test.describe('QR Code Generation', () => {
   });
 
   test('should display shareable URL', async ({ page }) => {
+    // Authenticate first (required for card creation)
+    await authenticateUser(page);
+    
     await page.goto('/create/business');
     
     await page.getByLabel(/Full Name/i).fill('Test User');
@@ -48,6 +55,9 @@ test.describe('QR Code Generation', () => {
   });
 
   test('should have copy URL functionality', async ({ page, context }) => {
+    // Authenticate first (required for card creation)
+    await authenticateUser(page);
+    
     // Grant clipboard permissions
     await context.grantPermissions(['clipboard-read', 'clipboard-write']);
     
@@ -88,6 +98,9 @@ test.describe('QR Code Generation', () => {
   });
 
   test('should have download QR button', async ({ page }) => {
+    // Authenticate first (required for card creation)
+    await authenticateUser(page);
+    
     await page.goto('/create/business');
     
     await page.getByLabel(/Full Name/i).fill('Download Test');
@@ -113,6 +126,9 @@ test.describe('QR Code Generation', () => {
   });
 
   test('should have share buttons', async ({ page }) => {
+    // Authenticate first (required for card creation)
+    await authenticateUser(page);
+    
     await page.goto('/create/business');
     
     await page.getByLabel(/Full Name/i).fill('Share Test');
@@ -140,6 +156,9 @@ test.describe('QR Code Generation', () => {
   });
 
   test('should display card preview on card view page', async ({ page }) => {
+    // Authenticate first (required for card creation)
+    await authenticateUser(page);
+    
     // First create a card
     await page.goto('/create/business');
     
@@ -167,6 +186,9 @@ test.describe('QR Code Generation', () => {
   });
 
   test('should have Save to Contacts button for business cards', async ({ page }) => {
+    // Authenticate first (required for card creation)
+    await authenticateUser(page);
+    
     await page.goto('/create/business');
     
     await page.getByLabel(/Full Name/i).fill('Contact Test');
@@ -186,8 +208,8 @@ test.describe('QR Code Generation', () => {
     const cardUrl = await urlInput.inputValue();
     await page.goto(cardUrl);
     
-    // Check for Save to Contacts button on card page
-    const saveButton = page.getByRole('button', { name: /Save to Contacts/i });
+    // Check for Add to Contacts button on card page
+    const saveButton = page.getByRole('button', { name: /Add to Contacts/i });
     await expect(saveButton).toBeVisible();
   });
 });

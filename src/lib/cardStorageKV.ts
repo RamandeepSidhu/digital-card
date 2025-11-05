@@ -6,7 +6,29 @@ import { Card } from '@/types/card';
  */
 
 let redis: any = null;
-let fallbackStore: Card[] = [];
+// Use globalThis to persist across hot reloads in development
+const getFallbackStore = (): Card[] => {
+  if (typeof globalThis !== 'undefined') {
+    const global = globalThis as any;
+    if (!global.__fallbackCards) {
+      global.__fallbackCards = [];
+    }
+    return global.__fallbackCards;
+  }
+  // Fallback for environments where globalThis doesn't work
+  if (typeof global !== 'undefined') {
+    const nodeGlobal = global as any;
+    if (!nodeGlobal.__fallbackCards) {
+      nodeGlobal.__fallbackCards = [];
+    }
+    return nodeGlobal.__fallbackCards;
+  }
+  // Last resort - module-level (will reset on hot reload)
+  if (!(getFallbackStore as any).__store) {
+    (getFallbackStore as any).__store = [];
+  }
+  return (getFallbackStore as any).__store;
+};
 
 // Try to initialize Redis (supports both Upstash REST API and Redis Cloud connection string)
 export async function initRedis() {
@@ -131,6 +153,21 @@ const USER_CARDS_PREFIX = 'user-cards:'; // Format: user-cards:userId
 export async function saveCardKV(card: Card): Promise<void> {
   const redisClient = await initRedis();
   
+  // Always save to in-memory fallback for persistence across hot reloads
+  const fallbackStore = getFallbackStore();
+  const existsInFallback = fallbackStore.find(c => c.id === card.id);
+  if (!existsInFallback) {
+    fallbackStore.push(card);
+    console.log(`📝 Card ${card.id} saved to in-memory fallback (${fallbackStore.length} cards in fallback)`);
+  } else {
+    // Update existing card in fallback
+    const index = fallbackStore.findIndex(c => c.id === card.id);
+    if (index !== -1) {
+      fallbackStore[index] = card;
+      console.log(`📝 Card ${card.id} updated in in-memory fallback`);
+    }
+  }
+  
   if (redisClient) {
     try {
       console.log(`💾 Saving card ${card.id} to Redis...`);
@@ -158,7 +195,13 @@ export async function saveCardKV(card: Card): Promise<void> {
           await redisClient.set(CARDS_KEY, JSON.stringify(allCards));
           console.log(`✅ Card ${card.id} added to list`);
         } else {
-          console.log(`ℹ️ Card ${card.id} already in list, skipping`);
+          // Update existing card in list
+          const index = allCards.findIndex(c => c?.id === card.id);
+          if (index !== -1) {
+            allCards[index] = card;
+            await redisClient.set(CARDS_KEY, JSON.stringify(allCards));
+            console.log(`✅ Card ${card.id} updated in list`);
+          }
         }
       } catch (listError) {
         console.warn(`⚠️ Error updating list for card ${card.id}:`, listError);
@@ -168,20 +211,11 @@ export async function saveCardKV(card: Card): Promise<void> {
       console.log(`✅ Card ${card.id} fully saved to Redis`);
     } catch (error) {
       console.error('❌ Error saving card to Redis:', error);
-      // Fallback to in-memory on error
-      const exists = fallbackStore.find(c => c.id === card.id);
-      if (!exists) {
-        fallbackStore.push(card);
-        console.warn('📝 Card saved to in-memory fallback');
-      }
+      console.log(`📝 Card ${card.id} is still available in in-memory fallback`);
     }
   } else {
-    // Fallback to in-memory
-    console.warn('📝 Redis not available, using in-memory storage');
-    const exists = fallbackStore.find(c => c.id === card.id);
-    if (!exists) {
-      fallbackStore.push(card);
-    }
+    // Redis not available, but we already saved to fallback above
+    console.warn('📝 Redis not available, card saved to in-memory storage only');
   }
 }
 
@@ -203,14 +237,16 @@ export async function getAllCardsKV(): Promise<Card[]> {
     } catch (error) {
       console.error('❌ Error fetching cards from Redis:', error);
       // Fallback to in-memory
-      return fallbackStore.map((card) => ({
+      const fallbackStore = getFallbackStore();
+      return fallbackStore.map((card: Card) => ({
         ...card,
         createdAt: new Date(card.createdAt),
       }));
     }
   } else {
     // Fallback to in-memory
-    return fallbackStore.map((card) => ({
+    const fallbackStore = getFallbackStore();
+    return fallbackStore.map((card: Card) => ({
       ...card,
       createdAt: new Date(card.createdAt),
     }));
@@ -270,6 +306,7 @@ export async function getCardByIdKV(id: string): Promise<Card | null> {
     } catch (error) {
       console.error(`❌ Error fetching card ${id} from Redis:`, error);
       // Fallback to in-memory
+      const fallbackStore = getFallbackStore();
       const card = fallbackStore.find((card) => card.id === id);
       if (card) {
         console.log(`📝 Card ${id} found in in-memory fallback`);
@@ -283,11 +320,22 @@ export async function getCardByIdKV(id: string): Promise<Card | null> {
   } else {
     console.warn(`📝 Redis not available, checking in-memory for card ${id}`);
     // Fallback to in-memory
+    const fallbackStore = getFallbackStore();
+    console.log(`📊 In-memory fallback has ${fallbackStore.length} cards`);
+    if (fallbackStore.length > 0) {
+      console.log(`📋 Card IDs in fallback:`, fallbackStore.map(c => c.id));
+    }
     const card = fallbackStore.find((card) => card.id === id);
-    return card ? {
-      ...card,
-      createdAt: new Date(card.createdAt),
-    } : null;
+    if (card) {
+      console.log(`✅ Card ${id} found in in-memory fallback`);
+      return {
+        ...card,
+        createdAt: new Date(card.createdAt),
+      };
+    } else {
+      console.log(`❌ Card ${id} not found in in-memory fallback`);
+      return null;
+    }
   }
 }
 
@@ -329,6 +377,7 @@ export async function deleteCardKV(id: string): Promise<void> {
     } catch (error) {
       console.error(`❌ Error deleting card ${id} from Redis:`, error);
       // Fallback to in-memory
+      const fallbackStore = getFallbackStore();
       const index = fallbackStore.findIndex(c => c.id === id);
       if (index !== -1) {
         fallbackStore.splice(index, 1);
@@ -338,6 +387,7 @@ export async function deleteCardKV(id: string): Promise<void> {
   } else {
     // Fallback to in-memory
     console.warn('📝 Redis not available, deleting from in-memory storage');
+    const fallbackStore = getFallbackStore();
     const index = fallbackStore.findIndex(c => c.id === id);
     if (index !== -1) {
       fallbackStore.splice(index, 1);

@@ -6,7 +6,7 @@ import { nanoid } from 'nanoid';
 import BusinessCardForm from '@/components/BusinessCardForm';
 import { type BusinessCardFormData } from '@/lib/validation';
 import { type BusinessCard, BusinessCardStyle } from '@/types/card';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { saveCard } from '@/lib/cardStorage';
 import CardPreview from '@/components/CardPreview';
 import QRCodeDisplay from '@/components/QRCodeDisplay';
@@ -91,24 +91,31 @@ export default function CreateBusinessCardPage() {
     }
   };
 
-  const previewCard: BusinessCard | null = formData ? {
-    id: 'preview',
-    type: 'business',
-    style: selectedStyle,
-    data: {
-      name: formData.name,
-      title: formData.title,
-      company: formData.company,
-      email: formData.email,
-      date: new Date().toISOString(),
-      phone: formData.phone,
-      website: formData.website || undefined,
-      linkedin: formData.linkedin || undefined,
-      address: formData.address || undefined,
-      image: formData.image || undefined,
-    },
-    createdAt: new Date(),
-  } : null;
+  // Memoize preview card to prevent unnecessary re-renders that might lose image data
+  const previewCard: BusinessCard | null = useMemo(() => {
+    if (!formData) return null;
+    
+    return {
+      id: 'preview',
+      type: 'business' as const,
+      style: selectedStyle,
+      userId: 'preview-user', // Required field
+      data: {
+        name: formData.name || '',
+        title: formData.title || '',
+        company: formData.company || '',
+        email: formData.email || '',
+        date: new Date().toISOString(),
+        phone: formData.phone || '',
+        website: formData.website || undefined,
+        linkedin: formData.linkedin || undefined,
+        address: formData.address || undefined,
+        // Explicitly preserve image - don't use || undefined here as empty string is valid
+        image: formData.image && formData.image.trim() !== '' ? formData.image : undefined,
+      },
+      createdAt: new Date(),
+    };
+  }, [formData, selectedStyle]);
 
   const styleOptions: { value: BusinessCardStyle; label: string; description: string }[] = [
     { value: 'style1', label: 'Modern Minimalist', description: 'Clean white/black design' },

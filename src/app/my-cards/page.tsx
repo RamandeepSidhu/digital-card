@@ -203,16 +203,16 @@ export default function MyCardsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-zinc-50 to-white dark:from-zinc-900 dark:to-black">
+    <div className="min-h-screen bg-white">
       <Header />
-      <main className="max-w-6xl mx-auto py-12 px-4">
+      <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb Navigation */}
         <nav className="mb-6" aria-label="Breadcrumb">
-          <ol className="flex items-center space-x-2 text-sm text-zinc-600 dark:text-zinc-400">
+          <ol className="flex items-center space-x-2 text-sm text-gray-600">
             <li>
               <Link
                 href="/dashboard"
-                className="flex items-center gap-1.5 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+                className="flex items-center gap-1.5 hover:text-gray-900 transition-colors"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
@@ -221,20 +221,25 @@ export default function MyCardsPage() {
               </Link>
             </li>
             <li className="flex items-center">
-              <svg className="w-4 h-4 text-zinc-400 dark:text-zinc-600 mx-1" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="w-4 h-4 text-gray-400 mx-1" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
               </svg>
             </li>
             <li>
-              <span className="text-zinc-900 dark:text-zinc-100 font-medium">My Cards</span>
+              <span className="text-gray-900 font-medium">My Cards</span>
             </li>
           </ol>
         </nav>
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-zinc-900 dark:text-zinc-50 mb-2">
-            📋 My Cards
-          </h1>
+          <div className="flex items-center gap-3 mb-2">
+            <h1 className="text-4xl font-bold text-zinc-900 dark:text-zinc-50">
+              My Cards
+            </h1>
+            <svg className="w-6 h-6 text-zinc-600 dark:text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
           <p className="text-zinc-600 dark:text-zinc-400">
             Manage and access all your created digital cards
           </p>
@@ -246,23 +251,23 @@ export default function MyCardsPage() {
         </div>
 
         {cards.length === 0 ? (
-          <div className="bg-white dark:bg-zinc-800 rounded-lg shadow-lg p-12 text-center">
+          <div className="bg-white rounded-lg shadow-lg p-12 text-center">
             <div className="text-6xl mb-4">📭</div>
-            <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-2">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
               No Cards Yet
             </h2>
-            <p className="text-zinc-600 dark:text-zinc-400 mb-6">
+            <p className="text-gray-600 mb-6">
               Create your first digital card to get started!
             </p>
             <Link
-              href="/"
+              href="/create"
               className="inline-block px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium"
             >
               Create a Card
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
             {cards.slice(0, 6).map((card) => {
               const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
               const cardUrl = generateCardUrl(card.id, baseUrl);
@@ -277,51 +282,51 @@ export default function MyCardsPage() {
               return (
                 <div
                   key={card.id}
-                  className="relative group "
+                  className="relative group"
                   style={{ overflow: 'visible' }}
                 >
-                  {/* Card Preview */}
-                  <div className="relative p-4 bg-zinc-50 dark:bg-zinc-900" style={{ overflow: 'visible' }}>
-                    {/* <CardPreview card={card} /> */}
-                    <div className="relative" style={{ overflow: 'visible' }}>
+                  {/* Card Preview Container */}
+                  <div className="relative" style={{ overflow: 'visible' }}>
+                    {/* Card Preview */}
+                    <div className="relative">
                       <Link href={`/card/${card.id}`} className="block">
                         <CardPreview card={card} />
-                      </Link>   
+                      </Link>
                     </div>
-                    {/* Action Buttons - Edit and Remove */}
+                    
+                    {/* Action Buttons - Edit and Remove - Positioned on card */}
                     {!deleteConfirmId && (
-                      <div className="absolute top-4 right-4 flex gap-2 z-10">
+                      <div className="absolute top-2 right-2 flex gap-2 z-20">
                         {/* Edit Button */}
                         <Link
                           href={`/edit/${card.type}/${card.id}`}
                           onClick={(e) => e.stopPropagation()}
-                          className="p-2.5 text-white bg-purple-600 rounded-lg hover:bg-purple-700 shadow-lg flex items-center justify-center transition-all duration-200"
+                          className="p-2 text-white bg-purple-600 rounded-lg hover:bg-purple-700 shadow-lg flex items-center justify-center transition-all duration-200 opacity-90 hover:opacity-100"
                           title="Edit Card"
+                          onMouseEnter={(e) => e.stopPropagation()}
                         >
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                           </svg>
                         </Link>
-                        {/* Delete Button */}
+                        {/* Remove Button */}
                         <button
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
                             handleDeleteClick(card.id);
                           }}
-                          className="p-2.5 text-white bg-red-600 rounded-lg hover:bg-red-700 shadow-lg flex items-center justify-center transition-all duration-200"
+                          className="p-2 text-white bg-red-600 rounded-lg hover:bg-red-700 shadow-lg flex items-center justify-center transition-all duration-200 opacity-90 hover:opacity-100"
                           title="Remove Card"
                           onMouseEnter={(e) => e.stopPropagation()}
                         >
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                           </svg>
                         </button>
                       </div>
                     )}
                   </div>
-
-
                 </div>
               );
             })}
@@ -341,30 +346,30 @@ export default function MyCardsPage() {
 
         {/* Delete Confirmation Dialog */}
         {deleteConfirmId && (
-          <div className="fixed inset-0 bg-linear-to-br from-white/80 via-purple-50/80 to-white/80 dark:from-zinc-900/80 dark:via-purple-900/20 dark:to-zinc-900/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white dark:bg-zinc-800 rounded-lg shadow-xl max-w-md w-full p-6 border border-zinc-200 dark:border-zinc-700">
+          <div className="fixed inset-0 bg-gradient-to-br from-white/80 via-purple-50/80 to-white/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6 border border-gray-200">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
-                  <svg className="w-6 h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                  <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+                  <h3 className="text-lg font-semibold text-gray-900">
                     Delete Card
                   </h3>
-                  <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                  <p className="text-sm text-gray-600">
                     Are you sure you want to delete this card?
                   </p>
                 </div>
               </div>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-6">
+              <p className="text-sm text-gray-600 mb-6">
                 This action cannot be undone. The card will be permanently deleted.
               </p>
               <div className="flex gap-3 justify-end">
                 <button
                   onClick={handleDeleteCancel}
-                  className="px-4 py-2 bg-zinc-100 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-600 transition-colors font-medium"
+                  className="px-4 py-2 bg-gray-100 text-gray-900 rounded-lg hover:bg-gray-200 transition-colors font-medium"
                 >
                   Cancel
                 </button>

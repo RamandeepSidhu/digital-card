@@ -54,7 +54,7 @@ export default function OnboardingPage() {
     setCurrentStep('creating');
 
     try {
-      const businessCard: BusinessCard = {
+      const businessCard: BusinessCard | any = {
         id: nanoid(),
         type: 'business',
         style: 'style1',
@@ -154,16 +154,16 @@ export default function OnboardingPage() {
           ))}
         </div>
 
-        <div className="text-center z-10 relative">
+        <div className="text-center z-10 relative ">
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.5 }}
             className="mb-8"
           >
-            <div className="w-64 h-64 bg-white/20 backdrop-blur-sm rounded-3xl flex items-center justify-center mx-auto mb-6">
+            <div className="w-64 h-64 mt-20 bg-white/20 backdrop-blur-sm rounded-3xl flex items-center justify-center mx-auto mb-6">
               {previewCard && (
-                <div className="w-auto mb-100">
+                <div className="w-auto mb-50">
                   <CardPreview card={previewCard} />
                 </div>
               )}
@@ -213,7 +213,7 @@ export default function OnboardingPage() {
   return (
     <div className="min-h-screen bg-white flex">
       {/* Left Side - Preview */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800 relative overflow-hidden items-center justify-center p-8">
+      <div className="hidden lg:flex lg:w-1/2 bg-linear-to-br from-purple-600 via-purple-700 to-indigo-800 relative overflow-hidden items-center justify-center p-8">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute -left-40 -top-40 w-80 h-80 bg-white rounded-full blur-3xl"></div>
           <div className="absolute -right-40 -bottom-40 w-80 h-80 bg-white rounded-full blur-3xl"></div>
@@ -378,16 +378,16 @@ export default function OnboardingPage() {
                 <h2 className="text-3xl font-bold text-gray-900 mb-2">Make your card stand out 📸</h2>
                 <p className="text-gray-600 mb-6">Add a photo of yourself</p>
                 <div className="mb-6">
-                  <label className="block w-full h-48 border-2 border-dashed border-gray-300 rounded-xl flex-col items-center justify-center cursor-pointer hover:border-purple-600 transition-colors">
+                  <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-purple-600 transition-colors overflow-hidden">
                     {photo ? (
                       <img src={photo} alt="Preview" className="w-full h-full object-cover rounded-xl" />
                     ) : (
-                      <>
+                      <div className="flex flex-col items-center justify-center">
                         <svg className="w-16 h-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
                         <span className="text-gray-600">Upload a photo</span>
-                      </>
+                      </div>
                     )}
                     <input
                       type="file"

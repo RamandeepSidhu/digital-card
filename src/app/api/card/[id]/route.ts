@@ -44,20 +44,52 @@ export async function GET(
     }
 
     console.log(`[API /card/${id}] ✅ Card found and returned`);
+    
+    // Log image data for debugging
+    if (card.type === 'business' && card.data) {
+      const hasImage = card.data.image && typeof card.data.image === 'string' && card.data.image.trim() !== '';
+      console.log(`[API /card/${id}] Image data: ${hasImage ? 'Present' : 'Missing'}, type: ${typeof card.data.image}, length: ${typeof card.data.image === 'string' ? card.data.image.length : 0}`);
+      
+      // Ensure image is explicitly included in response
+      if (hasImage) {
+        console.log(`[API /card/${id}] Image preview: ${card.data.image.substring(0, 50)}...`);
+      }
+    }
 
     // Generate card URL
     const baseUrl = request.nextUrl.origin;
     const cardUrl = `${baseUrl}/card/${card.id}`;
 
+    // Explicitly structure the response to ensure image data is included
+    const responseCard = {
+      ...card,
+      data: card.type === 'business' || card.type === 'personal' 
+        ? {
+            ...card.data,
+            // Explicitly include image to ensure it's not lost during serialization
+            image: (card.data as any).image || undefined,
+          }
+        : card.data,
+      url: cardUrl,
+    };
+
+    if (card.type === 'business' || card.type === 'personal') {
+      const imageData = (responseCard.data as any).image;
+      console.log(`[API /card/${id}] Response card has image: ${!!imageData}, type: ${typeof imageData}`);
+    }
+
     return NextResponse.json({
       success: true,
-      card: {
-        ...card,
-        url: cardUrl,
-      },
+      card: responseCard,
     });
   } catch (error) {
-    const { id: errorId } = await params;
+    let errorId = 'unknown';
+    try {
+      const resolvedParams = await params;
+      errorId = resolvedParams.id || 'unknown';
+    } catch {
+      // If params can't be resolved, use 'unknown'
+    }
     console.error(`[API /card/${errorId}] Error fetching card:`, error);
     return NextResponse.json(
       { 

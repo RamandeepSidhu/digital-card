@@ -1,6 +1,6 @@
 'use client';
 import { BusinessCard } from '@/types/card';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface StyleOneProps {
   card: BusinessCard;
@@ -10,8 +10,23 @@ export default function StyleOne({ card }: StyleOneProps) {
   const { data } = card;
   const [imageError, setImageError] = useState(false);
   
+  // Debug: Log image data only once per card/image combination
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const logKey = `__styleone_logged_${card.id}_${data.image ? data.image.substring(0, 20) : 'noimage'}`;
+      if (!(window as any)[logKey]) {
+        console.log(`[StyleOne Card ${card.id}] Image check:`, {
+          hasImage: !!data.image,
+          type: typeof data.image,
+          length: typeof data.image === 'string' ? data.image.length : 0,
+        });
+        (window as any)[logKey] = true;
+      }
+    }
+  }, [card.id, data.image]);
+  
   // Check if image exists and is valid
-  const hasImage = data.image && data.image.trim() !== '' && !imageError;
+  const hasImage = data.image && typeof data.image === 'string' && data.image.trim() !== '' && !imageError;
   
   return (
     <div className="max-w-sm mx-auto bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-100">

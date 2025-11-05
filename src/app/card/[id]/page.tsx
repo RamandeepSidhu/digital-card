@@ -7,7 +7,6 @@ import CardPreview from '@/components/CardPreview';
 import QRCodeDisplay from '@/components/QRCodeDisplay';
 import { Card } from '@/types/card';
 import ContactDownload from '@/components/ContactDownload';
-import { getCardById, deleteCard } from '@/lib/cardStorage';
 import Header from '@/components/Header';
 import Link from 'next/link';
 
@@ -26,59 +25,73 @@ export default function CardPage() {
 
   useEffect(() => {
     async function fetchCard() {
-      // Try API first (works with Vercel KV persistent storage)
-      // This allows cards to work across devices
+      // Fetch card from API only (no localStorage fallback)
+      console.log(`[Card Detail Page] Fetching card with ID: ${id}`);
       try {
-        const response = await fetch(`/api/card/${id}`);
-        if (response.ok) {
-          const data = await response.json();
-          setCard(data.card);
-          
-          // Also save to localStorage for offline access
-          if (typeof window !== 'undefined' && data.card) {
-            const { saveCard } = await import('@/lib/cardStorage');
-            saveCard(data.card);
+        const apiUrl = `/api/card/${id}`;
+        console.log(`[Card Detail Page] Calling API: ${apiUrl}`);
+        
+        const response = await fetch(apiUrl);
+        
+        console.log(`[Card Detail Page] API response status: ${response.status}, ok: ${response.ok}`);
+        
+        if (!response.ok) {
+          if (response.status === 404) {
+            const errorData = await response.json().catch(() => ({}));
+            const hasRedis = errorData?.debug?.redisConnected;
+            
+            if (!hasRedis) {
+              setError('Card not found. Redis is not connected. Please ensure KV_REST_API_URL and KV_REST_API_TOKEN are set in Vercel environment variables and redeploy the app.');
+            } else {
+              setError('Card not found. This card may have been deleted or does not exist.');
+            }
+          } else {
+            setError('Failed to load card. Please try again later.');
           }
-          
           setLoading(false);
           return;
         }
 
-        // API returned 404 - try localStorage as fallback
-        if (response.status === 404 && typeof window !== 'undefined') {
-          const localCard = getCardById(id);
-          if (localCard) {
-            setCard(localCard);
-            setLoading(false);
-            return;
-          }
+        const data = await response.json();
+        
+        if (!data.card) {
+          setError('Card data is invalid. Please try again.');
+          setLoading(false);
+          return;
         }
 
-        // Card not found anywhere
-        if (response.status === 404) {
-          const errorData = await response.json().catch(() => ({}));
-          const hasRedis = errorData?.debug?.redisConnected;
-          
-          if (!hasRedis) {
-            setError('Card not found. Redis is not connected. Please ensure KV_REST_API_URL and KV_REST_API_TOKEN are set in Vercel environment variables and redeploy the app. Note: Cards created before Redis setup will not be accessible.');
-          } else {
-            setError('Card not found. This card may have been created before Redis was set up, or it was created on a different device. Please create a new card after Redis is configured.');
-          }
-        } else {
-          setError('Card not found. Please check if the card ID is correct.');
+        // Debug: Log image data
+        if (data.card && data.card.type === 'business' && data.card.data) {
+          const hasImage = data.card.data.image && typeof data.card.data.image === 'string' && data.card.data.image.trim() !== '';
+          console.log(`[Card Detail Page] Image data: ${hasImage ? 'Present' : 'Missing'}, type: ${typeof data.card.data.image}, length: ${data.card.data.image?.length || 0}`);
+          console.log(`[Card Detail Page] Full card data structure:`, {
+            hasData: !!data.card.data,
+            hasImage: !!data.card.data.image,
+            imageType: typeof data.card.data.image,
+            imagePreview: typeof data.card.data.image === 'string' ? data.card.data.image.substring(0, 50) + '...' : 'N/A'
+          });
         }
+        
+        // Ensure card data structure is preserved
+        const cardToSet = {
+          ...data.card,
+          data: {
+            ...data.card.data,
+            // Explicitly preserve image if it exists
+            image: data.card.data?.image || undefined,
+          },
+        };
+        
+        console.log(`[Card Detail Page] Setting card with image:`, {
+          hasImage: !!cardToSet.data?.image,
+          imageType: typeof cardToSet.data?.image,
+        });
+        
+        setCard(cardToSet);
+        setLoading(false);
       } catch (err) {
-        // Network error - try localStorage as fallback
-        if (typeof window !== 'undefined') {
-          const localCard = getCardById(id);
-          if (localCard) {
-            setCard(localCard);
-            setLoading(false);
-            return;
-          }
-        }
-        setError('Unable to load card. Please check your internet connection.');
-      } finally {
+        console.error('Error fetching card:', err);
+        setError('Unable to load card. Please check your internet connection and try again.');
         setLoading(false);
       }
     }
@@ -145,28 +158,21 @@ export default function CardPage() {
     setDeleteConfirmId(null);
     
     try {
-      // Delete from API (Redis)
-      await fetch(`/api/cards/${cardId}`, {
+      // Delete from API (Redis) only
+      const response = await fetch(`/api/cards/${cardId}`, {
         method: 'DELETE',
       });
       
-      // Delete from localStorage
-      const success = deleteCard(cardId);
-      
-      if (success) {
+      if (response.ok) {
         // Redirect to dashboard after successful deletion
         router.push('/dashboard');
       } else {
-        // Still redirect even if localStorage deletion fails
-        router.push('/dashboard');
+        const errorData = await response.json().catch(() => ({}));
+        setError(errorData.error || 'Failed to delete card. Please try again.');
       }
     } catch (err) {
       console.error('Error deleting card:', err);
-      // Still try to delete from localStorage
-      const success = deleteCard(cardId);
-      if (success) {
-        router.push('/dashboard');
-      }
+      setError('Unable to delete card. Please check your internet connection and try again.');
     }
   };
 
@@ -218,31 +224,8 @@ export default function CardPage() {
           </nav>
           
           <div className="flex items-center gap-3">
-            {/* Only show Edit and Remove buttons if user is the owner */}
-            {isOwner && (
-              <>
-                {!deleteConfirmId && (
-                  <button
-                    onClick={handleDeleteClick}
-                    className="inline-flex items-center gap-2 px-4 h-[40px] py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium text-sm whitespace-nowrap"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                    Remove Card
-                  </button>
-                )}
-                <Link
-                  href={`/edit/${card.type}/${card.id}`}
-                  className="inline-flex items-center gap-2 px-4 h-[40px] py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium text-sm whitespace-nowrap"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                  </svg>
-                  Edit Card
-                </Link>
-              </>
-            )}
+            {/* Edit and Remove buttons hidden on QR page */}
+            {/* Only show Add to Contacts button for business/personal cards */}
             {(card.type === 'business' || card.type === 'personal') && (
               <div className="w-full max-w-sm">
                 <ContactDownload card={card} variant="default" />
@@ -256,7 +239,9 @@ export default function CardPage() {
           {/* Card Display */}
           <div className="flex items-center justify-center">
             <div className="w-full max-w-md">
-              <CardPreview card={card} />
+              {card && (
+                  <CardPreview card={card} />
+              )}
             </div>
           </div>
 

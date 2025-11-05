@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { authenticateUser } from './test-helpers';
 
 test.describe('Form Submission', () => {
   test('should display business card form with all fields', async ({ page }) => {
@@ -35,6 +36,9 @@ test.describe('Form Submission', () => {
   });
 
   test('should fill and submit business card form successfully', async ({ page }) => {
+    // Authenticate first (required for card creation)
+    await authenticateUser(page);
+    
     await page.goto('/create/business');
     
     // Fill in required fields
@@ -91,6 +95,9 @@ test.describe('Form Submission', () => {
   });
 
   test('should fill and submit bank card form successfully', async ({ page }) => {
+    // Authenticate first (required for card creation)
+    await authenticateUser(page);
+    
     await page.goto('/create/bank');
     
     // Fill in required fields
