@@ -50,7 +50,7 @@ export default function CreateBusinessCardPage() {
     setError(null);
 
     try {
-      const businessCard: BusinessCard = {
+      const businessCard: BusinessCard | any = {
         id: nanoid(),
         type: 'business',
         style: selectedStyle,
@@ -271,7 +271,7 @@ export default function CreateBusinessCardPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {styleOptions.map((option) => {
                 // Create a preview card for each style
-                const previewCard: BusinessCard = {
+                const previewCard: BusinessCard | any = {
                   id: 'preview',
                   type: 'business',
                   style: option.value,
