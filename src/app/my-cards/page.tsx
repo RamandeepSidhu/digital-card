@@ -282,7 +282,12 @@ export default function MyCardsPage() {
                 >
                   {/* Card Preview */}
                   <div className="relative p-4 bg-zinc-50 dark:bg-zinc-900" style={{ overflow: 'visible' }}>
-                    <CardPreview card={card} />
+                    {/* <CardPreview card={card} /> */}
+                    <div className="relative" style={{ overflow: 'visible' }}>
+                      <Link href={`/card/${card.id}`} className="block">
+                        <CardPreview card={card} />
+                      </Link>   
+                    </div>
                     {/* Delete Button - Shows on hover, hidden when modal is open */}
                     {!deleteConfirmId && (
                       <button
