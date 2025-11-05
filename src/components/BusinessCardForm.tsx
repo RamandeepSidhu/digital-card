@@ -12,6 +12,7 @@ interface BusinessCardFormProps {
   isLoading?: boolean;
   defaultStyle?: BusinessCardStyle;
   onFormChange?: (data: BusinessCardFormData) => void;
+  defaultValues?: Partial<BusinessCardFormData>;
 }
 
 const styleOptions: { value: BusinessCardStyle; label: string; description: string }[] = [
@@ -20,19 +21,27 @@ const styleOptions: { value: BusinessCardStyle; label: string; description: stri
   { value: 'style3', label: 'Creative Gradient', description: 'Colorful gradients, bold typography' },
 ];
 
-export default function BusinessCardForm({ onSubmit, isLoading = false, defaultStyle = 'style1', onFormChange }: BusinessCardFormProps) {
+export default function BusinessCardForm({ onSubmit, isLoading = false, defaultStyle = 'style1', onFormChange, defaultValues }: BusinessCardFormProps) {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
     watch,
     setValue,
+    reset,
   } = useForm<BusinessCardFormData>({
     resolver: zodResolver(businessCardSchema),
-    defaultValues: {
+    defaultValues: defaultValues || {
       style: defaultStyle,
     },
   });
+
+  // Update form when defaultValues change (for edit mode)
+  useEffect(() => {
+    if (defaultValues) {
+      reset(defaultValues);
+    }
+  }, [defaultValues, reset]);
 
   const selectedStyle = watch('style');
   const imageValue = watch('image');

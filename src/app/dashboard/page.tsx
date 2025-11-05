@@ -194,7 +194,7 @@ export default function DashboardPage() {
                     }}
                   >
                     <div className="relative" style={{ overflow: 'visible' }}>
-                      <Link href={`/card/${card.id}`} className="block">
+                      <Link href={`/edit/${card.type}/${card.id}`} className="block cursor-pointer group/card">
                         <CardPreview card={card} />
                       </Link>
                       {/* Delete Button - Shows on hover, hidden when modal is open */}
@@ -211,7 +211,7 @@ export default function DashboardPage() {
                             position: 'absolute',
                             top: '12px',
                             right: '12px',
-                            zIndex: 10000,
+                            zIndex: 0,
                             pointerEvents: 'auto'
                           }}
                           onMouseEnter={(e) => e.stopPropagation()}

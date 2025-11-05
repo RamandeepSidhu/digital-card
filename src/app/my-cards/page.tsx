@@ -297,7 +297,7 @@ export default function MyCardsPage() {
                           position: 'absolute',
                           top: '24px',
                           right: '24px',
-                          zIndex: 10000,
+                          zIndex: 0,
                           pointerEvents: 'auto'
                         }}
                         onMouseEnter={(e) => e.stopPropagation()}
