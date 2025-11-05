@@ -22,12 +22,55 @@ export default function OnboardingPage() {
   const [phone, setPhone] = useState('');
   const [photo, setPhoto] = useState<string>('');
   const [isCreating, setIsCreating] = useState(false);
+  const [checkingCards, setCheckingCards] = useState(true);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/auth/signin');
+      setCheckingCards(false);
+      return;
     }
-  }, [status, router]);
+
+    // If user is authenticated, check if they already have cards
+    if (status === 'authenticated' && session?.user?.id) {
+      const userId = session.user.id; // Store userId outside async function
+      
+      async function checkExistingCards() {
+        try {
+          setCheckingCards(true);
+          const response = await fetch('/api/cards');
+          if (response.ok) {
+            const data = await response.json();
+            const cards: any[] = data.cards || [];
+            
+            // Filter to only count real cards (not example/test cards)
+            const realCards = cards.filter(
+              (card) => 
+                card.userId === userId &&
+                !card.id.startsWith('example-') && 
+                !card.id.startsWith('test-') && 
+                card.data
+            );
+            
+            // If user already has cards (length >= 1), redirect to dashboard
+            if (realCards.length >= 1) {
+              router.push('/dashboard');
+              return;
+            }
+          }
+        } catch (error) {
+          console.error('Error checking existing cards:', error);
+          // If check fails, still show onboarding (better UX)
+        } finally {
+          setCheckingCards(false);
+        }
+      }
+      
+      checkExistingCards();
+    } else {
+      setCheckingCards(false);
+    }
+  }, [status, session, router]);
 
   useEffect(() => {
     if (session?.user?.email) {
@@ -58,6 +101,7 @@ export default function OnboardingPage() {
         id: nanoid(),
         type: 'business',
         style: 'style1',
+        userId: session?.user?.id || '', // Ensure userId is set
         data: {
           name,
           title: title || 'Professional',
@@ -107,7 +151,7 @@ export default function OnboardingPage() {
     createdAt: new Date(),
   } : null;
 
-  if (status === 'loading') {
+  if (status === 'loading' || checkingCards) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
