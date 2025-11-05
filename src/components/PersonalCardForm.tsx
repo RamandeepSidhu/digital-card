@@ -12,6 +12,7 @@ interface PersonalCardFormProps {
   isLoading?: boolean;
   defaultStyle?: PersonalCardStyle;
   onFormChange?: (data: PersonalCardFormData) => void;
+  defaultValues?: Partial<PersonalCardFormData>;
 }
 
 const styleOptions: { value: PersonalCardStyle; label: string; description: string }[] = [
@@ -20,20 +21,28 @@ const styleOptions: { value: PersonalCardStyle; label: string; description: stri
   { value: 'style3', label: 'Elegant Classic', description: 'Timeless design with subtle accents' },
 ];
 
-export default function PersonalCardForm({ onSubmit, isLoading = false, defaultStyle = 'style1', onFormChange }: PersonalCardFormProps) {
+export default function PersonalCardForm({ onSubmit, isLoading = false, defaultStyle = 'style1', onFormChange, defaultValues }: PersonalCardFormProps) {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
     watch,
     setValue,
+    reset,
   } = useForm<PersonalCardFormData>({
     resolver: zodResolver(personalCardSchema),
-    defaultValues: {
+    defaultValues: defaultValues || {
       style: defaultStyle,
       socialMedia: {},
     },
   });
+
+  // Update form when defaultValues change (for edit mode)
+  useEffect(() => {
+    if (defaultValues) {
+      reset(defaultValues);
+    }
+  }, [defaultValues, reset]);
 
   const imageValue = watch('image');
   

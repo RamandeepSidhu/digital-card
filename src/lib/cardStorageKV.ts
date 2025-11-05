@@ -290,5 +290,56 @@ export async function getCardByIdKV(id: string): Promise<Card | null> {
   }
 }
 
-// Note: deleteCardKV is not currently used (deletion only works via localStorage)
-// Can be added later if server-side deletion API is needed
+/**
+ * Delete a card from storage
+ */
+export async function deleteCardKV(id: string): Promise<void> {
+  const redisClient = await initRedis();
+  
+  if (redisClient) {
+    try {
+      console.log(`🗑️ Deleting card ${id} from Redis...`);
+      
+      // Strategy 1: Delete individual key
+      await redisClient.del(`${CARD_PREFIX}${id}`);
+      console.log(`✅ Card ${id} deleted from individual key`);
+      
+      // Strategy 2: Remove from list
+      try {
+        const allCardsData = await redisClient.get(CARDS_KEY);
+        if (allCardsData) {
+          let allCards: Card[] = typeof allCardsData === 'string' ? JSON.parse(allCardsData) : allCardsData;
+          if (!Array.isArray(allCards)) {
+            allCards = [];
+          }
+          
+          const filteredCards = allCards.filter(c => c?.id !== id);
+          if (filteredCards.length !== allCards.length) {
+            await redisClient.set(CARDS_KEY, JSON.stringify(filteredCards));
+            console.log(`✅ Card ${id} removed from list`);
+          }
+        }
+      } catch (listError) {
+        console.warn(`⚠️ Error updating list for card ${id}:`, listError);
+        // Individual key deletion succeeded, so continue
+      }
+      
+      console.log(`✅ Card ${id} fully deleted from Redis`);
+    } catch (error) {
+      console.error(`❌ Error deleting card ${id} from Redis:`, error);
+      // Fallback to in-memory
+      const index = fallbackStore.findIndex(c => c.id === id);
+      if (index !== -1) {
+        fallbackStore.splice(index, 1);
+        console.warn('📝 Card deleted from in-memory fallback');
+      }
+    }
+  } else {
+    // Fallback to in-memory
+    console.warn('📝 Redis not available, deleting from in-memory storage');
+    const index = fallbackStore.findIndex(c => c.id === id);
+    if (index !== -1) {
+      fallbackStore.splice(index, 1);
+    }
+  }
+}

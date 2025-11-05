@@ -14,19 +14,27 @@ interface BankCardFormProps {
   onFormChange?: (data: BankCardFormData) => void;
 }
 
-export default function BankCardForm({ onSubmit, isLoading = false, defaultStyle = 'style1', onFormChange }: BankCardFormProps) {
+export default function BankCardForm({ onSubmit, isLoading = false, defaultStyle = 'style1', onFormChange, defaultValues }: BankCardFormProps) {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
     watch,
     setValue,
+    reset,
   } = useForm<BankCardFormData>({
     resolver: zodResolver(bankCardSchema),
-    defaultValues: {
+    defaultValues: defaultValues || {
       style: defaultStyle,
     },
   });
+
+  // Update form when defaultValues change (for edit mode)
+  useEffect(() => {
+    if (defaultValues) {
+      reset(defaultValues);
+    }
+  }, [defaultValues, reset]);
 
   const logoValue = watch('logo');
   

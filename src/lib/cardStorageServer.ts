@@ -18,3 +18,8 @@ export async function getCardByIdServer(id: string): Promise<Card | null> {
   return await getCardByIdKV(id);
 }
 
+export async function deleteCardServer(id: string): Promise<void> {
+  const { deleteCardKV } = await import('./cardStorageKV');
+  await deleteCardKV(id);
+}
+
