@@ -11,6 +11,25 @@ export default function CreateCardPage() {
     <div className="min-h-screen bg-linear-to-br from-zinc-50 via-purple-50/30 to-white dark:from-zinc-900 dark:via-purple-900/10 dark:to-black">
       <Header />
       <main className="w-full max-w-4xl mx-auto py-12 px-4">
+        {/* Breadcrumb Navigation */}
+        <nav className="mb-6" aria-label="Breadcrumb">
+          <ol className="flex items-center space-x-2 text-sm">
+            <li>
+              <Link
+                href="/dashboard"
+                className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
+              >
+                Dashboard
+              </Link>
+            </li>
+            <li>
+              <svg className="w-4 h-4 text-zinc-400 dark:text-zinc-600" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+              </svg>
+            </li>
+            <li className="text-zinc-900 dark:text-zinc-100 font-medium">Create Card</li>
+          </ol>
+        </nav>
         <div className="mb-8">
           <div className="text-center mb-8">
             <h1 className="text-4xl sm:text-5xl font-bold text-zinc-900 dark:text-zinc-50 mb-2">
@@ -23,14 +42,11 @@ export default function CreateCardPage() {
         </div>
 
         {/* Card Type Selection */}
-        <div className="bg-white dark:bg-zinc-800 rounded-2xl p-6 sm:p-8 shadow-xl border border-zinc-200 dark:border-zinc-700">
-          <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-8 text-center">
-            Choose Card Type
-          </h2>
+        <div className="mt-10">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             <Link
               href="/create/business"
-              className="group cursor-pointer relative p-8 border-2 border-gray-200 dark:border-zinc-700 rounded-2xl transition-all text-center hover:shadow-xl hover:border-purple-300 dark:hover:border-purple-600"
+              className="group cursor-pointer relative p-5 border-2 border-gray-200 dark:border-zinc-700 rounded-2xl transition-all text-center hover:shadow-xl hover:border-purple-300 dark:hover:border-purple-600"
             >
               <div className="mb-6">
                 <div className="w-20 h-20 bg-linear-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform">
@@ -53,7 +69,7 @@ export default function CreateCardPage() {
 
             <Link
               href="/create/personal"
-              className="group cursor-pointer relative p-8 border-2 border-gray-200 dark:border-zinc-700 rounded-2xl transition-all text-center hover:shadow-xl hover:border-blue-300 dark:hover:border-blue-600"
+              className="group cursor-pointer relative p-5 border-2 border-gray-200 dark:border-zinc-700 rounded-2xl transition-all text-center hover:shadow-xl hover:border-blue-300 dark:hover:border-blue-600"
             >
               <div className="mb-6">
                 <div className="w-20 h-20 bg-linear-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform">
@@ -76,7 +92,7 @@ export default function CreateCardPage() {
 
             <Link
               href="/create/bank"
-              className="group cursor-pointer relative p-8 border-2 border-gray-200 dark:border-zinc-700 rounded-2xl transition-all text-center hover:shadow-xl hover:border-green-300 dark:hover:border-green-600"
+              className="group cursor-pointer relative p-5 border-2 border-gray-200 dark:border-zinc-700 rounded-2xl transition-all text-center hover:shadow-xl hover:border-green-300 dark:hover:border-green-600"
             >
               <div className="mb-6">
                 <div className="w-20 h-20 bg-linear-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform">

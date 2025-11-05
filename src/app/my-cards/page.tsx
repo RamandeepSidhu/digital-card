@@ -160,17 +160,27 @@ export default function MyCardsPage() {
     <div className="min-h-screen bg-linear-to-br from-zinc-50 to-white dark:from-zinc-900 dark:to-black">
       <Header />
       <main className="max-w-6xl mx-auto py-12 px-4">
+        {/* Breadcrumb Navigation */}
+        <nav className="mb-6" aria-label="Breadcrumb">
+          <ol className="flex items-center space-x-2 text-sm">
+            <li>
+              <Link
+                href="/dashboard"
+                className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
+              >
+                Dashboard
+              </Link>
+            </li>
+            <li>
+              <svg className="w-4 h-4 text-zinc-400 dark:text-zinc-600" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+              </svg>
+            </li>
+            <li className="text-zinc-900 dark:text-zinc-100 font-medium">My Cards</li>
+          </ol>
+        </nav>
         {/* Header */}
         <div className="mb-8">
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors mb-6"
-          >
-            <svg className="mr-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            Back to Home
-          </Link>
           <h1 className="text-4xl font-bold text-zinc-900 dark:text-zinc-50 mb-2">
             📋 My Cards
           </h1>

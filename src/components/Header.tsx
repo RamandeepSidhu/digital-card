@@ -4,11 +4,7 @@ import { useSession, signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-interface HeaderProps {
-  showNewCardButton?: boolean;
-}
-
-export default function Header({ showNewCardButton = false }: HeaderProps) {
+export default function Header() {
   const { data: session, status } = useSession();
   const router = useRouter();
 
@@ -25,27 +21,25 @@ export default function Header({ showNewCardButton = false }: HeaderProps) {
           <div className="flex items-center gap-3">
             {status === 'authenticated' && session && (
               <>
-                {showNewCardButton && (
-                  <Link
-                    href="/create"
-                    className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 transition-colors shadow-sm hover:shadow-md text-sm"
+                <Link
+                  href="/create"
+                  className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 transition-colors shadow-sm hover:shadow-md text-sm"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
                   >
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 4v16m8-8H4"
-                      />
-                    </svg>
-                    New Card
-                  </Link>
-                )}
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 4v16m8-8H4"
+                    />
+                  </svg>
+                  New Card
+                </Link>
                 <div className="flex items-center gap-2 px-3 py-1.5">
                   <div className="w-8 h-8 bg-linear-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-xs">
                     {session.user?.name?.charAt(0).toUpperCase() ||

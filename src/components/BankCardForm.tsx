@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { bankCardSchema, type BankCardFormData } from '@/lib/validation';
@@ -29,18 +29,43 @@ export default function BankCardForm({ onSubmit, isLoading = false, defaultStyle
   });
 
   const logoValue = watch('logo');
-  const watchedValues = watch();
+  
+  // Watch specific fields to avoid infinite loops
+  const accountHolder = watch('accountHolder');
+  const bankName = watch('bankName');
+  const accountNumber = watch('accountNumber');
+  const ifscCode = watch('ifscCode');
+  const routingNumber = watch('routingNumber');
+  const upiId = watch('upiId');
+  const logo = watch('logo');
+
+  // Use ref to track previous values and prevent unnecessary updates
+  const prevValuesRef = useRef<string>('');
 
   // Update live preview when form values change
   useEffect(() => {
     if (onFormChange) {
       const formData: BankCardFormData = {
-        ...watchedValues,
+        accountHolder: accountHolder || '',
+        bankName: bankName || '',
+        accountNumber: accountNumber || '',
+        ifscCode: ifscCode || '',
+        routingNumber: routingNumber || '',
+        upiId: upiId || '',
+        logo: logo || '',
         style: defaultStyle,
       };
-      onFormChange(formData);
+      
+      // Create a string representation to compare
+      const currentValues = JSON.stringify(formData);
+      
+      // Only call onFormChange if values actually changed
+      if (currentValues !== prevValuesRef.current) {
+        prevValuesRef.current = currentValues;
+        onFormChange(formData);
+      }
     }
-  }, [watchedValues, defaultStyle, onFormChange]);
+  }, [accountHolder, bankName, accountNumber, ifscCode, routingNumber, upiId, logo, defaultStyle, onFormChange]);
 
   const onFormSubmit = async (data: BankCardFormData) => {
     await onSubmit(data);

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { businessCardSchema, type BusinessCardFormData } from '@/lib/validation';
@@ -36,18 +36,47 @@ export default function BusinessCardForm({ onSubmit, isLoading = false, defaultS
 
   const selectedStyle = watch('style');
   const imageValue = watch('image');
-  const watchedValues = watch();
+  
+  // Watch specific fields to avoid infinite loops
+  const name = watch('name');
+  const title = watch('title');
+  const company = watch('company');
+  const email = watch('email');
+  const phone = watch('phone');
+  const website = watch('website');
+  const linkedin = watch('linkedin');
+  const address = watch('address');
+  const image = watch('image');
+
+  // Use ref to track previous values and prevent unnecessary updates
+  const prevValuesRef = useRef<string>('');
 
   // Update live preview when form values change
   useEffect(() => {
     if (onFormChange) {
       const formData: BusinessCardFormData = {
-        ...watchedValues,
+        name: name || '',
+        title: title || '',
+        company: company || '',
+        email: email || '',
+        phone: phone || '',
+        website: website || '',
+        linkedin: linkedin || '',
+        address: address || '',
+        image: image || '',
         style: selectedStyle,
       };
-      onFormChange(formData);
+      
+      // Create a string representation to compare
+      const currentValues = JSON.stringify(formData);
+      
+      // Only call onFormChange if values actually changed
+      if (currentValues !== prevValuesRef.current) {
+        prevValuesRef.current = currentValues;
+        onFormChange(formData);
+      }
     }
-  }, [watchedValues, selectedStyle, onFormChange]);
+  }, [name, title, company, email, phone, website, linkedin, address, image, selectedStyle, onFormChange]);
 
   const onFormSubmit = async (data: BusinessCardFormData) => {
     await onSubmit(data);

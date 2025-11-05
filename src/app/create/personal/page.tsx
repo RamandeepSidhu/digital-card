@@ -1,11 +1,12 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { nanoid } from 'nanoid';
 import PersonalCardForm from '@/components/PersonalCardForm';
 import { type PersonalCardFormData } from '@/lib/validation';
 import { type PersonalCard, PersonalCardStyle } from '@/types/card';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { saveCard } from '@/lib/cardStorage';
 import CardPreview from '@/components/CardPreview';
 import QRCodeDisplay from '@/components/QRCodeDisplay';
@@ -25,6 +26,23 @@ export default function CreatePersonalCardPage() {
 
   const handleStyleSelect = (style: PersonalCardStyle) => {
     setSelectedStyle(style);
+    // Initialize formData with empty values so preview shows immediately
+    if (!formData) {
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        address: '',
+        birthday: '',
+        website: '',
+        image: '',
+        socialMedia: {},
+        style: style,
+      });
+    } else {
+      // Update existing formData with new style
+      setFormData({ ...formData, style: style });
+    }
     setCurrentStep('form');
   };
 
@@ -35,11 +53,11 @@ export default function CreatePersonalCardPage() {
     setCurrentStep('preview');
   };
 
-  const handleFormChange = (data: PersonalCardFormData) => {
+  const handleFormChange = useCallback((data: PersonalCardFormData) => {
     // Update form data for live preview
-    data.style = selectedStyle;
-    setFormData(data);
-  };
+    const updatedData = { ...data, style: selectedStyle };
+    setFormData(updatedData);
+  }, [selectedStyle]);
 
   const handleCreateCard = async () => {
     if (!formData) return;
@@ -120,29 +138,127 @@ export default function CreatePersonalCardPage() {
       <Header />
       <main className="w-full max-w-6xl mx-auto py-12 px-4">
         <div className="mb-8">
-          {currentStep !== 'style' && (
-            <button
-              onClick={() => {
-                if (currentStep === 'form') {
-                  setCurrentStep('style');
-                } else if (currentStep === 'preview') {
-                  setCurrentStep('form');
-                }
-              }}
-              className="cursor-pointer inline-flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors mb-6 group"
-            >
-              <svg
-                className="w-5 h-5 transform group-hover:-translate-x-1 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              {currentStep === 'form' && 'Back to Style Selection'}
-              {currentStep === 'preview' && 'Back to Form'}
-            </button>
-          )}
+          {/* Breadcrumb Navigation with Action Buttons */}
+          <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
+            <nav aria-label="Breadcrumb">
+              <ol className="flex items-center space-x-2 text-sm">
+                <li>
+                  <Link
+                    href="/dashboard"
+                    className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
+                  >
+                    Dashboard
+                  </Link>
+                </li>
+                {currentStep !== 'style' && (
+                  <>
+                    <li>
+                      <svg className="w-4 h-4 text-zinc-400 dark:text-zinc-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </li>
+                    <li>
+                      <button
+                        onClick={() => setCurrentStep('style')}
+                        className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors cursor-pointer"
+                      >
+                        Style Selection
+                      </button>
+                    </li>
+                  </>
+                )}
+                {currentStep === 'form' && (
+                  <>
+                    <li>
+                      <svg className="w-4 h-4 text-zinc-400 dark:text-zinc-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </li>
+                    <li className="text-zinc-900 dark:text-zinc-100 font-medium">Form</li>
+                  </>
+                )}
+                {currentStep === 'preview' && (
+                  <>
+                    <li>
+                      <svg className="w-4 h-4 text-zinc-400 dark:text-zinc-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </li>
+                    <li>
+                      <button
+                        onClick={() => setCurrentStep('style')}
+                        className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors cursor-pointer"
+                      >
+                        Style Selection
+                      </button>
+                    </li>
+                    <li>
+                      <svg className="w-4 h-4 text-zinc-400 dark:text-zinc-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </li>
+                    <li>
+                      <button
+                        onClick={() => setCurrentStep('form')}
+                        className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors cursor-pointer"
+                      >
+                        Form
+                      </button>
+                    </li>
+                    <li>
+                      <svg className="w-4 h-4 text-zinc-400 dark:text-zinc-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </li>
+                    <li className="text-zinc-900 dark:text-zinc-100 font-medium">Preview</li>
+                  </>
+                )}
+                {currentStep === 'success' && (
+                  <>
+                    <li>
+                      <svg className="w-4 h-4 text-zinc-400 dark:text-zinc-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </li>
+                    <li className="text-zinc-900 dark:text-zinc-100 font-medium">Success</li>
+                  </>
+                )}
+                {currentStep === 'style' && (
+                  <>
+                    <li>
+                      <svg className="w-4 h-4 text-zinc-400 dark:text-zinc-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </li>
+                    <li className="text-zinc-900 dark:text-zinc-100 font-medium">Style Selection</li>
+                  </>
+                )}
+              </ol>
+            </nav>
+            
+            {/* Action Buttons for Success Step - Aligned with Breadcrumb */}
+            {currentStep === 'success' && createdCard && (
+              <div className="flex items-center gap-3">
+                {createdCard.type === 'personal' && (
+                  <div>
+                    <ContactDownload card={createdCard} variant="default" />
+                  </div>
+                )}
+                <Link
+                  href={`/card/${createdCard.id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium shadow-sm text-sm whitespace-nowrap"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                  View Card Page
+                </Link>
+              </div>
+            )}
+          </div>
+          
           <div className="text-center mb-8">
             <h1 className="text-4xl sm:text-5xl font-bold text-zinc-900 dark:text-zinc-50 mb-2">
               Create Card
@@ -158,10 +274,7 @@ export default function CreatePersonalCardPage() {
 
         {/* Step 1: Style Selection */}
         {currentStep === 'style' && (
-          <div className="bg-white dark:bg-zinc-800 rounded-2xl p-6 sm:p-8 shadow-xl border border-zinc-200 dark:border-zinc-700">
-            <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-8 text-center">
-              Choose Your Card Style
-            </h2>
+          <div className="mt-10">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {styleOptions.map((option) => {
                 const previewCard: PersonalCard = {
@@ -250,14 +363,26 @@ export default function CreatePersonalCardPage() {
                 onSubmit={handleFormSubmit} 
                 isLoading={false} 
                 defaultStyle={selectedStyle}
+                onFormChange={handleFormChange}
               />
             </div>
 
             {/* Right Side - Live Preview */}
             <div className="bg-white dark:bg-zinc-800 rounded-2xl p-6 sm:p-8 shadow-xl border border-zinc-200 dark:border-zinc-700 sticky top-4 h-fit">
-              <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-100 mb-6 text-center">
-                Live Preview
-              </h3>
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
+                  Live Preview
+                </h3>
+                <button
+                  onClick={() => setCurrentStep('style')}
+                  className="cursor-pointer text-sm text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 flex items-center gap-1 transition-colors"
+                >
+                  Change Style
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
               <div className="bg-zinc-50 dark:bg-zinc-900 p-6 rounded-xl flex items-center justify-center min-h-[500px]">
                 {previewCard ? (
                   <CardPreview card={previewCard} />
@@ -338,9 +463,6 @@ export default function CreatePersonalCardPage() {
                 <div className="bg-zinc-50 dark:bg-zinc-900 p-4 rounded-xl">
                   <CardPreview card={createdCard} />
                 </div>
-                <div className="mt-4">
-                  <ContactDownload card={createdCard} variant="default" />
-                </div>
               </div>
 
               <div className="bg-white dark:bg-zinc-800 rounded-2xl p-6 shadow-xl border border-zinc-200 dark:border-zinc-700">
@@ -349,23 +471,6 @@ export default function CreatePersonalCardPage() {
                   baseUrl={typeof window !== 'undefined' ? window.location.origin : undefined} 
                 />
               </div>
-            </div>
-
-            <div className="flex flex-wrap justify-center gap-4">
-              <a
-                href={`/card/${createdCard.id}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium cursor-pointer"
-              >
-                View Card Page
-              </a>
-              <a
-                href="/dashboard"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-zinc-200 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 rounded-lg hover:bg-zinc-300 dark:hover:bg-zinc-600 transition-colors font-medium cursor-pointer"
-              >
-                Go to Dashboard
-              </a>
             </div>
           </div>
         )}

@@ -49,7 +49,7 @@ export default function StyleOne({ card }: StyleOneProps) {
       </div>
 
       {/* Card Content */}
-      <div className="p-6 pt-10 bg-white">
+      <div className="p-6 pt-5 bg-white">
         <h2 className="text-xl font-semibold text-gray-900 mb-1">{data.name || "—"}</h2>
         
         {/* Title and Company */}

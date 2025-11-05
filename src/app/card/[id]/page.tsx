@@ -8,6 +8,7 @@ import { Card } from '@/types/card';
 import ContactDownload from '@/components/ContactDownload';
 import { getCardById } from '@/lib/cardStorage';
 import Header from '@/components/Header';
+import Link from 'next/link';
 
 export default function CardPage() {
   const params = useParams();
@@ -120,10 +121,65 @@ export default function CardPage() {
     );
   }
 
+  const cardName = card.type === 'business' 
+    ? card.data.name 
+    : card.type === 'personal' 
+    ? card.data.name 
+    : card.data.accountHolder;
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
       <main className="max-w-6xl mx-auto py-12 px-4">
+        {/* Breadcrumb Navigation with Action Button */}
+        <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
+          <nav aria-label="Breadcrumb">
+            <ol className="flex items-center space-x-2 text-sm">
+              <li>
+                <Link
+                  href="/dashboard"
+                  className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
+                >
+                  Dashboard
+                </Link>
+              </li>
+              <li>
+                <svg className="w-4 h-4 text-zinc-400 dark:text-zinc-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                </svg>
+              </li>
+              <li>
+                <Link
+                  href="/my-cards"
+                  className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
+                >
+                  My Cards
+                </Link>
+              </li>
+              <li>
+                <svg className="w-4 h-4 text-zinc-400 dark:text-zinc-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                </svg>
+              </li>
+              <li className="text-zinc-900 dark:text-zinc-100 font-medium truncate max-w-[200px]">
+                {cardName || 'Card'}
+              </li>
+            </ol>
+          </nav>
+          
+          <Link
+            href={`/card/${card.id}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium shadow-sm text-sm whitespace-nowrap"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+            View Card Page
+          </Link>
+        </div>
+
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* Card Display */}
@@ -147,28 +203,6 @@ export default function CardPage() {
               </div>
             )}
           </div>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex flex-wrap justify-center gap-4">
-          <a
-            href="/dashboard"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium shadow-sm"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-            </svg>
-            My Cards
-          </a>
-          <a
-            href="/dashboard"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium shadow-sm"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-            Create New Card
-          </a>
         </div>
       </main>
     </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, BusinessCard, PersonalCard } from '@/types/card';
+import { Card} from '@/types/card';
 import { generateVCard, generatePersonalVCard, downloadVCard } from '@/lib/qrGenerator';
 import { useState } from 'react';
 
@@ -44,7 +44,7 @@ export default function ContactDownload({ card, variant = 'default' }: ContactDo
     return null;
   }
 
-  const baseClasses = "cursor-pointer flex items-center gap-3 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors font-medium shadow-lg disabled:opacity-50 disabled:cursor-not-allowed";
+  const baseClasses = "cursor-pointer flex items-center justify-center gap-2 px-4 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors font-medium shadow-lg disabled:opacity-50 disabled:cursor-not-allowed w-full";
   const prominentClasses = "cursor-pointer flex items-center gap-3 px-8 py-4 bg-linear-to-r from-purple-600 to-purple-700 text-white rounded-xl hover:from-purple-700 hover:to-purple-800 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-all font-semibold text-lg shadow-xl disabled:opacity-50 disabled:cursor-not-allowed";
 
   return (
@@ -53,7 +53,7 @@ export default function ContactDownload({ card, variant = 'default' }: ContactDo
       disabled={downloading}
       className={variant === 'prominent' ? prominentClasses : baseClasses}
     >
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className={`${variant === 'prominent' ? 'w-6 h-6' : 'w-5 h-5'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
       </svg>
       <span>{downloading ? 'Adding...' : 'Add to Contacts'}</span>

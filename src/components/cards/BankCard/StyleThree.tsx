@@ -9,7 +9,7 @@ export default function StyleThree({ card }: StyleThreeProps) {
   
   return (
     <div className="w-full max-w-md mx-auto bg-linear-to-br from-zinc-900 via-zinc-800 to-black rounded-xl shadow-2xl overflow-hidden border border-purple-500/20">
-      <div className="relative p-8">
+      <div className="relative p-5">
         {/* Glow effect */}
         <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/20 rounded-full blur-3xl"></div>
         

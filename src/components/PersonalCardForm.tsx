@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { personalCardSchema, type PersonalCardFormData } from '@/lib/validation';
@@ -36,18 +36,47 @@ export default function PersonalCardForm({ onSubmit, isLoading = false, defaultS
   });
 
   const imageValue = watch('image');
-  const watchedValues = watch();
+  
+  // Watch specific fields to avoid infinite loops
+  const name = watch('name');
+  const email = watch('email');
+  const phone = watch('phone');
+  const address = watch('address');
+  const birthday = watch('birthday');
+  const website = watch('website');
+  const image = watch('image');
+  const socialMedia = watch('socialMedia');
+
+  // Use ref to track previous values and prevent unnecessary updates
+  const prevValuesRef = useRef<string>('');
+  const isInitialMount = useRef(true);
 
   // Update live preview when form values change
   useEffect(() => {
     if (onFormChange) {
       const formData: PersonalCardFormData = {
-        ...watchedValues,
+        name: name || '',
+        email: email || '',
+        phone: phone || '',
+        address: address || '',
+        birthday: birthday || '',
+        website: website || '',
+        image: image || '',
+        socialMedia: socialMedia || {},
         style: defaultStyle,
       };
-      onFormChange(formData);
+      
+      // Create a string representation to compare
+      const currentValues = JSON.stringify(formData);
+      
+      // Always call onFormChange on initial mount or if values changed
+      if (isInitialMount.current || currentValues !== prevValuesRef.current) {
+        isInitialMount.current = false;
+        prevValuesRef.current = currentValues;
+        onFormChange(formData);
+      }
     }
-  }, [watchedValues, defaultStyle, onFormChange]);
+  }, [name, email, phone, address, birthday, website, image, socialMedia, defaultStyle, onFormChange]);
 
   const onFormSubmit = async (data: PersonalCardFormData) => {
     await onSubmit(data);

@@ -13,7 +13,7 @@ export default function StyleTwo({ card }: StyleTwoProps) {
         {/* Horizontal Layout with Side Image */}
         <div className="flex gap-6 mb-8">
           {data.image ? (
-            <div className="flex-shrink-0">
+            <div className="shrink-0">
               <div className="relative">
                 <img 
                   src={data.image} 
@@ -26,7 +26,7 @@ export default function StyleTwo({ card }: StyleTwoProps) {
               </div>
             </div>
           ) : (
-            <div className="flex-shrink-0">
+            <div className="shrink-0">
               <div className="w-28 h-28 bg-linear-to-br from-purple-400 to-pink-400 rounded-2xl shadow-xl border-4 border-white flex items-center justify-center">
                 <span className="text-5xl">👤</span>
               </div>
@@ -97,7 +97,7 @@ export default function StyleTwo({ card }: StyleTwoProps) {
           )}
           {data.address && (
             <div className="flex items-start gap-4 p-4 bg-white rounded-xl shadow-sm">
-              <div className="w-12 h-12 bg-linear-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center text-white shadow-md flex-shrink-0">
+              <div className="w-12 h-12 bg-linear-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center text-white shadow-md shrink-0">
                 <span className="text-xl">📍</span>
               </div>
               <div className="flex-1 min-w-0">
