@@ -49,7 +49,7 @@ export default function CreateBankCardPage() {
     setError(null);
 
     try {
-      const bankCard: BankCard = {
+      const bankCard: BankCard | any = {
         id: nanoid(),
         type: 'bank',
         style: selectedStyle,
@@ -87,7 +87,7 @@ export default function CreateBankCardPage() {
     }
   };
 
-  const previewCard: BankCard | null = formData ? {
+  const previewCard: BankCard | any = formData ? {
     id: 'preview',
     type: 'bank',
     style: selectedStyle,
@@ -257,7 +257,7 @@ export default function CreateBankCardPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {styleOptions.map((option) => {
-                const previewCard: BankCard = {
+                const previewCard: BankCard | any = {
                   id: 'preview',
                   type: 'bank',
                   style: option.value,
