@@ -106,7 +106,7 @@ export default function EditBusinessCardPage() {
     setError(null);
 
     try {
-      const businessCard: BusinessCard = {
+      const businessCard: BusinessCard | any = {
         id: cardId,
         type: 'business',
         style: selectedStyle,
@@ -146,7 +146,7 @@ export default function EditBusinessCardPage() {
     }
   };
 
-  const previewCard: BusinessCard | null = formData ? {
+  const previewCard: BusinessCard | any = formData ? {
     id: cardId || 'preview',
     type: 'business',
     style: selectedStyle,

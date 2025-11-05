@@ -66,7 +66,7 @@ export default function CreatePersonalCardPage() {
     setError(null);
 
     try {
-      const personalCard: PersonalCard = {
+      const personalCard: PersonalCard | any = {
         id: nanoid(),
         type: 'personal',
         style: selectedStyle,
@@ -110,7 +110,7 @@ export default function CreatePersonalCardPage() {
     }
   };
 
-  const previewCard: PersonalCard | null = formData ? {
+  const previewCard: PersonalCard | any = formData ? {
     id: 'preview',
     type: 'personal',
     style: selectedStyle,
@@ -286,7 +286,7 @@ export default function CreatePersonalCardPage() {
           <div className="mt-10">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {styleOptions.map((option) => {
-                const previewCard: PersonalCard = {
+                const previewCard: PersonalCard | any = {
                   id: 'preview',
                   type: 'personal',
                   style: option.value,

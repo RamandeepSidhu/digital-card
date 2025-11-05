@@ -9,7 +9,7 @@ import CardPreview from '@/components/CardPreview';
 import { Card } from '@/types/card';
 
 // Example cards for showcase (kept similar to your originals)
-const exampleCards: Card[] = [
+const exampleCards: any[] = [
   {
     id: 'example-1',
     type: 'business',

@@ -101,7 +101,7 @@ export default function EditPersonalCardPage() {
     setError(null);
 
     try {
-      const personalCard: PersonalCard = {
+      const personalCard: PersonalCard | any = {
         id: cardId,
         type: 'personal',
         style: selectedStyle,
@@ -144,7 +144,7 @@ export default function EditPersonalCardPage() {
     }
   };
 
-  const previewCard: PersonalCard | null = formData ? {
+  const previewCard: PersonalCard | any = formData ? {
     id: cardId || 'preview',
     type: 'personal',
     style: selectedStyle,

@@ -298,7 +298,7 @@ export default function MyCardsPage() {
 
         {/* Delete Confirmation Dialog */}
         {deleteConfirmId && (
-          <div className="fixed inset-0 bg-gradient-to-br from-white/80 via-purple-50/80 to-white/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="fixed inset-0 bg-linear-to-br from-white/80 via-purple-50/80 to-white/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6 border border-gray-200">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
